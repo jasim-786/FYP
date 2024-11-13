@@ -1,9 +1,58 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'ImageDisplayScreen.dart'; // Import the new screen
 
 class DetectingOptionPage extends StatelessWidget {
   const DetectingOptionPage({super.key});
+
+  // Method to handle image picking
+  Future<void> _pickImage(BuildContext context) async {
+    // Request permission to access the gallery
+    PermissionStatus status = await Permission.photos.request();
+
+    if (status.isGranted) {
+      // If permission is granted, open the gallery to pick an image
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile =
+          await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        // Navigate to the new screen and pass the image path
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ImageDisplayScreen(imagePath: pickedFile.path),
+          ),
+        );
+      }
+    } else {
+      // If permission is denied, show a message
+      _showPermissionDeniedDialog(context);
+    }
+  }
+
+  // Show a dialog if permission is denied
+  void _showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Permission Denied"),
+        content: Text("Please grant permission to access your gallery."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +68,7 @@ class DetectingOptionPage extends StatelessWidget {
             Positioned.fill(
               child: Image.asset(
                 "assets/Background_DetectionOption.png",
-                fit: BoxFit.cover, // Ensures the image covers the entire screen
+                fit: BoxFit.cover,
               ),
             ),
             // Back button
@@ -41,7 +90,7 @@ class DetectingOptionPage extends StatelessWidget {
                   // Button for uploading an image
                   ElevatedButton(
                     onPressed: () {
-                      // Handle image upload action
+                      _pickImage(context); // Call the method to pick an image
                     },
                     style: ElevatedButton.styleFrom(
                       padding:
