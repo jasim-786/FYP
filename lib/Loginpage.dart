@@ -26,16 +26,24 @@ class Loginpage extends StatelessWidget {
             ),
             // Centered content
             Center(
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // Center vertically
+                  crossAxisAlignment:
+                      CrossAxisAlignment.center, // Align horizontally
                   children: [
+                    // Logo at the top
+                    Image.asset(
+                      "assets/WRG_logo.png", // Replace with your logo path
+                      height: 250, // Adjust the height as needed
+                    ),
+                    SizedBox(height: 20), // Spacing between logo and text
                     Text(
                       "Welcome Back!",
                       style: TextStyle(
-                        color: Colors
-                            .white, // Text color for better contrast on the image
+                        color: Colors.white, // Text color for better contrast
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
                         shadows: [
@@ -46,10 +54,9 @@ class Loginpage extends StatelessWidget {
                           ),
                         ],
                       ),
+                      textAlign: TextAlign.center, // Center-align the text
                     ),
-                    SizedBox(
-                        height:
-                            30), // Spacing between the text and the text fields
+                    SizedBox(height: 30), // Spacing between text and fields
                     TextField(
                       decoration: InputDecoration(
                         filled: true,
@@ -76,8 +83,7 @@ class Loginpage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                        height: 30), // Spacing between the fields and buttons
+                    SizedBox(height: 30), // Spacing between fields and buttons
                     ElevatedButton(
                       onPressed: () {
                         // Handle login action
@@ -96,13 +102,14 @@ class Loginpage extends StatelessWidget {
                       onPressed: () {
                         // Handle sign-up action
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupPage()));
+                          context,
+                          MaterialPageRoute(builder: (context) => SignupPage()),
+                        );
                       },
                       child: Text(
                         "Don't have an account? Sign up",
                         style: TextStyle(color: Colors.white, fontSize: 20),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     SizedBox(height: 10), // Space between buttons
@@ -110,13 +117,15 @@ class Loginpage extends StatelessWidget {
                       onPressed: () {
                         // Handle continue without login action
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetectingOptionPage()));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetectingOptionPage()),
+                        );
                       },
                       child: Text(
                         "Continue without login",
                         style: TextStyle(color: Colors.white, fontSize: 20),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],
