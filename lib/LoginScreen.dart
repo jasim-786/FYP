@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      SignupScreen()));
+                                                      SignUpScreen()));
                                         },
                                         child: Text('Signup'),
                                         style: TextButton.styleFrom(
