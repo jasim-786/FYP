@@ -1,7 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
+import 'package:flutter_application_1/ForgotPasswordScreen.dart';
+import 'package:flutter_application_1/HomeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoginSelected = true; // Tracks whether Login is selected
+  GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Key for scaffold
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +23,73 @@ class _LoginScreenState extends State<LoginScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: Container(
+          color: Color(0xFFE5D188), // Light yellow background
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  // Top Section with Background Image
+                  Container(
+                    height: screenHeight * 0.25,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/Sidebar_Top.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20), // Spacing
+
+                  // Sidebar Buttons
+                  buildSidebarButton(
+                    icon: Icons.home,
+                    text: "Home",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    icon: Icons.person,
+                    text: "Profile",
+                    onTap: () {
+                      // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    icon: Icons.settings,
+                    text: "Settings",
+                    onTap: () {
+                      // Handle Settings Navigation
+                    },
+                  ),
+                ],
+              ),
+
+              // Logo Positioned Below Top Section
+              Positioned(
+                top: screenHeight * 0.1, // Adjust for desired position
+                left: 0,
+                right: 140,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 140, // Adjust size as needed
+                    width: 140, // Adjust size as needed
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           // Background Image
@@ -61,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
             right: 5, // Adjust for desired position
             child: GestureDetector(
               onTap: () {
-                // Handle sidebar icon tap action
+                _scaffoldKey.currentState?.openDrawer();
               },
               child: Image.asset(
                 "assets/icons/menu.png", // Path to your custom image
@@ -71,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-          // Content
+          // Main Content Positioned
           Positioned.fill(
             top: screenHeight * 0.15,
             child: Padding(
@@ -165,10 +236,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                       TextButton(
                                         onPressed: () {
                                           Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SignUpScreen()));
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SignUpScreen(),
+                                            ),
+                                          );
                                         },
                                         child: Text('Signup'),
                                         style: TextButton.styleFrom(
@@ -262,61 +335,60 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
+                    ],
+                  ),
 
-                      // Forgot Password & Continue Without Logging
-                      Positioned(
-                        bottom: -150, // Adjusted for proper spacing
-                        left: 0,
-                        right: 0,
-                        child: Column(
-                          children: [
-                            // Forgot Password Text
-                            if (isLoginSelected)
-                              TextButton(
-                                onPressed: () {
-                                  // Handle forgot password action
-                                },
-                                child: Text(
-                                  'Forgot your password?',
-                                  style: TextStyle(
-                                    color: Color(0xFF7B5228),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                  // Forgot Password & Continue Without Login
+                  SizedBox(height: 30), // Add spacing
 
-                            SizedBox(height: 15), // Extra spacing
-
-                            // Continue Without Logging Button
-                            SizedBox(
-                              width: screenWidth * 0.7,
-                              height: screenHeight * 0.07,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Handle continue without logging action
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Color(0xFF7B5228),
-                                  padding: EdgeInsets.zero,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Continue Without Login',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                  if (isLoginSelected)
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Forgot your password?',
+                        style: TextStyle(
+                          color: Color(0xFF7B5228),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                    ),
+                  SizedBox(height: 15), // Extra spacing
+                  SizedBox(
+                    width: screenWidth * 0.7,
+                    height: screenHeight * 0.07,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFF7B5228),
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                      ),
+                      child: Text(
+                        'Continue Without Login',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -326,4 +398,58 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+/// Custom Sidebar Button
+Widget buildSidebarButton({
+  required IconData icon,
+  required String text,
+  required VoidCallback onTap,
+}) {
+  return Padding(
+    padding:
+        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+    child: GestureDetector(
+      onTap: onTap,
+      child: Transform.translate(
+        offset: Offset(-10, 0), // Move button slightly left
+        child: Container(
+          width: 250,
+          decoration: BoxDecoration(
+            color: Color(0xFF7B5228), // Brown background for button
+            borderRadius: BorderRadius.circular(30), // Rounded button shape
+          ),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          child: Row(
+            children: [
+              // Circular icon background
+              Transform.translate(
+                offset: Offset(-8, 0), // Moves the icon slightly left
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFE5D188), // Light background for icon
+                    shape: BoxShape.circle,
+                  ),
+                  padding:
+                      EdgeInsets.all(10), // Adjust for proper icon placement
+                  child: Icon(icon, color: Colors.black, size: 24),
+                ),
+              ),
+              SizedBox(width: 10), // Space between icon and text
+
+              // Profile text
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
