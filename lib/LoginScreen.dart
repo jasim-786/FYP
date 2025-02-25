@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
+import 'package:flutter_application_1/Onboarding1.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -369,7 +370,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
+                            builder: (context) => Onboarding1(),
                           ),
                         );
                       },
