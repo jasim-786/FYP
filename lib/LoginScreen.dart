@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Sidebar Buttons
                   buildSidebarButton(
-                    icon: Icons.home,
+                    customIconPath: "assets/icons/Home_icon.png",
                     text: "Home",
                     onTap: () {
                       Navigator.push(
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   buildSidebarButton(
-                    icon: Icons.person,
+                    customIconPath: "assets/icons/profile_icon.png",
                     text: "Profile",
                     onTap: () {
                       // Handle Profile Navigation
@@ -403,7 +403,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 /// Custom Sidebar Button
 Widget buildSidebarButton({
-  required IconData icon,
+  IconData? icon,
+  String? customIconPath,
   required String text,
   required VoidCallback onTap,
 }) {
@@ -433,7 +434,13 @@ Widget buildSidebarButton({
                   ),
                   padding:
                       EdgeInsets.all(10), // Adjust for proper icon placement
-                  child: Icon(icon, color: Colors.black, size: 24),
+                  child: customIconPath != null
+                      ? Image.asset(
+                          customIconPath,
+                          height: 26,
+                          width: 26,
+                        )
+                      : Icon(icon, color: Colors.black, size: 24),
                 ),
               ),
               SizedBox(width: 10), // Space between icon and text
