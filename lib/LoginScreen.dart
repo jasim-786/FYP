@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -85,7 +86,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     customIconPath: "assets/icons/info_icon.png",
                     text: "About Us",
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AboutUsScreen()),
+                      );
                     },
                   ),
                 ],
