@@ -65,10 +65,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   buildSidebarButton(
-                    icon: Icons.settings,
-                    text: "Settings",
+                    customIconPath: "assets/icons/help_icon.png",
+                    text: "Help",
                     onTap: () {
-                      // Handle Settings Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Onboarding1()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/feedback_icon.png",
+                    text: "Feedback",
+                    onTap: () {
+                      // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/info_icon.png",
+                    text: "About Us",
+                    onTap: () {
+                      // Handle Profile Navigation
                     },
                   ),
                 ],
