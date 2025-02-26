@@ -1,11 +1,84 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, unused_element, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  File? _selectedImage;
+
+  Future<void> _pickImage() async {
+    // Check Android version
+    if (await Permission.photos.isGranted ||
+        await Permission.storage.isGranted) {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } else {
+      // Request permission and check response
+      var status = await Permission.photos.request(); // For newer Android
+      if (status.isDenied) {
+        status = await Permission.storage.request(); // For older Android
+      }
+
+      if (status.isGranted) {
+        final pickedFile =
+            await ImagePicker().pickImage(source: ImageSource.gallery);
+        if (pickedFile != null) {
+          setState(() {
+            _selectedImage = File(pickedFile.path);
+          });
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Permission to access gallery denied!")),
+        );
+      }
+    }
+  }
+
+  // Function to request permission and take a photo using the camera
+  Future<void> _takePhoto() async {
+    var status = await Permission.camera.status;
+
+    if (status.isDenied) {
+      // Request permission first
+      status = await Permission.camera.request();
+    }
+
+    if (status.isPermanentlyDenied) {
+      // Open app settings if permanently denied
+      openAppSettings();
+    }
+
+    if (status.isGranted) {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Permission to access camera denied!")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,35 +228,33 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Empty Container Styled Like Login Screen
-                  Container(
-                    height: screenHeight * 0.35,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Color(0xFF7B5228),
-                        width: 2.0,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 5,
-                          offset: Offset(1, 1),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        'This space is empty. Add content here as needed.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black54,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                  _selectedImage != null
+                      ? Image.file(_selectedImage!, height: 200)
+                      : Container(
+                          height: screenHeight * 0.35,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Color(0xFF7B5228),
+                              width: 2.0,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 5,
+                                offset: Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              "No image selected",
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.black54),
+                            ),
+                          )),
 
                   SizedBox(height: screenHeight * 0.05),
 
@@ -195,9 +266,7 @@ class HomeScreen extends StatelessWidget {
                       clipBehavior: Clip.none, // Ensures the icon isn't cropped
                       children: [
                         ElevatedButton(
-                          onPressed: () {
-                            // Handle button press
-                          },
+                          onPressed: _pickImage,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,
@@ -254,9 +323,7 @@ class HomeScreen extends StatelessWidget {
                       clipBehavior: Clip.none,
                       children: [
                         ElevatedButton(
-                          onPressed: () {
-                            // Handle second button press
-                          },
+                          onPressed: _takePhoto,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,
