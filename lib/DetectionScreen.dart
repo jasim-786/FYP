@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/AboutUsScreen.dart';
+import 'package:flutter_application_1/HomeScreen.dart';
+import 'package:flutter_application_1/Onboarding1.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -75,6 +78,93 @@ class _DetectionScreenState extends State<DetectionScreen> {
     bool fileExists = imageFile.existsSync(); // Check if file exists
 
     return Scaffold(
+      drawer: Drawer(
+        child: Container(
+          color: Color(0xFFE5D188), // Light yellow background
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  // Top Section with Background Image
+                  Container(
+                    height: screenHeight * 0.25,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/Sidebar_Top.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20), // Spacing
+
+                  // Sidebar Buttons
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/Home_icon.png",
+                    text: "Home",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: "Profile",
+                    onTap: () {
+                      // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/help_icon.png",
+                    text: "Help",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Onboarding1()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/feedback_icon.png",
+                    text: "Feedback",
+                    onTap: () {
+                      // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/info_icon.png",
+                    text: "About Us",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AboutUsScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+
+              // Logo Positioned Below Top Section
+              Positioned(
+                top: screenHeight * 0.1, // Adjust for desired position
+                left: 0,
+                right: 140,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 140, // Adjust size as needed
+                    width: 140, // Adjust size as needed
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           // Top Image Covering Full Width
@@ -100,6 +190,24 @@ class _DetectionScreenState extends State<DetectionScreen> {
               fit: BoxFit.cover,
               height: screenHeight * 0.2,
               width: screenWidth,
+            ),
+          ),
+
+          // Sidebar Icon at Top Right
+          Positioned(
+            top: 25,
+            right: 5,
+            child: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Image.asset(
+                  "assets/icons/menu.png",
+                  height: 62,
+                  width: 62,
+                ),
+              ),
             ),
           ),
 
