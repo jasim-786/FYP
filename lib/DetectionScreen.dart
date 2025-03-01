@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class DetectionScreen extends StatefulWidget {
   final String imagePath;
@@ -18,20 +19,59 @@ class _DetectionScreenState extends State<DetectionScreen> {
   @override
   void initState() {
     super.initState();
-    print("📍 Navigated to DetectionScreen with: ${widget.imagePath}");
+    imagePath = widget.imagePath; // Initialize state with the initial image
+    print("📍 Navigated to DetectionScreen with: $imagePath");
+  }
 
-    Future.delayed(Duration(milliseconds: 200), () {
-      if (mounted) {
-        setState(() {}); // Force UI rebuild
-      }
-    });
+  // Method to pick a new image from the gallery
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        imagePath = pickedFile.path;
+      });
+    }
+  }
+
+  void _showImageSourceDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Select Image Source"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text("Camera"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text("Gallery"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    File imageFile = File(widget.imagePath);
+    File imageFile = File(imagePath);
     bool fileExists = imageFile.existsSync(); // Check if file exists
 
     return Scaffold(
@@ -113,7 +153,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       clipBehavior: Clip.none,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: _showImageSourceDialog,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,

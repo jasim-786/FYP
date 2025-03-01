@@ -294,7 +294,7 @@ class HomeScreen extends StatelessWidget {
                           top: -35,
                           right: -35,
                           child: Image.asset(
-                            'assets/icons/upload_icon.png', // Path to your image
+                            'assets/icons/upload_icon.png', // Path to image
                             width: 70, // Adjust width for your icon
                             height: 70, // Adjust height for your icon
                             fit: BoxFit.contain,
