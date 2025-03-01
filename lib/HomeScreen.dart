@@ -1,58 +1,61 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, unused_element, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, unused_element, use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
+import 'package:flutter_application_1/DetectionScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  // Method to handle image picking
+  Future<void> _pickImage(BuildContext context) async {
+    PermissionStatus status = await Permission.photos.request();
+    print("Permission status: $status"); // Debug permission
 
-class _HomeScreenState extends State<HomeScreen> {
-  File? _selectedImage;
+    if (status.isGranted) {
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile =
+          await picker.pickImage(source: ImageSource.gallery);
+      print("Picked file: ${pickedFile?.path ?? 'null'}"); // Debug picker
 
-  Future<void> _pickImage() async {
-    // Check Android version
-    if (await Permission.photos.isGranted ||
-        await Permission.storage.isGranted) {
-      final pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path);
-        });
-      }
-    } else {
-      // Request permission and check response
-      var status = await Permission.photos.request(); // For newer Android
-      if (status.isDenied) {
-        status = await Permission.storage.request(); // For older Android
-      }
-
-      if (status.isGranted) {
-        final pickedFile =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
-          setState(() {
-            _selectedImage = File(pickedFile.path);
-          });
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Permission to access gallery denied!")),
+      if (pickedFile != null && context.mounted) {
+        print(
+            "Navigating to DetectionScreen with path: ${pickedFile.path}"); // Debug navigation
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetectionScreen(imagePath: pickedFile.path),
+          ),
         );
       }
+    } else {
+      _showPermissionDeniedDialog(context);
     }
   }
 
+  // Show a dialog if permission is denied
+  void _showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Permission Denied"),
+        content: Text("Please grant permission to access your gallery."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
   // Function to request permission and take a photo using the camera
-  Future<void> _takePhoto() async {
+  /*Future<void> _takePhoto() async {
     var status = await Permission.camera.status;
 
     if (status.isDenied) {
@@ -78,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SnackBar(content: Text("Permission to access camera denied!")),
       );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -228,33 +231,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Empty Container Styled Like Login Screen
-                  _selectedImage != null
-                      ? Image.file(_selectedImage!, height: 200)
-                      : Container(
-                          height: screenHeight * 0.35,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: Color(0xFF7B5228),
-                              width: 2.0,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 5,
-                                offset: Offset(1, 1),
-                              ),
-                            ],
+                  Container(
+                      height: screenHeight * 0.35,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Color(0xFF7B5228),
+                          width: 2.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
+                            offset: Offset(1, 1),
                           ),
-                          child: Center(
-                            child: Text(
-                              "No image selected",
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.black54),
-                            ),
-                          )),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          "No image selected",
+                          style: TextStyle(fontSize: 16, color: Colors.black54),
+                        ),
+                      )),
 
                   SizedBox(height: screenHeight * 0.05),
 
@@ -266,7 +266,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       clipBehavior: Clip.none, // Ensures the icon isn't cropped
                       children: [
                         ElevatedButton(
-                          onPressed: _pickImage,
+                          onPressed: () {
+                            print("Upload button clicked!"); // Debugging
+                            _pickImage(context);
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,
@@ -323,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       clipBehavior: Clip.none,
                       children: [
                         ElevatedButton(
-                          onPressed: _takePhoto,
+                          onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,
