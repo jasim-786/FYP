@@ -6,6 +6,10 @@ import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:image/image.dart' as img;
 
 class DetectionScreen extends StatefulWidget {
   final String imagePath;
@@ -18,12 +22,91 @@ class DetectionScreen extends StatefulWidget {
 
 class _DetectionScreenState extends State<DetectionScreen> {
   late String imagePath;
+  Interpreter? _interpreter;
+  String result = "Detection Result: Not Analyzed";
 
   @override
   void initState() {
     super.initState();
     imagePath = widget.imagePath; // Initialize state with the initial image
     print("📍 Navigated to DetectionScreen with: $imagePath");
+    _loadModel();
+  }
+
+  Future<void> _loadModel() async {
+    try {
+      _interpreter = await Interpreter.fromAsset(
+          'assets/Model/wheat_leaf_disease_model.tflite');
+      print("✅ TFLite model loaded successfully.");
+    } catch (e) {
+      print("❌ Error loading TFLite model: $e");
+    }
+  }
+
+  Future<void> _detectDisease() async {
+    if (!File(imagePath).existsSync()) {
+      setState(() {
+        result = "⚠️ Image file not found!";
+      });
+      return;
+    }
+
+    try {
+      // Load and resize the image
+      var image = img.decodeImage(File(imagePath).readAsBytesSync())!;
+      image = img.copyResize(image, width: 224, height: 224);
+
+      // Convert image to a normalized 4D list (1, 224, 224, 3)
+      var input = List.generate(
+          1,
+          (i) => List.generate(
+              224, (j) => List.generate(224, (k) => List.filled(3, 0.0))));
+
+      for (int y = 0; y < 224; y++) {
+        for (int x = 0; x < 224; x++) {
+          final pixel = image.getPixel(x, y); // Get the Pixel object
+
+          input[0][y][x][0] = pixel.r / 255.0; // Red channel
+          input[0][y][x][1] = pixel.g / 255.0; // Green channel
+          input[0][y][x][2] = pixel.b / 255.0; // Blue channel
+        }
+      }
+
+      // Convert List to Float32List for TensorFlow Lite
+      var inputBuffer = Float32List.fromList(
+          input.expand((i) => i.expand((j) => j.expand((k) => k))).toList());
+
+      // Prepare output buffer
+      var output = List.filled(3, 0.0).reshape([1, 3]);
+
+      // Run the model
+      _interpreter?.run(inputBuffer, output);
+
+      // Get prediction result
+      int predictedClass =
+          output[0].indexOf(output[0].reduce((a, b) => a > b ? a : b));
+      String disease = _getDiseaseLabel(predictedClass);
+
+      setState(() {
+        result = "Prediction: $disease";
+      });
+    } catch (e) {
+      print("❌ Error during detection: $e");
+      setState(() {
+        result = "❌ Detection failed!";
+      });
+    }
+  }
+
+  String _getDiseaseLabel(int index) {
+    List<String> labels = ["Healthy", "Yellow Rust", "Brown Rust"];
+    return labels[index];
+  }
+
+  @override
+  void dispose() {
+    _interpreter?.close();
+    super.dispose();
   }
 
   // Method to pick a new image from the gallery
@@ -298,6 +381,16 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
                   SizedBox(height: screenHeight * 0.02),
 
+                  // Display Prediction Result
+                  Text(
+                    result,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+
                   // Detect Disease Button
                   SizedBox(
                     width: screenWidth * 0.5,
@@ -306,10 +399,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       clipBehavior: Clip.none,
                       children: [
                         ElevatedButton(
-                          onPressed: () {
-                            // TODO: Add disease detection logic here
-                            print("Detecting disease...");
-                          },
+                          onPressed: _detectDisease,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,
