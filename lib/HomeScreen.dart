@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, unused_element, use_build_context_synchronously, avoid_print
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/DetectionScreen.dart';
@@ -13,7 +14,22 @@ class HomeScreen extends StatelessWidget {
 
   // Method to handle image picking
   Future<void> _pickImage(BuildContext context) async {
-    PermissionStatus status = await Permission.photos.request();
+    PermissionStatus status;
+
+    if (Platform.isAndroid) {
+      if (await Permission.photos.isDenied ||
+          await Permission.videos.isDenied ||
+          await Permission.storage.isDenied) {
+        // Request correct permissions for different Android versions
+        status = await _requestPermissions();
+      } else {
+        status = PermissionStatus.granted;
+      }
+    } else {
+      status =
+          await Permission.photos.request(); // iOS only needs photos permission
+    }
+
     print("Permission status: $status"); // Debug permission
 
     if (status.isGranted) {
@@ -35,6 +51,19 @@ class HomeScreen extends StatelessWidget {
     } else {
       _showPermissionDeniedDialog(context);
     }
+  }
+
+  Future<PermissionStatus> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      if (await Permission.storage.request().isGranted) {
+        return PermissionStatus.granted;
+      }
+      if (await Permission.photos.request().isGranted &&
+          await Permission.videos.request().isGranted) {
+        return PermissionStatus.granted;
+      }
+    }
+    return PermissionStatus.denied;
   }
 
   // Show a dialog if permission is denied

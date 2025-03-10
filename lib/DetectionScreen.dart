@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -8,7 +8,6 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 
 class DetectionScreen extends StatefulWidget {
