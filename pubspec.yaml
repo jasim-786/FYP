@@ -36,6 +36,7 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_plugin_android_lifecycle: ^2.0.23
   tflite_flutter: ^0.11.0
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -70,7 +71,8 @@ flutter:
      - assets/
      - assets/images/
      - assets/icons/
-     - assets/Model/
+     - assets/Model/wheat_leaf_disease_model.tflite
+     - assets/Model/label.txt
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

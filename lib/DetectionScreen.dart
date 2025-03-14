@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages, prefer_final_fields
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -23,6 +23,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   late String imagePath;
   Interpreter? _interpreter;
   String result = "Detection Result: Not Analyzed";
+  List<String> _labels = [];
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
     imagePath = widget.imagePath; // Initialize state with the initial image
     print("📍 Navigated to DetectionScreen with: $imagePath");
     _loadModel();
+    _loadLabels(); // Load labels.txt
   }
 
   Future<void> _loadModel() async {
@@ -40,6 +42,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
     } catch (e) {
       print("❌ Error loading TFLite model: $e");
     }
+  }
+
+  Future<void> _loadLabels() async {
+    final String labelsData = await DefaultAssetBundle.of(context)
+        .loadString('assets/Model/label.txt');
+    setState(() {
+      _labels = labelsData.split('\n').map((e) => e.trim()).toList();
+    });
   }
 
   Future<void> _detectDisease() async {
@@ -55,25 +65,23 @@ class _DetectionScreenState extends State<DetectionScreen> {
       var image = img.decodeImage(File(imagePath).readAsBytesSync())!;
       image = img.copyResize(image, width: 224, height: 224);
 
-      // Convert image to a normalized 4D list (1, 224, 224, 3)
+      // Convert image to normalized 4D list
       var input = List.generate(
-          1,
-          (i) => List.generate(
-              224, (j) => List.generate(224, (k) => List.filled(3, 0.0))));
+        224,
+        (y) => List.generate(
+          224,
+          (x) {
+            final pixel = image.getPixel(x, y);
+            return [
+              pixel.r / 255.0,
+              pixel.g / 255.0,
+              pixel.b / 255.0,
+            ];
+          },
+        ),
+      );
 
-      for (int y = 0; y < 224; y++) {
-        for (int x = 0; x < 224; x++) {
-          final pixel = image.getPixel(x, y); // Get the Pixel object
-
-          input[0][y][x][0] = pixel.r / 255.0; // Red channel
-          input[0][y][x][1] = pixel.g / 255.0; // Green channel
-          input[0][y][x][2] = pixel.b / 255.0; // Blue channel
-        }
-      }
-
-      // Convert List to Float32List for TensorFlow Lite
-      var inputBuffer = Float32List.fromList(
-          input.expand((i) => i.expand((j) => j.expand((k) => k))).toList());
+      var inputBuffer = [input]; // Convert to 4D list (1, 224, 224, 3)
 
       // Prepare output buffer
       var output = List.filled(3, 0.0).reshape([1, 3]);
@@ -81,9 +89,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
       // Run the model
       _interpreter?.run(inputBuffer, output);
 
-      // Get prediction result
-      int predictedClass =
-          output[0].indexOf(output[0].reduce((a, b) => a > b ? a : b));
+      // Get the prediction
+      int predictedClass = output[0].indexOf(
+          output[0].reduce((a, b) => (a as double) > (b as double) ? a : b));
+
       String disease = _getDiseaseLabel(predictedClass);
 
       setState(() {
@@ -98,8 +107,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
   }
 
   String _getDiseaseLabel(int index) {
-    List<String> labels = ["Healthy", "Yellow Rust", "Brown Rust"];
-    return labels[index];
+    if (index < _labels.length) {
+      return _labels[index];
+    }
+    return "Unknown";
   }
 
   @override
