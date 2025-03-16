@@ -7,7 +7,6 @@ import 'package:flutter_application_1/Onboarding1.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 
 class DetectionScreen extends StatefulWidget {
