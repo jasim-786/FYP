@@ -285,8 +285,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               SizedBox(height: 5),
                               TextField(
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.person),
-                                  hintText: 'Username',
+                                  prefixIcon: Icon(Icons.email),
+                                  hintText: 'Email',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(32),
                                     borderSide: BorderSide.none,
@@ -297,9 +297,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               SizedBox(height: 16),
                               TextField(
+                                obscureText: true,
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.email),
-                                  hintText: 'Email',
+                                  prefixIcon: Icon(Icons.phone),
+                                  hintText: 'Phone Number',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(32),
                                     borderSide: BorderSide.none,

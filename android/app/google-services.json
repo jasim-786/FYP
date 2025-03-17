@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "601286020183",
+    "project_id": "wheat-rust-guard-89a1e",
+    "storage_bucket": "wheat-rust-guard-89a1e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601286020183:android:e98f24f0c418bf7f52e712",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJqaGa5Ms9GgWOQ0UHc_sQbHLoCWiGAC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
