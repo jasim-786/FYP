@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, use_build_context_synchronously
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
@@ -18,6 +19,29 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoginSelected = true; // Tracks whether Login is selected
   GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(); // Key for scaffold
+
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+  void Login(String Email, String Password) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    try {
+      await _auth.signInWithEmailAndPassword(email: Email, password: Password);
+      // Navigate to HomeScreen after successful login
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } on FirebaseAuthException catch (error) {
+      // Show error message if login fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.message ?? "Login Failed")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,22 +313,35 @@ class _LoginScreenState extends State<LoginScreen> {
                               SizedBox(height: 5),
 
                               // Username Field
-                              TextField(
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.person),
-                                  hintText: 'Username',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                    borderSide: BorderSide.none,
+                              Form(
+                                key: _key,
+                                child: TextFormField(
+                                  controller: _email,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.email),
+                                    hintText: 'Enter Email',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
                                   ),
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Email cannot be empty';
+                                    } else if (!value.contains('@')) {
+                                      return 'Enter a valid email';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               SizedBox(height: 16),
 
                               // Password Field
-                              TextField(
+                              TextFormField(
+                                controller: _password,
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.lock),
@@ -314,8 +351,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     borderSide: BorderSide.none,
                                   ),
                                   filled: true,
-                                  fillColor: Colors.grey[200],
+                                  fillColor: Colors.grey[100],
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Password cannot be empty';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters';
+                                  }
+                                  return null;
+                                },
                               ),
                             ],
                           ),
@@ -335,6 +380,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () {
                                 if (isLoginSelected) {
                                   // Handle login action
+                                  if (_key.currentState!.validate()) {
+                                    Login(_email.text, _password.text);
+                                  }
                                 } else {
                                   // Handle signup action
                                 }
