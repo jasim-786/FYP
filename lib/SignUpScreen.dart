@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, prefer_final_fields, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, prefer_final_fields, sort_child_properties_last, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -17,6 +18,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isLoginSelected = false; // Tracks whether Login is selected
   GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(); // Key for scaffold
+
+  TextEditingController _email = TextEditingController();
+  TextEditingController _phone = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+  void SignUp(String Email, String Password) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: Email, password: Password);
+    } on FirebaseAuthException catch (error) {
+      print("Error while creating user for database" + error.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,44 +301,81 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ],
                               ),
                               SizedBox(height: 5),
-                              TextField(
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.email),
-                                  hintText: 'Email',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey[100],
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              TextField(
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.phone),
-                                  hintText: 'Phone Number',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey[100],
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              TextField(
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.lock),
-                                  hintText: 'Password',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey[100],
+                              Form(
+                                key: _key,
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      controller: _email,
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.email),
+                                        hintText: 'Enter Email',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey[100],
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Email cannot be empty';
+                                        } else if (!value.contains('@')) {
+                                          return 'Enter a valid email';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    SizedBox(height: 16),
+                                    TextFormField(
+                                      controller: _phone,
+                                      keyboardType: TextInputType.phone,
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.phone),
+                                        hintText: 'Phone Number',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey[100],
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Phone number cannot be empty';
+                                        } else if (value.length != 11) {
+                                          return 'Enter a valid 10-digit phone number';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    SizedBox(height: 16),
+                                    TextFormField(
+                                      controller: _password,
+                                      obscureText: true,
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.lock),
+                                        hintText: 'Password',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey[100],
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Password cannot be empty';
+                                        } else if (value.length < 6) {
+                                          return 'Password must be at least 6 characters';
+                                        }
+                                        return null;
+                                      },
+                                    )
+                                  ],
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -351,7 +406,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             width: screenWidth * 0.5,
                             height: screenHeight * 0.06,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                //function
+                                if (_key.currentState!.validate()) {
+                                  SignUp(_email.text, _password.text);
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginScreen(),
+                                    ),
+                                  );
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: Color(0xFF7B5228),
