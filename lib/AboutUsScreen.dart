@@ -1,16 +1,62 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
+import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
 
+  void logout(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context); // Close dialog
+
+                await FirebaseAuth.instance.signOut();
+
+                // Show logout success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Logged out successfully"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+
+                // Navigate back to login screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+    User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       drawer: Drawer(
@@ -79,6 +125,18 @@ class AboutUsScreen extends StatelessWidget {
                             builder: (context) => AboutUsScreen()),
                       );
                     },
+                  ),
+                  Column(
+                    children: [
+                      if (user != null)
+                        buildSidebarButton(
+                          customIconPath: "assets/icons/logout_icon.png",
+                          text: "Logout",
+                          onTap: () {
+                            logout(context);
+                          },
+                        ),
+                    ],
                   ),
                 ],
               ),

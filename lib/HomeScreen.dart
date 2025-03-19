@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, unused_element, use_build_context_synchronously, avoid_print
 
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/DetectionScreen.dart';
+import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:image_picker/image_picker.dart';
@@ -113,10 +115,54 @@ class HomeScreen extends StatelessWidget {
     }
   }*/
 
+  void logout(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context); // Close dialog
+
+                await FirebaseAuth.instance.signOut();
+
+                // Show logout success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Logged out successfully"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+
+                // Navigate back to login screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+    User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       drawer: Drawer(
@@ -190,6 +236,18 @@ class HomeScreen extends StatelessWidget {
                             builder: (context) => AboutUsScreen()),
                       );
                     },
+                  ),
+                  Column(
+                    children: [
+                      if (user != null)
+                        buildSidebarButton(
+                          customIconPath: "assets/icons/logout_icon.png",
+                          text: "Logout",
+                          onTap: () {
+                            logout(context);
+                          },
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -403,4 +461,65 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Custom Sidebar Button
+Widget buildSidebarButton({
+  IconData? icon,
+  String? customIconPath,
+  required String text,
+  required VoidCallback onTap,
+}) {
+  return Padding(
+    padding:
+        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+    child: GestureDetector(
+      onTap: onTap,
+      child: Transform.translate(
+        offset: Offset(-10, 0), // Move button slightly left
+        child: Container(
+          width: 250,
+          decoration: BoxDecoration(
+            color: Color(0xFF7B5228), // Brown background for button
+            borderRadius: BorderRadius.circular(30), // Rounded button shape
+          ),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          child: Row(
+            children: [
+              // Circular icon background
+              Transform.translate(
+                offset: Offset(-8, 0), // Moves the icon slightly left
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFE5D188), // Light background for icon
+                    shape: BoxShape.circle,
+                  ),
+                  padding:
+                      EdgeInsets.all(10), // Adjust for proper icon placement
+                  child: customIconPath != null
+                      ? Image.asset(
+                          customIconPath,
+                          height: 26,
+                          width: 26,
+                        )
+                      : Icon(icon, color: Colors.black, size: 24),
+                ),
+              ),
+              SizedBox(width: 10), // Space between icon and text
+
+              // Profile text
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }

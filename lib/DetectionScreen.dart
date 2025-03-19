@@ -451,3 +451,64 @@ class _DetectionScreenState extends State<DetectionScreen> {
     );
   }
 }
+
+/// Custom Sidebar Button
+Widget buildSidebarButton({
+  IconData? icon,
+  String? customIconPath,
+  required String text,
+  required VoidCallback onTap,
+}) {
+  return Padding(
+    padding:
+        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+    child: GestureDetector(
+      onTap: onTap,
+      child: Transform.translate(
+        offset: Offset(-10, 0), // Move button slightly left
+        child: Container(
+          width: 250,
+          decoration: BoxDecoration(
+            color: Color(0xFF7B5228), // Brown background for button
+            borderRadius: BorderRadius.circular(30), // Rounded button shape
+          ),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          child: Row(
+            children: [
+              // Circular icon background
+              Transform.translate(
+                offset: Offset(-8, 0), // Moves the icon slightly left
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFE5D188), // Light background for icon
+                    shape: BoxShape.circle,
+                  ),
+                  padding:
+                      EdgeInsets.all(10), // Adjust for proper icon placement
+                  child: customIconPath != null
+                      ? Image.asset(
+                          customIconPath,
+                          height: 26,
+                          width: 26,
+                        )
+                      : Icon(icon, color: Colors.black, size: 24),
+                ),
+              ),
+              SizedBox(width: 10), // Space between icon and text
+
+              // Profile text
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}

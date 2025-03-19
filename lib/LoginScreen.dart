@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _password = TextEditingController();
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  User? user = FirebaseAuth.instance.currentUser;
 
   void Login(String Email, String Password) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -41,6 +42,48 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(error.message ?? "Login Failed")),
       );
     }
+  }
+
+  void logout() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context); // Close dialog
+
+                await FirebaseAuth.instance.signOut();
+
+                // Show logout success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Logged out successfully"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+
+                // Navigate back to login screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -116,6 +159,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (context) => AboutUsScreen()),
                       );
                     },
+                  ),
+                  Column(
+                    children: [
+                      if (user != null)
+                        buildSidebarButton(
+                          customIconPath: "assets/icons/logout_icon.png",
+                          text: "Logout",
+                          onTap: () {
+                            logout();
+                          },
+                        ),
+                    ],
                   ),
                 ],
               ),
