@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages, prefer_final_fields
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages, prefer_final_fields, avoid_print, unused_element
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -8,6 +10,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
+import 'dart:convert';
 
 class DetectionScreen extends StatefulWidget {
   final String imagePath;
@@ -61,7 +64,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
     try {
       // Load and resize the image
-      var image = img.decodeImage(File(imagePath).readAsBytesSync())!;
+      File imageFile = File(imagePath);
+      var image = img.decodeImage(imageFile.readAsBytesSync())!;
       image = img.copyResize(image, width: 224, height: 224);
 
       // Convert image to normalized 4D list
@@ -97,6 +101,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
       setState(() {
         result = "Prediction: $disease";
       });
+      await _storeDetectionResult(disease);
     } catch (e) {
       print("❌ Error during detection: $e");
       setState(() {
@@ -160,6 +165,40 @@ class _DetectionScreenState extends State<DetectionScreen> {
         );
       },
     );
+  }
+
+  Future<void> _storeDetectionResult(String diseaseName) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      print("⚠️ User not logged in. Skipping Firestore upload.");
+      return;
+    }
+
+    try {
+      File imageFile = File(imagePath);
+
+      if (!imageFile.existsSync()) {
+        print("⚠️ Image file not found. Skipping upload.");
+        return;
+      }
+
+      // Convert image to base64
+      final imageBytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(imageBytes);
+
+      // Save to Firestore
+      await FirebaseFirestore.instance.collection('disease_detections').add({
+        'userId': user.uid,
+        'timestamp': Timestamp.now(),
+        'prediction': diseaseName,
+        'image_base64': base64Image,
+      });
+
+      print("✅ Detection result uploaded to Firestore.");
+    } catch (e) {
+      print("❌ Error uploading to Firestore: $e");
+    }
   }
 
   @override

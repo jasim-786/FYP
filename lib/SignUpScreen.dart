@@ -346,7 +346,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         if (value == null || value.isEmpty) {
                                           return 'Phone number cannot be empty';
                                         } else if (value.length != 11) {
-                                          return 'Enter a valid 10-digit phone number';
+                                          return 'Enter a valid 11-digit phone number';
                                         }
                                         return null;
                                       },
@@ -410,7 +410,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 //function
                                 if (_key.currentState!.validate()) {
                                   SignUp(_email.text, _password.text);
-
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
