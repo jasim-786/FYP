@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
+import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -130,7 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     customIconPath: "assets/icons/profile_icon.png",
                     text: "Profile",
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(
