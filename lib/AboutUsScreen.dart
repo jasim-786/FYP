@@ -100,8 +100,8 @@ class AboutUsScreen extends StatelessWidget {
                     },
                   ),
                   buildSidebarButton(
-                    customIconPath: "assets/icons/profile_icon.png",
-                    text: "Pervious Results",
+                    customIconPath: "assets/icons/history_icon.png",
+                    text: "History",
                     onTap: () {
                       Navigator.push(
                         context,

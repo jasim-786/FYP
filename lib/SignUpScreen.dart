@@ -1,7 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, prefer_final_fields, sort_child_properties_last, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, prefer_final_fields, sort_child_properties_last, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
@@ -23,17 +25,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _email = TextEditingController();
   TextEditingController _phone = TextEditingController();
   TextEditingController _password = TextEditingController();
+  TextEditingController _name = TextEditingController();
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
-  void SignUp(String Email, String Password) async {
+  Future<User?> SignUp(String email, String password) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
 
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: Email, password: Password);
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return userCredential.user;
     } on FirebaseAuthException catch (error) {
-      print("Error while creating user for database" + error.toString());
+      print("Error while creating user for database: ${error.message}");
+      return null;
+    }
+  }
+
+  void saveUserDetails(String uid) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users_details')
+          .doc(uid)
+          .set({
+        'userId': uid, // ✅ ADD THIS LINE
+        'Full_name': _name.text.trim(),
+        'Email': _email.text.trim(),
+        'Phone Number': _phone.text.trim(),
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("User details saved successfully!")),
+      );
+
+      _name.clear();
+      _email.clear();
+      _phone.clear();
+      _password.clear();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error saving details: $e")),
+      );
     }
   }
 
@@ -84,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   buildSidebarButton(
-                    customIconPath: "assets/icons/profile_icon.png",
+                    customIconPath: "assets/icons/history_icon.png",
                     text: "History",
                     onTap: () {
                       Navigator.push(
@@ -184,7 +217,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           // Main content
           Positioned.fill(
-            top: screenHeight * 0.18,
+            top: screenHeight * 0.15,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
@@ -195,20 +228,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Transform.translate(
-                        offset: Offset(-20, -40),
+                        offset: Offset(-30, -40),
                         child: Image.asset(
                           "assets/icons/Create icon.png",
-                          height: screenHeight * 0.14,
-                          width: screenHeight * 0.14,
+                          height: screenHeight * 0.12,
+                          width: screenHeight * 0.12,
                         ),
                       ),
-                      SizedBox(width: 8),
+                      SizedBox(width: 6),
                       Transform.translate(
-                        offset: Offset(-20, -10),
+                        offset: Offset(-30, 0),
                         child: Text(
                           'Create\nAccount',
                           style: TextStyle(
-                            fontSize: screenWidth * 0.08,
+                            fontSize: screenWidth * 0.07,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -218,11 +251,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   // Signup form and button
+
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
                       SizedBox(
-                        height: screenHeight * 0.42,
+                        height: screenHeight * 0.49,
                         child: Container(
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -317,6 +351,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 key: _key,
                                 child: Column(
                                   children: [
+                                    TextFormField(
+                                      controller: _name,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(RegExp(
+                                            r'[a-zA-Z\s]')), // Allows only letters and spaces
+                                      ],
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.person),
+                                        hintText: 'Enter Full Name',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey[100],
+                                      ),
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return 'Full name cannot be empty';
+                                        } else if (!RegExp(r'^[a-zA-Z\s]+$')
+                                            .hasMatch(value.trim())) {
+                                          return 'Only alphabets are allowed';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    SizedBox(height: 16),
                                     TextFormField(
                                       controller: _email,
                                       decoration: InputDecoration(
@@ -418,16 +481,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             width: screenWidth * 0.5,
                             height: screenHeight * 0.06,
                             child: ElevatedButton(
-                              onPressed: () {
-                                //function
+                              onPressed: () async {
                                 if (_key.currentState!.validate()) {
-                                  SignUp(_email.text, _password.text);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginScreen(),
-                                    ),
-                                  );
+                                  User? user =
+                                      await SignUp(_email.text, _password.text);
+
+                                  if (user != null) {
+                                    saveUserDetails(user.uid);
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginScreen()),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Sign up failed. Please try again.")),
+                                    );
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(

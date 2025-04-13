@@ -294,7 +294,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     },
                   ),
                   buildSidebarButton(
-                    customIconPath: "assets/icons/profile_icon.png",
+                    customIconPath: "assets/icons/history_icon.png",
                     text: "History",
                     onTap: () {
                       Navigator.push(
