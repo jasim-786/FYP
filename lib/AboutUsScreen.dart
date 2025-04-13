@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/PreviousResultsScreen.dart';
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
@@ -96,6 +97,17 @@ class AboutUsScreen extends StatelessWidget {
                     text: "Profile",
                     onTap: () {
                       // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: "Pervious Results",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(

@@ -212,7 +212,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Pervious Results",
+                    text: "History",
                     onTap: () {
                       Navigator.push(
                         context,

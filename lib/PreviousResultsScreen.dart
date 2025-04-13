@@ -109,6 +109,17 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                     },
                   ),
                   buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: "History",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
                     text: "Help",
                     onTap: () {

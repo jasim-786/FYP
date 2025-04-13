@@ -6,6 +6,7 @@ import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/PreviousResultsScreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -80,6 +81,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     text: "Profile",
                     onTap: () {
                       // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: "History",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(
