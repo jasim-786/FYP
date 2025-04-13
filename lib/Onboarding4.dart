@@ -66,25 +66,25 @@ class Onboarding4 extends StatelessWidget {
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
+                        color: Colors.white, // Inactive dot color
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.white, // Inactive dot color
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
                         color: Color(0xFF7B5228), // Inactive dot color
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: Colors.white, // Inactive dot color
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: Colors.white, // Inactive dot color
                         shape: BoxShape.circle,
                       ),
                     ),

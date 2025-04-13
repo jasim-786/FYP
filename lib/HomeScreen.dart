@@ -7,6 +7,7 @@ import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/DetectionScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -206,6 +207,17 @@ class HomeScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfileScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: "Pervious Results",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
                       );
                     },
                   ),
@@ -508,12 +520,16 @@ Widget buildSidebarButton({
               SizedBox(width: 10), // Space between icon and text
 
               // Profile text
-              Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                 ),
               ),
             ],
