@@ -410,6 +410,21 @@ class _DetectionScreenState extends State<DetectionScreen> {
             ),
           ),
 
+          Positioned(
+            top: 35, // Adjust vertically
+            left: 12, // Adjust horizontally
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Image.asset(
+                "assets/icons/Back_arrow.png",
+                height: 40,
+                width: 40,
+              ),
+            ),
+          ),
+
           // Main Content Positioned
           Positioned.fill(
             top: screenHeight * 0.22,

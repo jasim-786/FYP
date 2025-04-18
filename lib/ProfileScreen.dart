@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
+import 'package:flutter_application_1/ChangePassword.dart';
 import 'package:flutter_application_1/EditProfile.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
@@ -303,7 +304,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     buildProfileOption(
                       icon: Icons.lock,
                       text: "Change Password",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChangePassword()),
+                        );
+                      },
                       screenWidth: screenWidth,
                     ),
                     buildProfileOption(

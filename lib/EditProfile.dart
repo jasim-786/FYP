@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
+import 'package:flutter_application_1/ChangePassword.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
@@ -28,7 +29,6 @@ class _EditProfileState extends State<EditProfile> {
   bool _isNameEditable = false;
   bool _isEmailEditable = false;
   bool _isPhoneEditable = false;
-  bool _isPasswordEditable = false;
 
   GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(); // Key for scaffold
@@ -250,17 +250,20 @@ class _EditProfileState extends State<EditProfile> {
               width: screenWidth,
             ),
           ),
+          // Sidebar Icon at Top Right
           Positioned(
-            top: screenHeight * 0.04,
-            right: screenWidth * 0.05,
-            child: GestureDetector(
-              onTap: () {
-                print("Menu Clicked");
-              },
-              child: Image.asset(
-                "assets/icons/menu.png",
-                height: 60,
-                width: 40,
+            top: 25,
+            right: 5,
+            child: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Image.asset(
+                  "assets/icons/menu.png",
+                  height: 62,
+                  width: 62,
+                ),
               ),
             ),
           ),
@@ -273,6 +276,20 @@ class _EditProfileState extends State<EditProfile> {
               fit: BoxFit.cover,
               height: screenHeight * 0.2,
               width: screenWidth,
+            ),
+          ),
+          Positioned(
+            top: 35, // Adjust vertically
+            left: 12, // Adjust horizontally
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Image.asset(
+                "assets/icons/Back_arrow.png",
+                height: 40,
+                width: 40,
+              ),
             ),
           ),
           Positioned.fill(
@@ -373,11 +390,15 @@ class _EditProfileState extends State<EditProfile> {
                               '**************',
                               _passwordController,
                               isPassword: true,
-                              isEditable: _isPasswordEditable,
+                              isEditable:
+                                  false, // password shouldn't be editable here
                               onEdit: () {
-                                setState(() {
-                                  _isPasswordEditable = !_isPasswordEditable;
-                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ChangePassword()),
+                                );
                               },
                             ),
                             const SizedBox(height: 40),

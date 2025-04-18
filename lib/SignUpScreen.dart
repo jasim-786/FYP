@@ -178,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           // Top decoration
           Positioned(
-            top: 0,
+            top: -1,
             left: 0,
             right: 0,
             child: Image.asset(
@@ -217,27 +217,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           // Main content
           Positioned.fill(
-            top: screenHeight * 0.15,
+            top: screenHeight * 0.145,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Header with icon and text
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Stack(
+                    clipBehavior: Clip.none, // Allow overflow to avoid clipping
                     children: [
-                      Transform.translate(
-                        offset: Offset(-30, -40),
+                      Positioned(
+                        top: -30, // Moves the icon up
+                        right: 100, // Moves the icon right
                         child: Image.asset(
                           "assets/icons/Create icon.png",
                           height: screenHeight * 0.12,
                           width: screenHeight * 0.12,
                         ),
                       ),
-                      SizedBox(width: 6),
                       Transform.translate(
-                        offset: Offset(-30, 0),
+                        offset: Offset(-5, 0),
                         child: Text(
                           'Create\nAccount',
                           style: TextStyle(
@@ -250,15 +250,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ],
                   ),
+
                   // Signup form and button
 
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
                       SizedBox(
-                        height: screenHeight * 0.49,
+                        height: screenHeight * 0.54,
                         child: Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
@@ -274,200 +275,202 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ],
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    width: 150,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFE5D188),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isLoginSelected = true;
-                                          });
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginScreen(),
-                                            ),
-                                          );
-                                        },
-                                        child: Text('Login'),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: isLoginSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                          backgroundColor: isLoginSelected
-                                              ? Color(0xFF7B5228)
-                                              : Colors.transparent,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 4),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isLoginSelected = false;
-                                          });
-                                        },
-                                        child: Text('Signup'),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: isLoginSelected
-                                              ? Colors.black
-                                              : Colors.white,
-                                          backgroundColor: isLoginSelected
-                                              ? Colors.transparent
-                                              : Color(0xFF7B5228),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 4),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5),
-                              Form(
-                                key: _key,
-                                child: Column(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
                                   children: [
-                                    TextFormField(
-                                      controller: _name,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(RegExp(
-                                            r'[a-zA-Z\s]')), // Allows only letters and spaces
+                                    Container(
+                                      width: 150,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFE5D188),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isLoginSelected = true;
+                                            });
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginScreen(),
+                                              ),
+                                            );
+                                          },
+                                          child: Text('Login'),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: isLoginSelected
+                                                ? Colors.white
+                                                : Colors.black,
+                                            backgroundColor: isLoginSelected
+                                                ? Color(0xFF7B5228)
+                                                : Colors.transparent,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 4),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isLoginSelected = false;
+                                            });
+                                          },
+                                          child: Text('Signup'),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: isLoginSelected
+                                                ? Colors.black
+                                                : Colors.white,
+                                            backgroundColor: isLoginSelected
+                                                ? Colors.transparent
+                                                : Color(0xFF7B5228),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 4),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                          ),
+                                        ),
                                       ],
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.person),
-                                        hintText: 'Enter Full Name',
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.grey[100],
-                                      ),
-                                      validator: (value) {
-                                        if (value == null ||
-                                            value.trim().isEmpty) {
-                                          return 'Full name cannot be empty';
-                                        } else if (!RegExp(r'^[a-zA-Z\s]+$')
-                                            .hasMatch(value.trim())) {
-                                          return 'Only alphabets are allowed';
-                                        }
-                                        return null;
-                                      },
                                     ),
-                                    SizedBox(height: 16),
-                                    TextFormField(
-                                      controller: _email,
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.email),
-                                        hintText: 'Enter Email',
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.grey[100],
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Email cannot be empty';
-                                        } else if (!value.contains('@')) {
-                                          return 'Enter a valid email';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    SizedBox(height: 16),
-                                    TextFormField(
-                                      controller: _phone,
-                                      keyboardType: TextInputType.phone,
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.phone),
-                                        hintText: 'Phone Number',
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.grey[100],
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Phone number cannot be empty';
-                                        } else if (value.length != 11) {
-                                          return 'Enter a valid 11-digit phone number';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    SizedBox(height: 16),
-                                    TextFormField(
-                                      controller: _password,
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.lock),
-                                        hintText: 'Password',
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.grey[100],
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Password cannot be empty';
-                                        } else if (value.length < 6) {
-                                          return 'Password must be at least 6 characters';
-                                        }
-                                        return null;
-                                      },
-                                    )
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 16),
-                              TextField(
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.lock),
-                                  hintText: 'Confirm Password',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                    borderSide: BorderSide.none,
+                                SizedBox(height: 4),
+                                Form(
+                                  key: _key,
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        controller: _name,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(RegExp(
+                                              r'[a-zA-Z\s]')), // Allows only letters and spaces
+                                        ],
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.person),
+                                          hintText: 'Enter Full Name',
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.grey[100],
+                                        ),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              value.trim().isEmpty) {
+                                            return 'Full name cannot be empty';
+                                          } else if (!RegExp(r'^[a-zA-Z\s]+$')
+                                              .hasMatch(value.trim())) {
+                                            return 'Only alphabets are allowed';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: 10),
+                                      TextFormField(
+                                        controller: _email,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.email),
+                                          hintText: 'Enter Email',
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.grey[100],
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Email cannot be empty';
+                                          } else if (!value.contains('@')) {
+                                            return 'Enter a valid email';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: 10),
+                                      TextFormField(
+                                        controller: _phone,
+                                        keyboardType: TextInputType.phone,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.phone),
+                                          hintText: 'Phone Number',
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.grey[100],
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Phone number cannot be empty';
+                                          } else if (value.length != 11) {
+                                            return 'Enter a valid 11-digit phone number';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: 10),
+                                      TextFormField(
+                                        controller: _password,
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.lock),
+                                          hintText: 'Password',
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.grey[100],
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Password cannot be empty';
+                                          } else if (value.length < 6) {
+                                            return 'Password must be at least 6 characters';
+                                          }
+                                          return null;
+                                        },
+                                      )
+                                    ],
                                   ),
-                                  filled: true,
-                                  fillColor: Colors.grey[100],
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 10),
+                                TextField(
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.lock),
+                                    hintText: 'Confirm Password',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.grey[100],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -521,7 +524,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   // Login link moved outside of Stack
-                  SizedBox(height: 40),
+                  SizedBox(height: 35),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -560,12 +563,13 @@ Widget buildSidebarButton({
 }) {
   return Padding(
     padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
         offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
             color: Color(0xFF7B5228), // Brown background for button
