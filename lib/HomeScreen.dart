@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/DetectionScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
@@ -285,7 +286,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Top Image Covering Full Width
           Positioned(
-            top: 0,
+            top: -1,
             left: 0,
             right: 0,
             child: Image.asset(
@@ -361,7 +362,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       )),
 
-                  SizedBox(height: screenHeight * 0.05),
+                  SizedBox(height: screenHeight * 0.06),
 
                   // Upload Image Button with Correctly Positioned Icon
                   SizedBox(
@@ -396,8 +397,8 @@ class HomeScreen extends StatelessWidget {
 
                         // Icon Positioned Outside the Button
                         Positioned(
-                          top: -35,
-                          right: -35,
+                          top: -40,
+                          right: -45,
                           child: Image.asset(
                             'assets/icons/upload_icon.png', // Path to image
                             width: 70, // Adjust width for your icon
@@ -453,8 +454,8 @@ class HomeScreen extends StatelessWidget {
 
                         // Icon Positioned Outside the Second Button
                         Positioned(
-                          top: -35,
-                          right: -35,
+                          top: -40,
+                          right: -40,
                           child: Image.asset(
                             'assets/icons/take_photo_icon.png', // Path to your second button icon
                             width: 70,
@@ -484,12 +485,13 @@ Widget buildSidebarButton({
 }) {
   return Padding(
     padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
         offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
             color: Color(0xFF7B5228), // Brown background for button
@@ -520,16 +522,12 @@ Widget buildSidebarButton({
               SizedBox(width: 10), // Space between icon and text
 
               // Profile text
-              Expanded(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],

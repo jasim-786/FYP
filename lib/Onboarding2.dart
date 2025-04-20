@@ -28,7 +28,7 @@ class Onboarding2 extends StatelessWidget {
                   child: Image.asset(
                     "assets/images/OB2.png", // Placeholder for your top image
                     fit: BoxFit.contain,
-                    width: screenWidth * 0.7, // Adjust size as needed
+                    width: screenWidth * 0.65, // Adjust size as needed
                   ),
                 ),
                 Text(
@@ -40,7 +40,7 @@ class Onboarding2 extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10), // Space between texts
+                SizedBox(height: 8), // Space between texts
                 Text(
                   "Spot Wheat Rust Disease in Your Crops with Ease", // Additional text
                   style: TextStyle(
@@ -50,7 +50,7 @@ class Onboarding2 extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 30), // Space before indicators
+                SizedBox(height: 20), // Space before indicators
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -91,7 +91,7 @@ class Onboarding2 extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 40), // Space before buttons
+                SizedBox(height: 25), // Space before buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -158,13 +158,13 @@ class Onboarding2 extends StatelessWidget {
           ),
           // Bottom Image Covering Full Screen Width
           Positioned(
-            bottom: 0,
+            bottom: -25,
             left: 0,
             right: 0,
             child: Image.asset(
               "assets/images/onboarding_bottom.png", // Placeholder for your bottom image
               fit: BoxFit.cover,
-              height: screenHeight * 0.26, // Adjust height as needed
+              height: screenHeight * 0.28, // Adjust height as needed
               width: screenWidth,
             ),
           ),

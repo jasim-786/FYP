@@ -1,7 +1,5 @@
-// SplashScreen.dart
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_super_parameters, library_private_types_in_public_api
 
-// SplashScreen.dart
 import 'package:flutter/material.dart';
 import 'LoginScreen.dart'; // Import your login page
 
@@ -29,15 +27,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity, // Take the full width of the screen
-        height: double.infinity, // Take the full height of the screen
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/logo1.gif'), // Your GIF file
-            fit: BoxFit.cover, // Cover the entire screen
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/logo1.gif',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
+          // Optionally add a loading indicator or splash content here
+        ],
       ),
     );
   }

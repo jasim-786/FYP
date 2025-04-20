@@ -7,6 +7,7 @@ import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
+import 'package:flutter_application_1/ProfileScreen.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
@@ -107,7 +108,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                     customIconPath: "assets/icons/profile_icon.png",
                     text: "Profile",
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(
@@ -227,7 +232,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           ),
 
           Positioned(
-            top: 35, // Adjust vertically
+            top: 30, // Adjust vertically
             left: 12, // Adjust horizontally
             child: GestureDetector(
               onTap: () {
@@ -235,8 +240,8 @@ class ForgotPasswordScreen extends StatelessWidget {
               },
               child: Image.asset(
                 "assets/icons/Back_arrow.png",
-                height: 40,
-                width: 40,
+                height: 35,
+                width: 35,
               ),
             ),
           ),
@@ -258,6 +263,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.02),
 
                   // Forgot Password Text
+
                   Text(
                     'Forgot Password',
                     style: TextStyle(
@@ -284,12 +290,36 @@ class ForgotPasswordScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email),
                       hintText: 'Enter Email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32),
-                        borderSide: BorderSide.none,
-                      ),
                       filled: true,
-                      fillColor: Colors.grey[100],
+                      fillColor: Colors.transparent,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32),
+                        borderSide: BorderSide(
+                          color: Color(0xFF7B5228),
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32),
+                        borderSide: BorderSide(
+                          color: Color(0xFF7B5228),
+                          width: 2,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -364,12 +394,13 @@ Widget buildSidebarButton({
 }) {
   return Padding(
     padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
         offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
             color: Color(0xFF7B5228), // Brown background for button
