@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/Onboarding2.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
 
 class Onboarding1 extends StatelessWidget {
   const Onboarding1({super.key});
@@ -100,7 +101,7 @@ class Onboarding1 extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
+                            builder: (context) => PreHomeScreen(),
                           ),
                         );
                       },
