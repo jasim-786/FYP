@@ -411,7 +411,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
           ),
 
           Positioned(
-            top: 35, // Adjust vertically
+            top: 30, // Adjust vertically
             left: 12, // Adjust horizontally
             child: GestureDetector(
               onTap: () {
@@ -419,8 +419,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
               },
               child: Image.asset(
                 "assets/icons/Back_arrow.png",
-                height: 40,
-                width: 40,
+                height: 35,
+                width: 35,
               ),
             ),
           ),

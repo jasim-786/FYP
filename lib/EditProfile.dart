@@ -240,7 +240,7 @@ class _EditProfileState extends State<EditProfile> {
       body: Stack(
         children: [
           Positioned(
-            top: 0,
+            top: -1,
             left: 0,
             right: 0,
             child: Image.asset(
@@ -279,7 +279,7 @@ class _EditProfileState extends State<EditProfile> {
             ),
           ),
           Positioned(
-            top: 35, // Adjust vertically
+            top: 30, // Adjust vertically
             left: 12, // Adjust horizontally
             child: GestureDetector(
               onTap: () {
@@ -287,13 +287,13 @@ class _EditProfileState extends State<EditProfile> {
               },
               child: Image.asset(
                 "assets/icons/Back_arrow.png",
-                height: 40,
-                width: 40,
+                height: 35,
+                width: 35,
               ),
             ),
           ),
           Positioned.fill(
-            top: screenHeight * 0.18,
+            top: screenHeight * 0.16,
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
@@ -303,7 +303,7 @@ class _EditProfileState extends State<EditProfile> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Transform.translate(
-                        offset: const Offset(-20, -40),
+                        offset: const Offset(-30, -40),
                         child: Image.asset(
                           "assets/icons/edit_icon.png",
                           height: screenHeight * 0.14,
@@ -312,7 +312,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       const SizedBox(width: 8),
                       Transform.translate(
-                        offset: const Offset(-20, -10),
+                        offset: const Offset(-40, -10),
                         child: Text(
                           'Edit\nProfile',
                           style: TextStyle(
@@ -329,7 +329,7 @@ class _EditProfileState extends State<EditProfile> {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.8),
                           borderRadius: BorderRadius.circular(16),
@@ -348,7 +348,7 @@ class _EditProfileState extends State<EditProfile> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
                             _buildTextField(
                               Icons.person,
                               'Fullname',
@@ -401,7 +401,7 @@ class _EditProfileState extends State<EditProfile> {
                                 );
                               },
                             ),
-                            const SizedBox(height: 40),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
@@ -450,7 +450,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),

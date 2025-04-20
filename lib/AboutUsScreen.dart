@@ -213,6 +213,22 @@ class AboutUsScreen extends StatelessWidget {
               ),
             ),
           ),
+
+          Positioned(
+            top: 30, // Adjust vertically
+            left: 12, // Adjust horizontally
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Image.asset(
+                "assets/icons/Back_arrow.png",
+                height: 35,
+                width: 35,
+              ),
+            ),
+          ),
+
           // Content Positioned Between Top and Bottom Design
           Positioned.fill(
             top: screenHeight * 0.18,

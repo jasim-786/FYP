@@ -181,22 +181,27 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
       body: Stack(
         children: [
           // Background layer (Top and Bottom images)
-          Column(
-            children: [
-              Image.asset(
-                "assets/images/Top.png",
-                fit: BoxFit.cover,
-                height: screenHeight * 0.25,
-                width: screenWidth,
-              ),
-              Expanded(child: Container()), // Fills remaining space
-              Image.asset(
-                "assets/images/Bottom.png",
-                fit: BoxFit.cover,
-                height: screenHeight * 0.2,
-                width: screenWidth,
-              ),
-            ],
+          Positioned(
+            top: -1,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Top.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.25,
+              width: screenWidth,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Bottom.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.2,
+              width: screenWidth,
+            ),
           ),
           // Sidebar Icon at Top Right
           Positioned(
@@ -218,7 +223,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
 
           // Custom back button at top left
           Positioned(
-            top: 35, // Adjust vertically
+            top: 30, // Adjust vertically
             left: 12, // Adjust horizontally
             child: GestureDetector(
               onTap: () {
@@ -226,8 +231,8 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
               },
               child: Image.asset(
                 "assets/icons/Back_arrow.png",
-                height: 40,
-                width: 40,
+                height: 35,
+                width: 35,
               ),
             ),
           ),
@@ -256,7 +261,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                 Expanded(
                   child: Padding(
                     padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('disease_detections')
@@ -279,7 +284,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                         }
 
                         return ListView.builder(
-                          padding: EdgeInsets.only(bottom: 20),
+                          padding: EdgeInsets.only(bottom: 16),
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
                             final doc = snapshot.data!.docs[index];
