@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Onboarding2.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
@@ -58,7 +59,7 @@ class Onboarding1 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Welcome to Wheat Rust Guard!", // Placeholder text
+                    'Welcome to Wheat Rust Guard!'.tr(),
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -66,9 +67,11 @@ class Onboarding1 extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
+
                   SizedBox(height: 10), // Space between texts
                   Text(
-                    "Your Smart Solution to Wheat Rust Disease Detection and Prevention!", // Additional text
+                    'Your Smart Solution to Wheat Rust Disease Detection and Prevention!'
+                        .tr(),
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
@@ -76,6 +79,7 @@ class Onboarding1 extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
+
                   SizedBox(height: 20), // Space before indicators
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +145,7 @@ class Onboarding1 extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Skip",
+                          'Skip'.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -169,7 +173,7 @@ class Onboarding1 extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Next",
+                          'Next'.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

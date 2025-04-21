@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Onboarding2.dart';
 import 'package:flutter_application_1/Onboarding4.dart';
@@ -68,7 +69,7 @@ class Onboarding3 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Analyzing Your Image", // Placeholder text
+                    'Analyzing Your Image'.tr(), // Placeholder text
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -78,7 +79,8 @@ class Onboarding3 extends StatelessWidget {
                   ),
                   SizedBox(height: 8), // Space between texts
                   Text(
-                    "Let the system examine your image for rust disease in your crop.", // Additional text
+                    'Let the system examine your image for rust disease in your crop.'
+                        .tr(), // Additional text
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
@@ -151,7 +153,7 @@ class Onboarding3 extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Skip",
+                          'Skip'.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -179,7 +181,7 @@ class Onboarding3 extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Next",
+                          'Next'.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

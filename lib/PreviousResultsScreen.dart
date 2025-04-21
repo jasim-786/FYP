@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -247,7 +248,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                     margin: EdgeInsets.only(top: 110, bottom: 10),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     child: Text(
-                      "Previous Results",
+                      'Previous Results'.tr(),
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -276,7 +277,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                           return Center(
                             child: Text(
-                              "No previous results found.",
+                              'No previous results found.'.tr(),
                               style:
                                   TextStyle(fontSize: 18, color: Colors.grey),
                             ),

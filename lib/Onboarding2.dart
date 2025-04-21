@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/Onboarding3.dart';
@@ -68,7 +69,7 @@ class Onboarding2 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Upload or Take a Photo", // Placeholder text
+                    'Upload or Take a Photo'.tr(), // Placeholder text
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -78,7 +79,8 @@ class Onboarding2 extends StatelessWidget {
                   ),
                   SizedBox(height: 8), // Space between texts
                   Text(
-                    "Spot Wheat Rust Disease in Your Crops with Ease", // Additional text
+                    'Spot Wheat Rust Disease in Your Crops with Ease'
+                        .tr(), // Additional text
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
@@ -151,7 +153,7 @@ class Onboarding2 extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Skip",
+                          'Skip'.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -179,7 +181,7 @@ class Onboarding2 extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Next",
+                          'Next'.tr(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Onboarding3.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
@@ -61,7 +62,7 @@ class Onboarding4 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Detection Results and Treatment", // Placeholder text
+                    'Detection Results and Treatment'.tr(), // Placeholder text
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -71,7 +72,8 @@ class Onboarding4 extends StatelessWidget {
                   ),
                   SizedBox(height: 8), // Space between texts
                   Text(
-                    "Smart crop care: detect diseases instantly and get the right treatment!", // Additional text
+                    'Smart crop care: detect diseases instantly and get the right treatment!'
+                        .tr(), // Additional text
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,

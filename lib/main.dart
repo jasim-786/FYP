@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
 }
 
 class _LocalizedApp extends StatelessWidget {
-  const _LocalizedApp();
+  const _LocalizedApp({super.key});
 
   @override
   Widget build(BuildContext context) {
