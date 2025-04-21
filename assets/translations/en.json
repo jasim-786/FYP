@@ -59,6 +59,17 @@
   "How was your experience with us?": "How was your experience with us?",
   "Send Feedback": "Send Feedback",
   "Previous Feedbacks": "Previous Feedbacks",
-  "No feedback available yet.": "No feedback available yet."
+  "No feedback available yet.": "No feedback available yet.",
+  "Enter your current and new password": "Enter your current and new password",
+  "Old Password": "Old Password",
+  "New Password": "New Password",
+  "Confirm Password": "Confirm Password",
+  "Change": "Change",
+  "Edit\nProfile": "Edit\nProfile",
+  "Fullname": "Fullname",
+  "Email Address": "Email Address",
+  "Phone Number": "Phone Number",
+  "**************": "**************"
+  
 
 }

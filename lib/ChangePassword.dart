@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api, file_names, prefer_final_fields
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -331,22 +332,22 @@ class _ChangePasswordState extends State<ChangePassword> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Change Password",
+                  Text(
+                    'Change Password'.tr(),
                     style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    "Enter your current and new password",
+                  Text(
+                    'Enter your current and new password'.tr(),
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
                     icon: Icons.lock_outline,
-                    hintText: "Old Password",
+                    hintText: 'Old Password'.tr(),
                     controller: _oldPassController,
                     obscureText: _obscureOld,
                     toggle: () => setState(() => _obscureOld = !_obscureOld),
@@ -354,7 +355,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     icon: Icons.lock,
-                    hintText: "New Password",
+                    hintText: 'New Password'.tr(),
                     controller: _newPassController,
                     obscureText: _obscureNew,
                     toggle: () => setState(() => _obscureNew = !_obscureNew),
@@ -362,7 +363,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     icon: Icons.lock,
-                    hintText: "Confirm Password",
+                    hintText: 'Confirm Password'.tr(),
                     controller: _confirmPassController,
                     obscureText: _obscureConfirm,
                     toggle: () =>
@@ -378,8 +379,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                         foregroundColor: Colors.white,
                         backgroundColor: const Color(0xFF7B5228),
                       ),
-                      child: const Text(
-                        "Change",
+                      child: Text(
+                        'Change'.tr(),
                         style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.bold),
                       ),

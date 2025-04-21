@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, avoid_print, use_build_context_synchronously, prefer_final_fields
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -314,7 +315,7 @@ class _EditProfileState extends State<EditProfile> {
                       Transform.translate(
                         offset: const Offset(-40, -10),
                         child: Text(
-                          'Edit\nProfile',
+                          'Edit\nProfile'.tr(),
                           style: TextStyle(
                             fontSize: screenWidth * 0.08,
                             fontWeight: FontWeight.bold,
@@ -351,7 +352,7 @@ class _EditProfileState extends State<EditProfile> {
                             const SizedBox(height: 8),
                             _buildTextField(
                               Icons.person,
-                              'Fullname',
+                              'Fullname'.tr(),
                               _fullnameController,
                               isEditable: _isNameEditable,
                               onEdit: () {
@@ -363,7 +364,7 @@ class _EditProfileState extends State<EditProfile> {
                             const SizedBox(height: 16),
                             _buildTextField(
                               Icons.email,
-                              'Email Address',
+                              'Email Address'.tr(),
                               _emailController,
                               isEditable: _isEmailEditable,
                               onEdit: () {
@@ -375,7 +376,7 @@ class _EditProfileState extends State<EditProfile> {
                             const SizedBox(height: 16),
                             _buildTextField(
                               Icons.phone,
-                              'Phone Number',
+                              'Phone Number'.tr(),
                               _phoneController,
                               isEditable: _isPhoneEditable,
                               onEdit: () {
@@ -387,7 +388,7 @@ class _EditProfileState extends State<EditProfile> {
                             const SizedBox(height: 16),
                             _buildTextField(
                               Icons.lock,
-                              '**************',
+                              '**************'.tr(),
                               _passwordController,
                               isPassword: true,
                               isEditable:

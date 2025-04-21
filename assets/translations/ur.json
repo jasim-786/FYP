@@ -59,7 +59,20 @@
   "How was your experience with us?": "ہمارے ساتھ آپ کا تجربہ کیسا رہا؟",
   "Send Feedback": "رائے بھیجیں",
   "Previous Feedbacks": "پچھلی رائے",
-  "No feedback available yet.": "ابھی تک کوئی فیڈ بیک دستیاب نہیں ہے"
+  "No feedback available yet.": "ابھی تک کوئی فیڈ بیک دستیاب نہیں ہے",
+  "Enter your current and new password": "اپنا موجودہ اور نیا پاس ورڈ درج کریں",
+  "Old Password": "پرانا پاس ورڈ",
+  "New Password": "نیا پاس ورڈ",
+  "Confirm Password": "پاس ورڈ کی تصدیق کریں",
+  "Change": "تبدیل کریں",
+  "Edit\nProfile": "پروفائل\nترمیم کریں",
+  "Fullname": "پورا نام",
+  "Email Address": "ای میل پتہ",
+  "Phone Number": "فون نمبر",
+  "**************": "**************"
+  
+  
+
 
 }
   
