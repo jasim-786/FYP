@@ -36,6 +36,7 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_plugin_android_lifecycle: ^2.0.23
   tflite_flutter: ^0.11.0
+
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -49,6 +50,7 @@ dependencies:
   firebase_auth: ^5.5.1
   cloud_firestore: ^5.6.6
   firebase_storage: ^12.4.5
+  easy_localization: ^3.0.3
   
 
 dev_dependencies:
@@ -80,7 +82,7 @@ flutter:
      - assets/icons/
      - assets/Model/wheat_leaf_disease_model.tflite
      - assets/Model/label.txt
-  #   - images/a_dot_ham.jpeg
+     - assets/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

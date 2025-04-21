@@ -1,12 +1,15 @@
-// main.dart
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/firebase_options.dart';
-import 'SplashScreen.dart';
+import 'package:flutter_application_1/SplashScreen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await EasyLocalization.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -14,7 +17,7 @@ void main() async {
   // Initially hide only the navigation bar
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays: [SystemUiOverlay.top], // Show only status bar
+    overlays: [SystemUiOverlay.top],
   );
 
   // Transparent status bar
@@ -27,14 +30,23 @@ void main() async {
     ),
   );
 
-  runApp(const MyApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('ur'), // Urdu
+      ],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   void _hideNavBarAgain() {
-    // Re-hide navigation bar when user interacts
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top],
@@ -44,11 +56,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _hideNavBarAgain, // Hide navbar again on tap
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
-      ),
+      onTap: _hideNavBarAgain,
+      child: const _LocalizedApp(), // moved MaterialApp to a separate widget
+    );
+  }
+}
+
+class _LocalizedApp extends StatelessWidget {
+  const _LocalizedApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const SplashScreen(),
+      locale: context.locale,
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
     );
   }
 }

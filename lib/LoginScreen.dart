@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, use_build_context_synchronously
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -30,10 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
   User? user = FirebaseAuth.instance.currentUser;
 
   void Login(String Email, String Password) async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
     try {
-      await _auth.signInWithEmailAndPassword(email: Email, password: Password);
+      await auth.signInWithEmailAndPassword(email: Email, password: Password);
       // Navigate to HomeScreen after successful login
       Navigator.push(
         context,
@@ -52,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout"),
+          title: Text('Logout'.tr()),
           content: Text("Are you sure you want to log out?"),
           actions: [
             TextButton(
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -131,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -142,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -153,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -163,14 +164,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -184,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout();
                           },
@@ -287,7 +288,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Welcome Text
                       Text(
-                        isLoginSelected ? 'Welcome Back!' : 'Create an Account',
+                        isLoginSelected
+                            ? 'Welcome Back!'.tr()
+                            : 'Create an Account'.tr(),
                         style: TextStyle(
                           fontSize: screenWidth * 0.08,
                           fontWeight: FontWeight.bold,
@@ -346,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   isLoginSelected = true;
                                                 });
                                               },
-                                              child: Text('Login'),
+                                              child: Text('Login'.tr()),
                                               style: TextButton.styleFrom(
                                                 foregroundColor: isLoginSelected
                                                     ? Colors.white
@@ -373,7 +376,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   ),
                                                 );
                                               },
-                                              child: Text('Signup'),
+                                              child: Text('Signup'.tr()),
                                               style: TextButton.styleFrom(
                                                 foregroundColor: isLoginSelected
                                                     ? Colors.black
@@ -403,7 +406,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         controller: _email,
                                         decoration: InputDecoration(
                                           prefixIcon: Icon(Icons.email),
-                                          hintText: 'Enter Email',
+                                          hintText: 'Enter Email'.tr(),
                                           filled: true,
                                           fillColor: Colors.transparent,
                                           enabledBorder: OutlineInputBorder(
@@ -458,7 +461,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       obscureText: true,
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(Icons.lock),
-                                        hintText: 'Password',
+                                        hintText: 'Password'.tr(),
                                         filled: true,
                                         fillColor: Colors.transparent,
                                         enabledBorder: OutlineInputBorder(
@@ -523,7 +526,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     if (isLoginSelected) {
                                       // Handle login action
                                       if (_key.currentState!.validate()) {
-                                        Login(_email.text, _password.text);
+                                        Login(_email.text.tr(),
+                                            _password.text.tr());
                                       }
                                     } else {
                                       // Handle signup action
@@ -538,7 +542,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   child: Text(
-                                    isLoginSelected ? 'Login' : 'Signup',
+                                    isLoginSelected
+                                        ? 'Login'.tr()
+                                        : 'Signup'.tr(),
                                     style: TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
@@ -565,7 +571,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           child: Text(
-                            'Forgot your password?',
+                            'Forgot your password?'.tr(),
                             style: TextStyle(
                               color: Color(0xFF7B5228),
                               fontSize: 16,
@@ -595,7 +601,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: Text(
-                            'Continue Without Login',
+                            'Continue Without Login'.tr(),
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,

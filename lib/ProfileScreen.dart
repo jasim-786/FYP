@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, file_names, avoid_print, use_build_context_synchronously, prefer_final_fields
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -315,7 +316,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     buildProfileOption(
                       icon: Icons.language,
-                      text: "Change Language",
+                      text: 'Change Language'.tr(),
                       onTap: () => _showLanguageDialog(context),
                       screenWidth: screenWidth,
                     ),
@@ -381,19 +382,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Select Language"),
+          title: Text('select_language'.tr()),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text("English"),
+                title: Text('english'.tr()),
                 onTap: () {
+                  context.setLocale(const Locale('en'));
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text("Urdu"),
+                title: Text('urdu'.tr()),
                 onTap: () {
+                  context.setLocale(const Locale('ur'));
                   Navigator.pop(context);
                 },
               ),
@@ -403,64 +406,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-}
 
-Widget buildSidebarButton({
-  IconData? icon,
-  String? customIconPath,
-  required String text,
-  required VoidCallback onTap,
-}) {
-  return Padding(
-    padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
-    child: GestureDetector(
-      onTap: onTap,
-      child: Transform.translate(
-        offset: Offset(-10, 0), // Move button slightly left
-        child: Container(
-          width: 250,
-          decoration: BoxDecoration(
-            color: Color(0xFF7B5228), // Brown background for button
-            borderRadius: BorderRadius.circular(30), // Rounded button shape
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          child: Row(
-            children: [
-              // Circular icon background
-              Transform.translate(
-                offset: Offset(-8, 0), // Moves the icon slightly left
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFE5D188), // Light background for icon
-                    shape: BoxShape.circle,
+  Widget buildSidebarButton({
+    IconData? icon,
+    String? customIconPath,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding:
+          EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+      child: GestureDetector(
+        onTap: onTap,
+        child: Transform.translate(
+          offset: Offset(-10, 0), // Move button slightly left
+          child: Container(
+            width: 250,
+            decoration: BoxDecoration(
+              color: Color(0xFF7B5228), // Brown background for button
+              borderRadius: BorderRadius.circular(30), // Rounded button shape
+            ),
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            child: Row(
+              children: [
+                // Circular icon background
+                Transform.translate(
+                  offset: Offset(-8, 0), // Moves the icon slightly left
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE5D188), // Light background for icon
+                      shape: BoxShape.circle,
+                    ),
+                    padding:
+                        EdgeInsets.all(10), // Adjust for proper icon placement
+                    child: customIconPath != null
+                        ? Image.asset(
+                            customIconPath,
+                            height: 26,
+                            width: 26,
+                          )
+                        : Icon(icon, color: Colors.black, size: 24),
                   ),
-                  padding:
-                      EdgeInsets.all(10), // Adjust for proper icon placement
-                  child: customIconPath != null
-                      ? Image.asset(
-                          customIconPath,
-                          height: 26,
-                          width: 26,
-                        )
-                      : Icon(icon, color: Colors.black, size: 24),
                 ),
-              ),
-              SizedBox(width: 10), // Space between icon and text
+                SizedBox(width: 10), // Space between icon and text
 
-              // Profile text
-              Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+                // Profile text
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

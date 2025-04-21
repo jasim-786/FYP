@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, file_names, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -25,8 +26,8 @@ class PreHomeScreen extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Logout"),
-            content: Text("Are you sure you want to log out?"),
+            title: Text('Logout'.tr()),
+            content: Text('Are you sure you want to log out?'.tr()),
             actions: [
               TextButton(
                 onPressed: () {
@@ -43,7 +44,7 @@ class PreHomeScreen extends StatelessWidget {
                   // Show logout success message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text("Logged out successfully"),
+                      content: Text('Logged out successfully'.tr()),
                       duration: Duration(seconds: 2),
                     ),
                   );
@@ -54,7 +55,7 @@ class PreHomeScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                 },
-                child: Text("Logout", style: TextStyle(color: Colors.red)),
+                child: Text('Logout'.tr(), style: TextStyle(color: Colors.red)),
               ),
             ],
           );
@@ -87,7 +88,7 @@ class PreHomeScreen extends StatelessWidget {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -98,7 +99,7 @@ class PreHomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -109,7 +110,7 @@ class PreHomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -120,7 +121,7 @@ class PreHomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -130,14 +131,14 @@ class PreHomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -151,7 +152,7 @@ class PreHomeScreen extends StatelessWidget {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout();
                           },
