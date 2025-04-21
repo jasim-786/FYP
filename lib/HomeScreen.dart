@@ -428,7 +428,7 @@ class HomeScreen extends StatelessWidget {
 
                   // "or" Text
                   Text(
-                    "or",
+                    'or'.tr(),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
