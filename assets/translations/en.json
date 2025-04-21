@@ -49,7 +49,16 @@
   "Finish": "Finish",
   "welcome_to_wheat_rust_guard": "Welcome to Wheat Rust Guard",
   "Your Smart Solution to Wheat Rust Disease Detection and Prevention!": "Your Smart Solution to Wheat Rust Disease Detection and Prevention!",
-  "Welcome to Wheat Rust Guard!": "Welcome to Wheat Rust Guard!"  
-  
+  "Welcome to Wheat Rust Guard!": "Welcome to Wheat Rust Guard!", 
+  "Write Feedback": "Write Feedback",
+  "Say what you think about this app": "Say what you think about this app",
+  "chars": "chars",
+  "Suggestion": "Suggestion",
+  "Bug": "Bug",
+  "Other": "Other",
+  "How was your experience with us?": "How was your experience with us?",
+  "Send Feedback": "Send Feedback",
+  "Previous Feedbacks": "Previous Feedbacks",
+  "No feedback available yet.": "No feedback available yet."
 
 }

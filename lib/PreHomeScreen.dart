@@ -227,7 +227,7 @@ class PreHomeScreen extends StatelessWidget {
                     alignment: WrapAlignment.center,
                     children: [
                       _buildFeatureButton(
-                        "Upload Image",
+                        'Upload Image'.tr(),
                         "assets/icons/home_upload.png",
                         screenHeight,
                         screenWidth,
@@ -237,7 +237,7 @@ class PreHomeScreen extends StatelessWidget {
                         ),
                       ),
                       _buildFeatureButton(
-                          "History",
+                          'History'.tr(),
                           "assets/icons/home_history.png",
                           screenHeight,
                           screenWidth,
@@ -248,7 +248,7 @@ class PreHomeScreen extends StatelessWidget {
                                         PreviousResultsScreen()),
                               )),
                       _buildFeatureButton(
-                          "Feedback",
+                          'Feedback'.tr(),
                           "assets/icons/home_feedback.png",
                           screenHeight,
                           screenWidth,
@@ -258,7 +258,7 @@ class PreHomeScreen extends StatelessWidget {
                                     builder: (context) => FeedbackScreen()),
                               )),
                       _buildFeatureButton(
-                          "Help",
+                          'Help'.tr(),
                           "assets/icons/home_help.png",
                           screenHeight,
                           screenWidth,
@@ -268,7 +268,7 @@ class PreHomeScreen extends StatelessWidget {
                                     builder: (context) => Onboarding1()),
                               )),
                       _buildFeatureButton(
-                          "Edit Profile",
+                          'Edit Profile'.tr(),
                           "assets/icons/home_ep.png",
                           screenHeight,
                           screenWidth,
@@ -278,7 +278,7 @@ class PreHomeScreen extends StatelessWidget {
                                     builder: (context) => EditProfile()),
                               )),
                       _buildFeatureButton(
-                          "Change Password",
+                          'Change Password'.tr(),
                           "assets/icons/home_cp.png",
                           screenHeight,
                           screenWidth,

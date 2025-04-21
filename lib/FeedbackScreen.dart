@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
@@ -21,7 +22,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   int _selectedEmojiIndex = 0;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   User? user = FirebaseAuth.instance.currentUser;
-  final List<String> _categories = ['Suggestion', 'Bug', 'Other'];
+  final List<String> _categories = [
+    'Suggestion'.tr(),
+    'Bug'.tr(),
+    'Other'.tr()
+  ];
   final List<String> _emojis = ['😀', '😊', '😐', '😕', '😢'];
   List<Map<String, dynamic>> previousFeedbacks = [];
 
@@ -114,7 +119,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -124,7 +129,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -135,7 +140,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -146,7 +151,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -156,14 +161,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -175,7 +180,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   if (user != null)
                     buildSidebarButton(
                       customIconPath: "assets/icons/logout_icon.png",
-                      text: "Logout",
+                      text: 'Logout'.tr(),
                       onTap: () async {
                         await FirebaseAuth.instance.signOut();
                         Navigator.pushReplacement(
@@ -217,7 +222,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'Write Feedback',
+                        'Write Feedback'.tr(),
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -251,7 +256,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                   maxLines: 5,
                                   decoration: InputDecoration.collapsed(
                                     hintText:
-                                        'Say what you think about this app',
+                                        'Say what you think about this app'
+                                            .tr(),
                                   ),
                                 ),
                               ),
@@ -259,7 +265,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  '${_feedbackController.text.length} chars',
+                                  '${_feedbackController.text.length} chars'
+                                      .tr(),
                                   style: TextStyle(color: Colors.grey[600]),
                                 ),
                               ),
@@ -297,7 +304,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               SizedBox(height: 15),
                               Center(
                                 child: Text(
-                                  'How was your experience with us?',
+                                  'How was your experience with us?'.tr(),
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF7B5228),
@@ -356,7 +363,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     ),
                                   ),
                                   child: Text(
-                                    'Send Feedback',
+                                    'Send Feedback'.tr(),
                                     style: TextStyle(
                                         fontSize: 22, color: Colors.white),
                                   ),
@@ -371,8 +378,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Previous Feedbacks',
+                              Text(
+                                'Previous Feedbacks'.tr(),
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -380,7 +387,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               ),
                               const SizedBox(height: 10),
                               previousFeedbacks.isEmpty
-                                  ? const Text('No feedback available yet.')
+                                  ? Text('No feedback available yet.'.tr())
                                   : SizedBox(
                                       height:
                                           300, // adjust height based on your UI needs
