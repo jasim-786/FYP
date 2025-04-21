@@ -400,6 +400,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pop(context);
                 },
               ),
+              ListTile(
+                title: Text('punjabi'.tr()),
+                onTap: () {
+                  context.setLocale(const Locale('pa'));
+                  Navigator.pop(context);
+                },
+              ),
             ],
           ),
         );

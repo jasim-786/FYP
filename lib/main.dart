@@ -35,6 +35,7 @@ void main() async {
       supportedLocales: const [
         Locale('en'), // English
         Locale('ur'), // Urdu
+        Locale('pa'), //Punjabi
       ],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
