@@ -292,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Profile Options
                     buildProfileOption(
                       icon: Icons.edit,
-                      text: "Edit Profile",
+                      text: 'Edit Profile'.tr(),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -304,7 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     buildProfileOption(
                       icon: Icons.lock,
-                      text: "Change Password",
+                      text: 'Change Password'.tr(),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -322,7 +322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     buildProfileOption(
                       icon: Icons.logout,
-                      text: "Logout",
+                      text: 'Logout'.tr(),
                       onTap: () {
                         logout();
                       },

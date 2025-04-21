@@ -289,14 +289,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Welcome Text
                       Text(
                         isLoginSelected
-                            ? 'Welcome Back!'.tr()
-                            : 'Create an Account'.tr(),
+                            ? 'welcome_back'.tr()
+                            : 'create_an_account'.tr(),
                         style: TextStyle(
                           fontSize: screenWidth * 0.08,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
+
                       SizedBox(height: screenHeight * 0.01),
 
                       // Login Form & Buttons Stack
@@ -349,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   isLoginSelected = true;
                                                 });
                                               },
-                                              child: Text('Login'.tr()),
+                                              child: Text('login'.tr()),
                                               style: TextButton.styleFrom(
                                                 foregroundColor: isLoginSelected
                                                     ? Colors.white
@@ -376,7 +377,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   ),
                                                 );
                                               },
-                                              child: Text('Signup'.tr()),
+                                              child: Text(
+                                                'signup'
+                                                    .tr(), // Applying .tr() for localization
+                                              ),
                                               style: TextButton.styleFrom(
                                                 foregroundColor: isLoginSelected
                                                     ? Colors.black
@@ -445,16 +449,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
-                                            return 'Email cannot be empty';
+                                            return 'Email cannot be empty'.tr();
                                           } else if (!value.contains('@')) {
-                                            return 'Enter a valid email';
+                                            return 'Enter a valid email'.tr();
                                           }
                                           return null;
                                         },
                                       ),
                                     ),
                                     SizedBox(height: 16),
-
                                     // Password Field
                                     TextFormField(
                                       controller: _password,

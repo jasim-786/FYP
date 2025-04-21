@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, unused_element, use_build_context_synchronously, avoid_print
 
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -190,7 +191,7 @@ class HomeScreen extends StatelessWidget {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -200,7 +201,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                       Navigator.push(
@@ -212,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -223,7 +224,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -233,14 +234,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -254,7 +255,7 @@ class HomeScreen extends StatelessWidget {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout(context);
                           },
@@ -370,7 +371,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "No image selected",
+                          'No image selected'.tr(),
                           style: TextStyle(fontSize: 16, color: Colors.black54),
                         ),
                       )),
@@ -398,7 +399,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              'Upload Image',
+                              'Upload Image'.tr(),
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -455,7 +456,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              'Take Photo',
+                              'Take Photo'.tr(),
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
