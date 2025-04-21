@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
 import 'package:flutter_application_1/EditProfile.dart';
+import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
@@ -250,7 +251,11 @@ class PreHomeScreen extends StatelessWidget {
                           "assets/icons/home_feedback.png",
                           screenHeight,
                           screenWidth,
-                          () => print("Estimate Resources For Land")),
+                          () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FeedbackScreen()),
+                              )),
                       _buildFeatureButton(
                           "Help",
                           "assets/icons/home_help.png",
@@ -293,8 +298,8 @@ class PreHomeScreen extends StatelessWidget {
       /// FAB and Bottom Navigation Bar (unchanged)
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
-        height: 72,
-        width: 72,
+        height: 70,
+        width: 70,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFF7B5228),
@@ -327,7 +332,7 @@ class PreHomeScreen extends StatelessWidget {
         notchMargin: 8.0,
         color: Color(0xFF7B5228),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
