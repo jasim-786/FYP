@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, prefer_final_fields, sort_child_properties_last, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -102,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -112,14 +113,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -130,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -140,14 +141,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -246,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Transform.translate(
                           offset: Offset(-5, 0),
                           child: Text(
-                            'Create\nAccount',
+                            'Create\nAccount'.tr(),
                             style: TextStyle(
                               fontSize: screenWidth * 0.07,
                               fontWeight: FontWeight.bold,
@@ -314,7 +315,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 ),
                                               );
                                             },
-                                            child: Text('Login'),
+                                            child: Text('Login'.tr()),
                                             style: TextButton.styleFrom(
                                               foregroundColor: isLoginSelected
                                                   ? Colors.white
@@ -336,7 +337,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 isLoginSelected = false;
                                               });
                                             },
-                                            child: Text('Signup'),
+                                            child: Text('Signup'.tr()),
                                             style: TextButton.styleFrom(
                                               foregroundColor: isLoginSelected
                                                   ? Colors.black
@@ -370,7 +371,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ],
                                           decoration: InputDecoration(
                                             prefixIcon: Icon(Icons.person),
-                                            hintText: 'Enter Full Name',
+                                            hintText: 'Enter Full Name'.tr(),
                                             filled: true,
                                             fillColor: Colors.transparent,
                                             enabledBorder: OutlineInputBorder(
@@ -423,7 +424,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           controller: _email,
                                           decoration: InputDecoration(
                                             prefixIcon: Icon(Icons.email),
-                                            hintText: 'Enter Email',
+                                            hintText: 'Enter Email'.tr(),
                                             filled: true,
                                             fillColor: Colors.transparent,
                                             enabledBorder: OutlineInputBorder(
@@ -476,7 +477,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           keyboardType: TextInputType.phone,
                                           decoration: InputDecoration(
                                             prefixIcon: Icon(Icons.phone),
-                                            hintText: 'Phone Number',
+                                            hintText: 'Phone Number'.tr(),
                                             filled: true,
                                             fillColor: Colors.transparent,
                                             enabledBorder: OutlineInputBorder(
@@ -529,7 +530,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           obscureText: true,
                                           decoration: InputDecoration(
                                             prefixIcon: Icon(Icons.lock),
-                                            hintText: 'Password',
+                                            hintText: 'Password'.tr(),
                                             filled: true,
                                             fillColor: Colors.transparent,
                                             enabledBorder: OutlineInputBorder(
@@ -584,7 +585,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     obscureText: true,
                                     decoration: InputDecoration(
                                       prefixIcon: Icon(Icons.lock),
-                                      hintText: 'Confirm Password',
+                                      hintText: 'Confirm Password'.tr(),
                                       filled: true,
                                       fillColor: Colors.transparent,
                                       enabledBorder: OutlineInputBorder(
@@ -651,7 +652,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           .showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                "Sign up failed. Please try again.")),
+                                                'Sign up failed. Please try again.'
+                                                    .tr())),
                                       );
                                     }
                                   }
@@ -661,7 +663,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   backgroundColor: Color(0xFF7B5228),
                                 ),
                                 child: Text(
-                                  'Signup',
+                                  'Signup'.tr(),
                                   style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
@@ -685,7 +687,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         );
                       },
                       child: Text(
-                        'Have an account? Login',
+                        'Have an account? Login'.tr(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,

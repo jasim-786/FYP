@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, no_leading_underscores_for_local_identifiers, prefer_interpolation_to_compose_strings, avoid_print, non_constant_identifier_names
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -96,7 +97,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -106,7 +107,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -117,7 +118,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -128,7 +129,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -138,14 +139,14 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -159,7 +160,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout(context);
                           },
@@ -265,7 +266,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   // Forgot Password Text
 
                   Text(
-                    'Forgot Password',
+                    'Forgot Password'.tr(),
                     style: TextStyle(
                       fontSize: screenWidth * 0.08,
                       fontWeight: FontWeight.bold,
@@ -276,7 +277,8 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                   // Instruction Text
                   Text(
-                    'Enter your registered email below to receive password reset instructions.',
+                    'Enter your registered email below to receive password reset instructions.'
+                        .tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: screenWidth * 0.045,
@@ -289,7 +291,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     controller: _email,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email),
-                      hintText: 'Enter Email',
+                      hintText: 'Enter Email'.tr(),
                       filled: true,
                       fillColor: Colors.transparent,
                       enabledBorder: OutlineInputBorder(
@@ -350,7 +352,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Send Instructions',
+                        'Send Instructions'.tr(),
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -367,7 +369,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      'Back to Login',
+                      'Back to Login'.tr(),
                       style: TextStyle(
                         color: Color(0xFF7B5228),
                         fontSize: 16,

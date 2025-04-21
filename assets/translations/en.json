@@ -69,7 +69,29 @@
   "Fullname": "Fullname",
   "Email Address": "Email Address",
   "Phone Number": "Phone Number",
-  "**************": "**************"
+  "**************": "**************",
+  "Are you sure you want to log out?": "Are you sure you want to log out?",
+  "Cancel": "Cancel",
+  "OK": "OK",
+  "Please fill out all fields.": "Please fill out all fields.",
+  "Missing Fields": "Missing Fields",
+  "Password must be at least 8 characters long, include an uppercase letter and a number.": "Password must be at least 8 characters long, include an uppercase letter and a number.",
+  "Weak Password": "Weak Password",
+  "Success": "Success",
+  "Your password has been changed.": "Your password has been changed.",
+  "Change Image": "Change Image",
+  "Detection Result: Not Analyzed": "Detection Result: Not Analyzed",
+  "Detect Disease": "Detect Disease",
+  "Forgot Password": "Forgot Password",
+  "Enter your registered email below to receive password reset instructions.": "Enter your registered email below to receive password reset instructions.",
+  "Send Instructions": "Send Instructions",
+  "Back to Login": "Back to Login",
+  "Create\nAccount": "Create\nAccount",
+  "Have an account? Login": "Have an account? Login",
+  "Enter Full Name": "Enter Full Name",
+  "Sign up failed. Please try again.": "Sign up failed. Please try again.",
+  "Signup": "Signup"
+
   
 
 }

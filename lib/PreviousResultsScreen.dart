@@ -93,7 +93,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -103,14 +103,14 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -121,7 +121,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -131,14 +131,14 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -152,7 +152,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout(context);
                           },

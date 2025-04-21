@@ -92,7 +92,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text('OK'.tr()),
           )
         ],
       ),
@@ -110,7 +110,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     final confirmPass = _confirmPassController.text.trim();
 
     if (oldPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-      _showDialog("Missing Fields", "Please fill out all fields.",
+      _showDialog('Missing Fields'.tr(), 'Please fill out all fields.'.tr(),
           isError: true);
       return;
     }
@@ -121,8 +121,10 @@ class _ChangePasswordState extends State<ChangePassword> {
     }
 
     if (!_isPasswordStrong(newPass)) {
-      _showDialog("Weak Password",
-          "Password must be at least 8 characters long, include an uppercase letter and a number.",
+      _showDialog(
+          'Weak Password'.tr(),
+          'Password must be at least 8 characters long, include an uppercase letter and a number.'
+              .tr(),
           isError: true);
       return;
     }
@@ -137,7 +139,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       await user.reauthenticateWithCredential(cred);
       await user.updatePassword(newPass);
 
-      _showDialog("Success", "Your password has been changed.");
+      _showDialog('Success'.tr(), 'Your password has been changed.'.tr());
       Navigator.pop(context); // back to profile
     } catch (e) {
       _showDialog("Error", e.toString(), isError: true);
@@ -175,7 +177,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -186,7 +188,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -197,7 +199,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -208,7 +210,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -218,14 +220,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -239,7 +241,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout();
                           },

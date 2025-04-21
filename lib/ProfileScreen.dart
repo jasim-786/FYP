@@ -63,14 +63,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to log out?"),
+          title: Text('Logout'.tr()),
+          content: Text('Are you sure you want to log out?'.tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
               },
-              child: Text("Cancel"),
+              child: Text('Cancel'.tr()),
             ),
             TextButton(
               onPressed: () async {
@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
+              child: Text('Logout'.tr(), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -131,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -152,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -163,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -173,14 +173,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -194,7 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout();
                           },

@@ -266,6 +266,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 alignment: Alignment.centerRight,
                                 child: Text(
                                   '${_feedbackController.text.length} chars'
+                                      .tr()
                                       .tr(),
                                   style: TextStyle(color: Colors.grey[600]),
                                 ),

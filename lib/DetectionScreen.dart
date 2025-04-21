@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages, prefer_final_fields, avoid_print, unused_element, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -26,7 +27,7 @@ class DetectionScreen extends StatefulWidget {
 class _DetectionScreenState extends State<DetectionScreen> {
   late String imagePath;
   Interpreter? _interpreter;
-  String result = "Detection Result: Not Analyzed";
+  String result = 'Detection Result: Not Analyzed'.tr();
   List<String> _labels = [];
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -278,7 +279,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -288,14 +289,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -306,7 +307,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -316,14 +317,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -337,7 +338,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: 'Logout'.tr(),
                           onTap: () {
                             logout(context);
                           },
@@ -485,7 +486,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Change Image',
+                              'Change Image'.tr(),
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -540,7 +541,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Detect Disease',
+                              'Detect Disease'.tr(),
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,

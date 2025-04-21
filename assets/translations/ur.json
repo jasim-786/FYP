@@ -69,7 +69,29 @@
   "Fullname": "پورا نام",
   "Email Address": "ای میل پتہ",
   "Phone Number": "فون نمبر",
-  "**************": "**************"
+  "**************": "**************",
+  "Are you sure you want to log out?": "کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟",
+  "Cancel": "منسوخ کریں",
+  "OK": "ٹھیک ہے",
+  "Please fill out all fields.": "براہ کرم خالی جگا بھریں",
+  "Missing Fields": "خالی جگہ",
+  "Password must be at least 8 characters long, include an uppercase letter and a number.": "پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے، اس میں ایک بڑے حرف اور ایک نمبر شامل ہونا چاہیے",
+  "Weak Password": "کمزور پاس ورڈ",
+  "Success": "کامیابی",
+  "Your password has been changed.": "آپ کا پاس ورڈ تبدیل کر دیا گیا ہے",
+  "Change Image": "تصویر تبدیل کریں",
+  "Detection Result: Not Analyzed": "پتہ لگانے کا نتیجہ: تجزیہ نہیں کیا گیا",
+  "Detect Disease": "بیماری کا پتہ لگائیں",
+  "Forgot Password": "پاس ورڈ بھول گئے",
+  "Enter your registered email below to receive password reset instructions.": "پاس ورڈ ری سیٹ کرنے کی ہدایات حاصل کرنے کے لیے نیچے اپنا رجسٹرڈ ای میل درج کریں۔",
+  "Send Instructions": "ہدایات بھیجیں",
+  "Back to Login": "واپس لاگ ان پر جائیں",
+  "Create\nAccount": "اکاؤنٹ بنائیں",
+  "Have an account? Login": "کیا آپ کا اکاؤنٹ ہے؟ لاگ ان کریں",
+  "Enter Full Name": "پورا نام درج کریں",
+  "Sign up failed. Please try again.": "سائن اپ ناکام ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
+  "Signup": "سائن اپ کریں"
+  
   
   
 
