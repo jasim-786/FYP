@@ -7,20 +7,17 @@ import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await EasyLocalization.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initially hide only the navigation bar
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
     overlays: [SystemUiOverlay.top],
   );
 
-  // Transparent status bar
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -33,13 +30,13 @@ void main() async {
   runApp(
     EasyLocalization(
       supportedLocales: const [
-        Locale('en'), // English
-        Locale('ur'), // Urdu
-        Locale('pa'), //Punjabi
+        Locale('en'),
+        Locale('ur'),
+        Locale('pa'),
       ],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -58,7 +55,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _hideNavBarAgain,
-      child: const _LocalizedApp(), // moved MaterialApp to a separate widget
+      child: const _LocalizedApp(),
     );
   }
 }
@@ -71,6 +68,7 @@ class _LocalizedApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
+      theme: ThemeData.light(), // Use light theme by default
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,

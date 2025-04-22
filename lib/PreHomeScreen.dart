@@ -22,6 +22,7 @@ class PreHomeScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     User? user = FirebaseAuth.instance.currentUser;
+
     void logout() async {
       showDialog(
         context: context,
@@ -31,18 +32,14 @@ class PreHomeScreen extends StatelessWidget {
             content: Text('Are you sure you want to log out?'.tr()),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close dialog
-                },
+                onPressed: () => Navigator.pop(context),
                 child: Text("Cancel"),
               ),
               TextButton(
                 onPressed: () async {
-                  Navigator.pop(context); // Close dialog
-
+                  Navigator.pop(context);
                   await FirebaseAuth.instance.signOut();
 
-                  // Show logout success message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Logged out successfully'.tr()),
@@ -50,7 +47,6 @@ class PreHomeScreen extends StatelessWidget {
                     ),
                   );
 
-                  // Navigate back to login screen
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -67,12 +63,11 @@ class PreHomeScreen extends StatelessWidget {
     return Scaffold(
       drawer: Drawer(
         child: Container(
-          color: Color(0xFFE5D188), // Light yellow background
+          color: Color(0xFFE5D188),
           child: Stack(
             children: [
               Column(
                 children: [
-                  // Top Section with Background Image
                   Container(
                     height: screenHeight * 0.25,
                     width: double.infinity,
@@ -83,96 +78,73 @@ class PreHomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  SizedBox(height: 20), // Spacing
-
-                  // Sidebar Buttons
+                  SizedBox(height: 20),
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
                     text: 'Home'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreHomeScreen()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PreHomeScreen()),
+                    ),
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
                     text: 'Profile'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfileScreen()),
+                    ),
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
                     text: 'History'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviousResultsScreen()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PreviousResultsScreen()),
+                    ),
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
                     text: 'Help'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Onboarding1()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Onboarding1()),
+                    ),
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
-                    onTap: () {
-                      // Handle Profile Navigation
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FeedbackScreen()),
+                    ),
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
                     text: 'About Us'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AboutUsScreen()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AboutUsScreen()),
+                    ),
                   ),
-                  Column(
-                    children: [
-                      if (user != null)
-                        buildSidebarButton(
-                          customIconPath: "assets/icons/logout_icon.png",
-                          text: 'Logout'.tr(),
-                          onTap: () {
-                            logout();
-                          },
-                        ),
-                    ],
-                  ),
+                  if (user != null)
+                    buildSidebarButton(
+                      customIconPath: "assets/icons/logout_icon.png",
+                      text: 'Logout'.tr(),
+                      onTap: logout,
+                    ),
                 ],
               ),
-
-              // Logo Positioned Below Top Section
               Positioned(
-                top: screenHeight * 0.1, // Adjust for desired position
+                top: screenHeight * 0.1,
                 left: 0,
                 right: 140,
                 child: Center(
                   child: Image.asset(
                     "assets/images/logo.png",
-                    height: 140, // Adjust size as needed
-                    width: 140, // Adjust size as needed
+                    height: 140,
+                    width: 140,
                   ),
                 ),
               ),
@@ -182,7 +154,6 @@ class PreHomeScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          /// Top Design (Moved outside SafeArea)
           Positioned(
             top: -1,
             left: 0,
@@ -194,15 +165,12 @@ class PreHomeScreen extends StatelessWidget {
               width: screenWidth,
             ),
           ),
-
           Positioned(
             top: 25,
             right: 5,
             child: Builder(
               builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
+                onTap: () => Scaffold.of(context).openDrawer(),
                 child: Image.asset(
                   "assets/icons/menu.png",
                   height: 62,
@@ -211,19 +179,16 @@ class PreHomeScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          /// SafeArea contents (everything else inside)
           SafeArea(
             child: Stack(
               children: [
-                /// Feature Selection
                 Positioned(
-                  top: screenHeight * 0.35,
+                  top: screenHeight * 0.25,
                   left: screenWidth * 0.08,
                   right: screenWidth * 0.08,
                   child: Wrap(
-                    spacing: screenWidth * 0.04, // horizontal spacing
-                    runSpacing: screenHeight * 0.03, // vertical spacing
+                    spacing: screenWidth * 0.04,
+                    runSpacing: screenHeight * 0.01,
                     alignment: WrapAlignment.center,
                     children: [
                       _buildFeatureButton(
@@ -237,56 +202,67 @@ class PreHomeScreen extends StatelessWidget {
                         ),
                       ),
                       _buildFeatureButton(
-                          'History'.tr(),
-                          "assets/icons/home_history.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PreviousResultsScreen()),
-                              )),
+                        'Causes And Treatment'.tr(),
+                        "assets/icons/Treatment.png",
+                        screenHeight,
+                        screenWidth,
+                        () => print("Causes And Treatment tapped"),
+                      ),
                       _buildFeatureButton(
-                          'Feedback'.tr(),
-                          "assets/icons/home_feedback.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FeedbackScreen()),
-                              )),
+                        'History'.tr(),
+                        "assets/icons/home_history.png",
+                        screenHeight,
+                        screenWidth,
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PreviousResultsScreen()),
+                        ),
+                      ),
                       _buildFeatureButton(
-                          'Help'.tr(),
-                          "assets/icons/home_help.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Onboarding1()),
-                              )),
+                        'Feedback'.tr(),
+                        "assets/icons/home_feedback.png",
+                        screenHeight,
+                        screenWidth,
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FeedbackScreen()),
+                        ),
+                      ),
                       _buildFeatureButton(
-                          'Edit Profile'.tr(),
-                          "assets/icons/home_ep.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditProfile()),
-                              )),
+                        'Help'.tr(),
+                        "assets/icons/home_help.png",
+                        screenHeight,
+                        screenWidth,
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Onboarding1()),
+                        ),
+                      ),
                       _buildFeatureButton(
-                          'Change Password'.tr(),
-                          "assets/icons/home_cp.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChangePassword()),
-                              )),
+                        'Edit Profile'.tr(),
+                        "assets/icons/home_ep.png",
+                        screenHeight,
+                        screenWidth,
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProfile()),
+                        ),
+                      ),
+                      _buildFeatureButton(
+                        'Change Password'.tr(),
+                        "assets/icons/home_cp.png",
+                        screenHeight,
+                        screenWidth,
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChangePassword()),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -295,8 +271,6 @@ class PreHomeScreen extends StatelessWidget {
           ),
         ],
       ),
-
-      /// FAB and Bottom Navigation Bar (unchanged)
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: 70,
@@ -327,7 +301,6 @@ class PreHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
@@ -343,13 +316,12 @@ class PreHomeScreen extends StatelessWidget {
               const SizedBox(width: 40),
               _bottomIcon(
                   Icons.shopping_cart, "Cart", () => print("Cart tapped")),
-              _bottomIcon(
-                  Icons.person,
-                  "Profile",
-                  () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditProfile()),
-                      )),
+              _bottomIcon(Icons.person, "Profile", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfile()),
+                );
+              }),
             ],
           ),
         ),
@@ -383,12 +355,11 @@ class PreHomeScreen extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding:
-                  EdgeInsets.all(8), // Tiny padding to act as a slim border
+              padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Color(0xFFE5D188),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 4,
@@ -426,7 +397,6 @@ class PreHomeScreen extends StatelessWidget {
     );
   }
 
-  /// Custom Sidebar Button
   Widget buildSidebarButton({
     IconData? icon,
     String? customIconPath,
@@ -434,44 +404,35 @@ class PreHomeScreen extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Padding(
-      padding:
-          EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
+      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
       child: GestureDetector(
         onTap: onTap,
         child: Transform.translate(
-          offset: Offset(-10, 0), // Move button slightly left
+          offset: Offset(-10, 0),
           child: Container(
             height: 64,
             width: 250,
             decoration: BoxDecoration(
-              color: Color(0xFF7B5228), // Brown background for button
-              borderRadius: BorderRadius.circular(30), // Rounded button shape
+              color: Color(0xFF7B5228),
+              borderRadius: BorderRadius.circular(30),
             ),
             padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             child: Row(
               children: [
-                // Circular icon background
                 Transform.translate(
-                  offset: Offset(-8, 0), // Moves the icon slightly left
+                  offset: Offset(-8, 0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFFE5D188), // Light background for icon
+                      color: Color(0xFFE5D188),
                       shape: BoxShape.circle,
                     ),
-                    padding:
-                        EdgeInsets.all(10), // Adjust for proper icon placement
+                    padding: EdgeInsets.all(10),
                     child: customIconPath != null
-                        ? Image.asset(
-                            customIconPath,
-                            height: 26,
-                            width: 26,
-                          )
+                        ? Image.asset(customIconPath, height: 26, width: 26)
                         : Icon(icon, color: Colors.black, size: 24),
                   ),
                 ),
-                SizedBox(width: 10), // Space between icon and text
-
-                // Profile text
+                SizedBox(width: 10),
                 Text(
                   text,
                   style: TextStyle(
