@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -84,7 +85,7 @@ class AboutUsScreen extends StatelessWidget {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home",
+                    text: 'Home'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -94,14 +95,14 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile",
+                    text: 'Profile'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History",
+                    text: 'History'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -112,7 +113,7 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help",
+                    text: 'Help'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -122,14 +123,14 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback",
+                    text: 'Feedback'.tr(),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us",
+                    text: 'About Us'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -248,7 +249,7 @@ class AboutUsScreen extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        "About Us",
+                        'About Us'.tr(),
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -261,10 +262,13 @@ class AboutUsScreen extends StatelessWidget {
                   Expanded(
                     child: SingleChildScrollView(
                       child: Text(
-                        "Welcome to Wheat Rust Guard, your AI-powered tool for detecting wheat rust diseases.\n\n"
-                        "Our app uses advanced technology to quickly identify yellow and brown rust in wheat crops, helping farmers protect their yields and ensure healthy harvests.\n\n"
-                        "At Wheat Rust Guard, we aim to empower sustainable farming with innovative solutions. Developed by a team passionate about agriculture and AI, our app is designed to make disease detection simple, accurate, and accessible.\n\n"
-                        "Together, let’s safeguard your crops and shape the future of farming!",
+                        'Welcome to Wheat Rust Guard, your AI-powered tool for detecting wheat rust diseases.\n\n'.tr() +
+                            'Our app uses advanced technology to quickly identify yellow and brown rust in wheat crops, helping farmers protect their yields and ensure healthy harvests.\n\n'
+                                .tr() +
+                            'At Wheat Rust Guard, we aim to empower sustainable farming with innovative solutions. Developed by a team passionate about agriculture and AI, our app is designed to make disease detection simple, accurate, and accessible.\n\n'
+                                .tr() +
+                            'Together, let’s safeguard your crops and shape the future of farming!'
+                                .tr(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
