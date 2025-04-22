@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
+import 'package:flutter_application_1/CompareImagesScreen.dart';
 import 'package:flutter_application_1/EditProfile.dart';
 import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -225,85 +226,108 @@ class PreHomeScreen extends StatelessWidget {
 
           /// SafeArea contents (everything else inside)
           SafeArea(
-            child: Stack(
-              children: [
-                /// Feature Selection
-                Positioned(
-                  top: screenHeight * 0.35,
-                  left: screenWidth * 0.08,
-                  right: screenWidth * 0.08,
-                  child: Wrap(
-                    spacing: screenWidth * 0.04, // horizontal spacing
-                    runSpacing: screenHeight * 0.03, // vertical spacing
-                    alignment: WrapAlignment.center,
-                    children: [
-                      _buildFeatureButton(
-                        "Upload Image".tr(),
-                        "assets/icons/home_upload.png",
-                        screenHeight,
-                        screenWidth,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                        ),
+            child: SingleChildScrollView(
+              child: Container(
+                height:
+                    screenHeight, // Ensures it can scroll beyond screen height
+                child: Stack(
+                  children: [
+                    /// Feature Selection
+                    Positioned(
+                      top: screenHeight * 0.35,
+                      left: screenWidth * 0.08,
+                      right: screenWidth * 0.08,
+                      child: Wrap(
+                        spacing: screenWidth * 0.04, // horizontal spacing
+                        runSpacing: screenHeight * 0.03, // vertical spacing
+                        alignment: WrapAlignment.center,
+                        children: [
+                          _buildFeatureButton(
+                            "Upload Image".tr(),
+                            "assets/icons/home_upload.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "History".tr(),
+                            "assets/icons/home_history.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PreviousResultsScreen()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "Feedback".tr(),
+                            "assets/icons/home_feedback.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FeedbackScreen()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "Help".tr(),
+                            "assets/icons/home_help.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Onboarding1()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "Edit Profile".tr(),
+                            "assets/icons/home_ep.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfile()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "Change Password".tr(),
+                            "assets/icons/home_cp.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChangePassword()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "Compare".tr(),
+                            "assets/icons/home_compare.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CompareImagesScreen()),
+                            ),
+                          ),
+                        ],
                       ),
-                      _buildFeatureButton(
-                          "History".tr(),
-                          "assets/icons/home_history.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PreviousResultsScreen()),
-                              )),
-                      _buildFeatureButton(
-                          "Feedback".tr(),
-                          "assets/icons/home_feedback.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FeedbackScreen()),
-                              )),
-                      _buildFeatureButton(
-                          "Help".tr(),
-                          "assets/icons/home_help.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Onboarding1()),
-                              )),
-                      _buildFeatureButton(
-                          "Edit Profile".tr(),
-                          "assets/icons/home_ep.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditProfile()),
-                              )),
-                      _buildFeatureButton(
-                          "Change Password".tr(),
-                          "assets/icons/home_cp.png",
-                          screenHeight,
-                          screenWidth,
-                          () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChangePassword()),
-                              )),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          )
         ],
       ),
 
@@ -359,7 +383,8 @@ class PreHomeScreen extends StatelessWidget {
                   "Profile",
                   () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditProfile()),
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
                       )),
             ],
           ),

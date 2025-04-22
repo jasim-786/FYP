@@ -145,7 +145,7 @@ class AboutUsScreen extends StatelessWidget {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout",
+                          text: "Logout".tr(),
                           onTap: () {
                             logout(context);
                           },

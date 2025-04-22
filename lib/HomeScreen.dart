@@ -57,6 +57,46 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _takePhoto(BuildContext context) async {
+    PermissionStatus status;
+
+    // Check for camera permission
+    if (Platform.isAndroid) {
+      if (await Permission.camera.isDenied) {
+        // Request camera permission for Android
+        status = await Permission.camera.request();
+      } else {
+        status = PermissionStatus.granted;
+      }
+    } else {
+      // For iOS, request camera permission
+      status = await Permission.camera.request();
+    }
+
+    print("Camera Permission status: $status"); // Debugging permission status
+
+    if (status.isGranted) {
+      final ImagePicker picker = ImagePicker();
+      final XFile? photo =
+          await picker.pickImage(source: ImageSource.camera); // Open the camera
+
+      if (photo != null && context.mounted) {
+        print("Photo taken: ${photo.path}"); // Debugging
+
+        // Navigate to DetectionScreen with the taken photo
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetectionScreen(imagePath: photo.path),
+          ),
+        );
+      }
+    } else {
+      // Show permission denied dialog if permission is not granted
+      _showPermissionDeniedDialog(context);
+    }
+  }
+
   Future<PermissionStatus> _requestPermissions() async {
     if (Platform.isAndroid) {
       if (await Permission.storage.request().isGranted) {
@@ -88,34 +128,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  // Function to request permission and take a photo using the camera
-  /*Future<void> _takePhoto() async {
-    var status = await Permission.camera.status;
-
-    if (status.isDenied) {
-      // Request permission first
-      status = await Permission.camera.request();
-    }
-
-    if (status.isPermanentlyDenied) {
-      // Open app settings if permanently denied
-      openAppSettings();
-    }
-
-    if (status.isGranted) {
-      final pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.camera);
-      if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path);
-        });
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Permission to access camera denied!")),
-      );
-    }
-  }*/
 
   void logout(BuildContext context) async {
     showDialog(
@@ -446,7 +458,9 @@ class HomeScreen extends StatelessWidget {
                       clipBehavior: Clip.none,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _takePhoto(context);
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7B5228),
                             padding: EdgeInsets.zero,

@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
 import 'package:flutter_application_1/EditProfile.dart';
-import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -135,7 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
                       );
                     },
                   ),
@@ -225,7 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           // Top background
           Positioned(
-            top: 0,
+            top: -1,
             left: 0,
             right: 0,
             child: Image.asset(
@@ -260,6 +261,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 "assets/icons/menu.png", // Path to your custom image
                 height: 62, // Adjust size as needed
                 width: 62, // Adjust size as needed
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 30, // Adjust vertically
+            left: 12, // Adjust horizontally
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Image.asset(
+                "assets/icons/Back_arrow.png",
+                height: 35,
+                width: 35,
               ),
             ),
           ),
@@ -414,6 +430,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Custom Sidebar Button
   Widget buildSidebarButton({
     IconData? icon,
     String? customIconPath,
@@ -422,12 +439,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }) {
     return Padding(
       padding:
-          EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+          EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
       child: GestureDetector(
         onTap: onTap,
         child: Transform.translate(
           offset: Offset(-10, 0), // Move button slightly left
           child: Container(
+            height: 64,
             width: 250,
             decoration: BoxDecoration(
               color: Color(0xFF7B5228), // Brown background for button
