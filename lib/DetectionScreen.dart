@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, file_names, use_key_in_widget_constructors, unnecessary_null_comparison, library_private_types_in_public_api, use_super_parameters, depend_on_referenced_packages, prefer_final_fields, avoid_print, unused_element, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
@@ -27,7 +26,7 @@ class DetectionScreen extends StatefulWidget {
 class _DetectionScreenState extends State<DetectionScreen> {
   late String imagePath;
   Interpreter? _interpreter;
-  String result = 'Detection Result: Not Analyzed'.tr();
+  String result = "Detection Result: Not Analyzed";
   List<String> _labels = [];
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -42,8 +41,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
   Future<void> _loadModel() async {
     try {
-      _interpreter = await Interpreter.fromAsset(
-          'assets/Model/wheat_leaf_disease_model.tflite');
+      _interpreter =
+          await Interpreter.fromAsset('assets/Model/hybrid_model.tflite');
       print("✅ TFLite model loaded successfully.");
     } catch (e) {
       print("❌ Error loading TFLite model: $e");
@@ -88,10 +87,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
         ),
       );
 
-      var inputBuffer = [input]; // Convert to 4D list (1, 224, 224, 3)
+      var inputBuffer = [input]; // Convert to 4D list (1, 224, 224, 4)
 
       // Prepare output buffer
-      var output = List.filled(3, 0.0).reshape([1, 3]);
+      var output = List.filled(4, 0.0).reshape([1, 4]);
 
       // Run the model
       _interpreter?.run(inputBuffer, output);
@@ -279,7 +278,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   // Sidebar Buttons
                   buildSidebarButton(
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: 'Home'.tr(),
+                    text: "Home",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -289,14 +288,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: 'Profile'.tr(),
+                    text: "Profile",
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/history_icon.png",
-                    text: 'History'.tr(),
+                    text: "History",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -307,7 +306,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/help_icon.png",
-                    text: 'Help'.tr(),
+                    text: "Help",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -317,14 +316,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: 'Feedback'.tr(),
+                    text: "Feedback",
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
                     customIconPath: "assets/icons/info_icon.png",
-                    text: 'About Us'.tr(),
+                    text: "About Us",
                     onTap: () {
                       Navigator.push(
                         context,
@@ -338,7 +337,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       if (user != null)
                         buildSidebarButton(
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: 'Logout'.tr(),
+                          text: "Logout",
                           onTap: () {
                             logout(context);
                           },
@@ -369,7 +368,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
         children: [
           // Top Image Covering Full Width
           Positioned(
-            top: 0,
+            top: -1,
             left: 0,
             right: 0,
             child: Image.asset(
@@ -486,7 +485,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Change Image'.tr(),
+                              'Change Image',
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -498,8 +497,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
                         // Icon Positioned on Top Left of the Button
                         Positioned(
-                          top: -38,
-                          left: -40,
+                          top: -40,
+                          left: -55,
                           child: Image.asset(
                             'assets/icons/replace_icon.png',
                             width: 70,
@@ -541,7 +540,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Detect Disease'.tr(),
+                              'Detect Disease',
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -553,8 +552,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
                         // Icon Positioned on Top Left of the Second Button
                         Positioned(
-                          top: -36,
-                          left: -45,
+                          top: -40,
+                          left: -55,
                           child: Image.asset(
                             'assets/icons/Detection_icon.png',
                             width: 70,
