@@ -86,7 +86,7 @@ flutter:
      - assets/
      - assets/images/
      - assets/icons/
-     - assets/Model/wheat_leaf_disease_model.tflite
+     - assets/Model/hybrid_model.tflite
      - assets/Model/label.txt
      - assets/translations/
 
