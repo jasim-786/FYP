@@ -13,6 +13,7 @@ import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
+import 'package:flutter_application_1/TimeWidget.dart';
 import 'package:flutter_application_1/TreatmentSolutionsScreen.dart';
 import 'package:flutter_application_1/WeatherWidget.dart';
 
@@ -201,6 +202,16 @@ class PreHomeScreen extends StatelessWidget {
                         width: screenWidth * 0.5, // Wide
                         height: screenHeight * 0.2, // Short
                         child: const WeatherWidget(),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: screenHeight * 0.185,
+                      left: screenWidth * 0.55,
+                      child: SizedBox(
+                        width: screenWidth * 0.4, // Wide
+                        height: screenHeight * 0.12, // Short
+                        child: const TimeWidget(),
                       ),
                     ),
 
