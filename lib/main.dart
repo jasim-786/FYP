@@ -54,8 +54,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _hideNavBarAgain,
       child: const _LocalizedApp(),
+      onTap: _hideNavBarAgain,
     );
   }
 }

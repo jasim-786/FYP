@@ -178,19 +178,19 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     ][now.weekday % 7];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.all(4.0),
       child: weatherDescription != null
           ? Container(
               width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.13,
-              padding: const EdgeInsets.all(12),
+              height: double.infinity,
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFFE5D188), Color(0xFF7B5228)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -199,68 +199,63 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                   ),
                 ],
               ),
-              child: Row(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Weather icon and description
-                  Row(
-                    children: [
-                      Image.network(
-                        'https://openweathermap.org/img/wn/$weatherIconCode@2x.png',
-                        height: 48,
-                        width: 48,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            weatherDescription ?? '',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            weekday,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  // Icon
+                  Image.network(
+                    'https://openweathermap.org/img/wn/$weatherIconCode@2x.png',
+                    height: 40,
+                    width: 40,
+                    color: Colors.white,
                   ),
-                  const Spacer(),
-                  // City and temperature
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+
+                  // Day
+                  Text(
+                    weekday,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.white70,
+                    ),
+                  ),
+
+                  const SizedBox(height: 1),
+
+                  // Temperature
+                  Text(
+                    temperature ?? '',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // City and Humidity in a Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        city ?? '',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                      Expanded(
+                        child: Text(
+                          city ?? '',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                      Text(
-                        temperature ?? '',
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        humidity != null ? 'Humidity: $humidity%' : '',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
+                      Expanded(
+                        child: Text(
+                          humidity != null ? 'Humidity: $humidity%' : '',
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],

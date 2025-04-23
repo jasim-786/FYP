@@ -13,6 +13,7 @@ import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
+import 'package:flutter_application_1/TreatmentSolutionsScreen.dart';
 import 'package:flutter_application_1/WeatherWidget.dart';
 
 class PreHomeScreen extends StatelessWidget {
@@ -184,62 +185,33 @@ class PreHomeScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          /// Top Design (Moved outside SafeArea)
-          Positioned(
-            top: -1,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Top.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.25,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.20,
-            left: screenWidth * 0.05,
-            right: screenWidth * 0.05,
-            child: SizedBox(
-              width: screenWidth * 0.8, // Wide
-              height: screenHeight * 0.15, // Short
-              child: const WeatherWidget(),
-            ),
-          ),
-
-          Positioned(
-            top: 25,
-            right: 5,
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png",
-                  height: 62,
-                  width: 62,
-                ),
-              ),
-            ),
-          ),
-
           /// SafeArea contents (everything else inside)
-          SafeArea(
+          Positioned.fill(
+            top: screenHeight * 0.02,
             child: SingleChildScrollView(
               child: Container(
                 height:
                     screenHeight, // Ensures it can scroll beyond screen height
                 child: Stack(
                   children: [
+                    Positioned(
+                      top: screenHeight * 0.10,
+                      left: screenWidth * 0.02,
+                      child: SizedBox(
+                        width: screenWidth * 0.5, // Wide
+                        height: screenHeight * 0.2, // Short
+                        child: const WeatherWidget(),
+                      ),
+                    ),
+
                     /// Feature Selection
                     Positioned(
-                      top: screenHeight * 0.35,
+                      top: screenHeight * 0.33,
                       left: screenWidth * 0.08,
                       right: screenWidth * 0.08,
                       child: Wrap(
                         spacing: screenWidth * 0.04, // horizontal spacing
-                        runSpacing: screenHeight * 0.03, // vertical spacing
+                        runSpacing: screenHeight * 0.005, // vertical spacing
                         alignment: WrapAlignment.center,
                         children: [
                           _buildFeatureButton(
@@ -320,6 +292,18 @@ class PreHomeScreen extends StatelessWidget {
                                   builder: (context) => CompareImagesScreen()),
                             ),
                           ),
+                          _buildFeatureButton(
+                            "Treatments".tr(),
+                            "assets/icons/home_treatment.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      TreatmentSolutionsScreen()),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -327,7 +311,34 @@ class PreHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
+          Positioned(
+            top: -1,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Top.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.25,
+              width: screenWidth,
+            ),
+          ),
+          Positioned(
+            top: 25,
+            right: 5,
+            child: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Image.asset(
+                  "assets/icons/menu.png",
+                  height: 62,
+                  width: 62,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
 
@@ -372,12 +383,30 @@ class PreHomeScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _bottomIcon(Icons.home, "Home", () => print("Home tapped")),
               _bottomIcon(
-                  Icons.favorite, "Favorites", () => print("Favorites tapped")),
+                  Icons.home,
+                  "Home",
+                  () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
+                      )),
+              _bottomIcon(
+                  Icons.history_sharp,
+                  "History",
+                  () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
+                      )),
               const SizedBox(width: 40),
               _bottomIcon(
-                  Icons.shopping_cart, "Cart", () => print("Cart tapped")),
+                  Icons.help,
+                  "Help",
+                  () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Onboarding1()),
+                      )),
               _bottomIcon(
                   Icons.person,
                   "Profile",
@@ -446,7 +475,7 @@ class PreHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.008),
+            SizedBox(height: screenHeight * 0.005),
             Text(
               title,
               style: TextStyle(

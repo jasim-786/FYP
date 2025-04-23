@@ -1,0 +1,70 @@
+{
+  "Brown Rust": {
+    "scientificName": "Puccinia triticina",
+    "symptoms": "Small, round to oval, orange-brown pustules scattered mostly on upper leaf surfaces; yellowing and early death of leaves in severe cases.",
+    "environmentalConditions": "Favored by moderate temperatures (15–22°C) and high humidity; dew formation promotes spore germination.",
+    "vulnerableStages": "Tillering to grain filling stages.",
+    "treatments": {
+      "chemical": [
+        "Propiconazole (25% EC) at 1 ml/L water",
+        "Tebuconazole (25.9% EC) at 1 ml/L water",
+        "Mancozeb (75% WP) at 2.5 g/L water"
+      ],
+      "biological": [
+        "Apply Trichoderma harzianum as foliar spray",
+        "Use Pseudomonas fluorescens as seed and foliar treatment"
+      ],
+      "cultural": [
+        "Remove crop residues after harvest",
+        "Avoid continuous monocropping of wheat",
+        "Timely sowing to escape peak infection period",
+        "Grow resistant varieties suited to local conditions"
+      ]
+    },
+    "prevention": [
+      "Use rust-resistant wheat varieties (e.g., PBW 343, HD 2967)",
+      "Avoid late sowing to reduce exposure",
+      "Ensure balanced fertilization (avoid excess nitrogen)"
+    ],
+    "economicThreshold": "When 10% or more plants show symptoms during active growth stage",
+    "traditionalPractices": [
+      "Application of wood ash to affected foliage",
+      "Planting near windbreaks to limit spore movement",
+      "Use of garlic or ginger decoction as natural spray"
+    ]
+  },
+  "Yellow Rust": {
+    "scientificName": "Puccinia striiformis f. sp. tritici",
+    "symptoms": "Long yellow stripes of powdery spores on leaves and sheaths; yellowing along veins and early leaf drying.",
+    "environmentalConditions": "Cool (10–15°C), moist weather with high humidity and prolonged dew periods.",
+    "vulnerableStages": "Tillering to booting stages, especially in early sown crops.",
+    "treatments": {
+      "chemical": [
+        "Tebuconazole (25.9% EC) at 1 ml/L water",
+        "Propiconazole (25% EC) at 1 ml/L water",
+        "Mancozeb (75% WP) at 2.5 g/L water"
+      ],
+      "biological": [
+        "Apply Bacillus subtilis as foliar spray",
+        "Use Pseudomonas fluorescens for seed treatment and field application"
+      ],
+      "cultural": [
+        "Early sowing to avoid high-risk period",
+        "Crop rotation with non-host species",
+        "Remove infected crop residues",
+        "Regular field monitoring and removal of infected plants"
+      ]
+    },
+    "prevention": [
+      "Use resistant wheat varieties (e.g., HD 3086, WH 1105)",
+      "Avoid over-application of nitrogen fertilizers",
+      "Monitor fields regularly during vulnerable growth stages"
+    ],
+    "economicThreshold": "When 10% of leaf area or 5% of plants are infected",
+    "traditionalPractices": [
+      "Spraying neem-based solutions",
+      "Intercropping with non-host plants to reduce rust spread",
+      "Field sanitation and residue destruction (avoid open burning)"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/HomeScreen.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
@@ -123,7 +123,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
                       );
                     },
                   ),
@@ -163,7 +164,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(
