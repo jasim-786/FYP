@@ -26,6 +26,8 @@ class PreHomeScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     User? user = FirebaseAuth.instance.currentUser;
+    bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+
     void logout() async {
       showDialog(
         context: context,
@@ -241,79 +243,135 @@ class PreHomeScreen extends StatelessWidget {
                             "assets/icons/home_history.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PreviousResultsScreen()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PreviousResultsScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
                             "Feedback".tr(),
                             "assets/icons/home_feedback.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FeedbackScreen()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FeedbackScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
                             "Help".tr(),
                             "assets/icons/home_help.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Onboarding1()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Onboarding1(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
                             "Edit Profile".tr(),
                             "assets/icons/home_ep.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditProfile()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditProfile(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
                             "Change Password".tr(),
                             "assets/icons/home_cp.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChangePassword()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChangePassword(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
                             "Compare".tr(),
                             "assets/icons/home_compare.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CompareImagesScreen()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CompareImagesScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
                             "Treatments".tr(),
                             "assets/icons/home_treatment.png",
                             screenHeight,
                             screenWidth,
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      TreatmentSolutionsScreen()),
-                            ),
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        TreatmentSolutionsScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
                           ),
                         ],
                       ),
@@ -388,44 +446,60 @@ class PreHomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
-        color: Color(0xFF7B5228),
+        color: const Color(0xFF7B5228),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _bottomIcon(
-                  Icons.home,
-                  "Home",
-                  () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreHomeScreen()),
-                      )),
+                Icons.home,
+                "Home",
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PreHomeScreen()),
+                ),
+              ),
               _bottomIcon(
-                  Icons.history_sharp,
-                  "History",
-                  () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviousResultsScreen()),
-                      )),
+                Icons.history_sharp,
+                "History",
+                () {
+                  if (isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PreviousResultsScreen()),
+                    );
+                  } else {
+                    _showLoginDialog(context);
+                  }
+                },
+                disabled: !isLoggedIn,
+              ),
               const SizedBox(width: 40),
               _bottomIcon(
-                  Icons.help,
-                  "Help",
-                  () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Onboarding1()),
-                      )),
+                Icons.help,
+                "Help",
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Onboarding1()),
+                ),
+              ),
               _bottomIcon(
-                  Icons.person,
-                  "Profile",
-                  () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()),
-                      )),
+                Icons.person,
+                "Profile",
+                () {
+                  if (isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfileScreen()),
+                    );
+                  } else {
+                    _showLoginDialog(context);
+                  }
+                },
+                disabled: !isLoggedIn,
+              ),
             ],
           ),
         ),
@@ -433,14 +507,22 @@ class PreHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _bottomIcon(IconData icon, String label, VoidCallback onTap) {
+  Widget _bottomIcon(IconData icon, String label, VoidCallback onTap,
+      {bool disabled = false}) {
     return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: Colors.white),
-        ],
+      onTap: onTap, // Always allow tap
+      child: Opacity(
+        opacity: disabled ? 0.5 : 1.0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white),
+            Text(
+              label,
+              style: TextStyle(color: Colors.white, fontSize: 11),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -450,53 +532,56 @@ class PreHomeScreen extends StatelessWidget {
     String imagePath,
     double screenHeight,
     double screenWidth,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: screenWidth * 0.253,
-        child: Column(
-          children: [
-            Container(
-              padding:
-                  EdgeInsets.all(8), // Tiny padding to act as a slim border
-              decoration: BoxDecoration(
-                color: Color(0xFFE5D188),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: Container(
+    VoidCallback onTap, {
+    bool disabled = false,
+  }) {
+    return Opacity(
+      opacity: disabled ? 0.5 : 1.0,
+      child: GestureDetector(
+        onTap: onTap, // Always handle tap
+        child: SizedBox(
+          width: screenWidth * 0.253,
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Color(0xFF7B5228),
-                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFFE5D188),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
                 ),
-                padding: EdgeInsets.all(screenWidth * 0.025),
-                child: Image.asset(
-                  imagePath,
-                  height: screenHeight * 0.09,
-                  width: screenWidth * 0.18,
-                  fit: BoxFit.contain,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF7B5228),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(screenWidth * 0.025),
+                  child: Image.asset(
+                    imagePath,
+                    height: screenHeight * 0.09,
+                    width: screenWidth * 0.18,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: screenHeight * 0.005),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: screenWidth * 0.04,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
+              SizedBox(height: screenHeight * 0.005),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -561,6 +646,39 @@ class PreHomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  _showLoginDialog(BuildContext context) {
+    print("Displaying login dialog...");
+
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // Prevent closing by tapping outside the dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Login Required".tr()),
+          content: Text("Please log in to access this feature.".tr()),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text("Cancel".tr()),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text("Login".tr(), style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        );
+      },
     );
   }
 }
