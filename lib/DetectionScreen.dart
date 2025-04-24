@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
@@ -38,6 +39,103 @@ class _DetectionScreenState extends State<DetectionScreen> {
     print("📍 Navigated to DetectionScreen with: $imagePath");
     _loadModel();
     _loadLabels(); // Load labels.txt
+  }
+
+  Future<void> _showTreatmentDialog(String diseaseKey) async {
+    try {
+      // Load and decode the JSON file
+      final jsonString = await rootBundle.loadString('assets/solutions.json');
+      final Map<String, dynamic> allData = json.decode(jsonString);
+
+      if (!allData.containsKey(diseaseKey)) {
+        throw Exception("Disease not found in treatment data.");
+      }
+
+      final diseaseData = allData[diseaseKey];
+      final treatments = diseaseData['treatments'] ?? {};
+      final prevention = diseaseData['prevention'] ?? [];
+
+      // Function to format lists with bullet points
+      String formatList(String title, List<dynamic> items) {
+        return items.isNotEmpty ? "$title\n• ${items.join('\n• ')}\n\n" : '';
+      }
+
+      String treatmentText = "";
+
+      // Add treatments if available
+      if (treatments.isNotEmpty) {
+        if (treatments['chemical'] != null) {
+          treatmentText +=
+              formatList("🧪 Chemical Treatments", treatments['chemical']);
+        }
+        if (treatments['biological'] != null) {
+          treatmentText +=
+              formatList("🌱 Biological Treatments", treatments['biological']);
+        }
+        if (treatments['cultural'] != null) {
+          treatmentText +=
+              formatList("🚜 Cultural Practices", treatments['cultural']);
+        }
+      }
+
+      // Add prevention tips if available
+      if (prevention.isNotEmpty) {
+        treatmentText += formatList("🛡️ Prevention Tips", prevention);
+      }
+
+      // Show the dialog with animation
+      showGeneralDialog(
+        context: context,
+        barrierLabel: "Treatment Info",
+        barrierDismissible: true,
+        barrierColor: Colors.black54,
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, anim1, anim2) => SizedBox.shrink(),
+        transitionBuilder: (context, animation, _, __) {
+          return Transform.scale(
+            scale: animation.value,
+            child: Opacity(
+              opacity: animation.value,
+              child: AlertDialog(
+                scrollable: true,
+                backgroundColor: Color(0xFFE5D188),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                title: Text(
+                  "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
+                  style: TextStyle(
+                    color: Color(0xFF7B5228),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Text(
+                  treatmentText.trim(),
+                  style: TextStyle(
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Color(0xFF7B5228),
+                    ),
+                    child: Text("OK"),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print("Error loading treatment info: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error loading treatment information")),
+      );
+    }
   }
 
   Future<void> _loadModel() async {
@@ -106,6 +204,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
         result = "Prediction: $disease";
       });
       await _storeDetectionResult(disease);
+      await _showTreatmentDialog(disease.replaceAll(' ', '_'));
     } catch (e) {
       print("❌ Error during detection: $e");
       setState(() {

@@ -181,71 +181,17 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
       ),
       body: Stack(
         children: [
-          // Background layer (Top and Bottom images)
-          Positioned(
-            top: -1,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Top.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.25,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Bottom.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.2,
-              width: screenWidth,
-            ),
-          ),
-          // Sidebar Icon at Top Right
-          Positioned(
-            top: 25,
-            right: 5,
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png",
-                  height: 62,
-                  width: 62,
-                ),
-              ),
-            ),
-          ),
-
-          // Custom back button at top left
-          Positioned(
-            top: 30, // Adjust vertically
-            left: 12, // Adjust horizontally
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.asset(
-                "assets/icons/Back_arrow.png",
-                height: 35,
-                width: 35,
-              ),
-            ),
-          ),
           // Foreground content
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
-                Center(
+                Align(
+                  alignment: Alignment.topLeft,
                   child: Container(
-                    margin: EdgeInsets.only(top: 110, bottom: 10),
+                    margin: EdgeInsets.only(
+                        top: 70, left: 5), // moved up and to the left
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     child: Text(
                       'Previous Results'.tr(),
@@ -353,6 +299,61 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: -1,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Top.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.25,
+              width: screenWidth,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Bottom.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.2,
+              width: screenWidth,
+            ),
+          ),
+          // Sidebar Icon at Top Right
+          Positioned(
+            top: 25,
+            right: 5,
+            child: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Image.asset(
+                  "assets/icons/menu.png",
+                  height: 62,
+                  width: 62,
+                ),
+              ),
+            ),
+          ),
+
+          // Custom back button at top left
+          Positioned(
+            top: 30, // Adjust vertically
+            left: 12, // Adjust horizontally
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Image.asset(
+                "assets/icons/Back_arrow.png",
+                height: 35,
+                width: 35,
+              ),
             ),
           ),
         ],

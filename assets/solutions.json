@@ -1,5 +1,5 @@
 {
-  "Brown Rust": {
+  "Brown_Rust": {
     "scientificName": "Puccinia triticina",
     "symptoms": "Small, round to oval, orange-brown pustules scattered mostly on upper leaf surfaces; yellowing and early death of leaves in severe cases.",
     "environmentalConditions": "Favored by moderate temperatures (15–22°C) and high humidity; dew formation promotes spore germination.",
@@ -33,7 +33,7 @@
       "Use of garlic or ginger decoction as natural spray"
     ]
   },
-  "Yellow Rust": {
+  "Yellow_Rust": {
     "scientificName": "Puccinia striiformis f. sp. tritici",
     "symptoms": "Long yellow stripes of powdery spores on leaves and sheaths; yellowing along veins and early leaf drying.",
     "environmentalConditions": "Cool (10–15°C), moist weather with high humidity and prolonged dew periods.",
