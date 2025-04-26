@@ -21,6 +21,8 @@ class PreviousResultsScreen extends StatefulWidget {
 
 class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
+  DateTime? _startDate;
+  DateTime? _endDate;
   String _sortOrder = 'Latest';
   List<Map<String, dynamic>> _historyData = [];
 
@@ -75,18 +77,128 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
       setState(() {}); // Trigger rebuild
     }
 
-    List<FlSpot> _generateSpots() {
-      Map<DateTime, int> counts = {};
+    String _getDayOfWeek(DateTime date) {
+      // Get the name of the day (e.g., 'Monday', 'Tuesday', etc.)
+      List<String> days = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+      ];
+      return days[date.weekday %
+          7]; // Date.weekday returns 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
+    }
+
+    List<FlSpot> _generateBrownRustSpots() {
+      Map<String, int> brownRustCounts =
+          {}; // To store counts of Brown Rust per day
+
+      // Loop through the history data
       for (var item in _historyData) {
         DateTime date = item['date'];
-        counts[date] = (counts[date] ?? 0) + 1;
+        String? prediction = item['prediction'];
+
+        if (prediction == null) continue; // Skip if prediction is null
+
+        // Get the day of the week (Monday = 0, Sunday = 6)
+        String dayOfWeek = _getDayOfWeek(date);
+
+        // Increment the count for each prediction type on that day
+        if (prediction == 'Brown_Rust') {
+          brownRustCounts[dayOfWeek] = (brownRustCounts[dayOfWeek] ?? 0) + 1;
+        }
       }
-      final sortedKeys = counts.keys.toList()..sort();
-      List<FlSpot> spots = [];
-      for (int i = 0; i < sortedKeys.length; i++) {
-        spots.add(FlSpot(i.toDouble(), counts[sortedKeys[i]]!.toDouble()));
+
+      // Days of the week to display (starting from Sunday to Saturday)
+      List<String> daysOfWeek = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+      ];
+
+      // Generate spots for the graph (for Brown Rust)
+      List<FlSpot> brownRustSpots = [];
+      for (int i = 0; i < daysOfWeek.length; i++) {
+        String day = daysOfWeek[i];
+        int brownRustCount = brownRustCounts[day] ?? 0;
+
+        // Add spots for Brown Rust
+        brownRustSpots.add(FlSpot(
+            i.toDouble(), brownRustCount.toDouble())); // Brown Rust count
       }
-      return spots;
+
+      return brownRustSpots;
+    }
+
+    List<FlSpot> _generateYellowRustSpots() {
+      Map<String, int> yellowRustCounts =
+          {}; // To store counts of Yellow Rust per day
+
+      // Loop through the history data
+      for (var item in _historyData) {
+        DateTime date = item['date'];
+        String? prediction = item['prediction'];
+
+        if (prediction == null) continue; // Skip if prediction is null
+
+        // Get the day of the week (Monday = 0, Sunday = 6)
+        String dayOfWeek = _getDayOfWeek(date);
+
+        // Increment the count for each prediction type on that day
+        if (prediction == 'Yellow_Rust') {
+          yellowRustCounts[dayOfWeek] = (yellowRustCounts[dayOfWeek] ?? 0) + 1;
+        }
+      }
+
+      // Days of the week to display (starting from Sunday to Saturday)
+      List<String> daysOfWeek = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+      ];
+
+      // Generate spots for the graph (for Yellow Rust)
+      List<FlSpot> yellowRustSpots = [];
+      for (int i = 0; i < daysOfWeek.length; i++) {
+        String day = daysOfWeek[i];
+        int yellowRustCount = yellowRustCounts[day] ?? 0;
+
+        // Add spots for Yellow Rust
+        yellowRustSpots.add(FlSpot(i.toDouble() + 0.5,
+            yellowRustCount.toDouble())); // Yellow Rust count (slightly offset)
+      }
+
+      return yellowRustSpots;
+    }
+
+    Stream<QuerySnapshot> _filteredResults() {
+      Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+          .collection('disease_detections')
+          .where('userId', isEqualTo: user?.uid)
+          .orderBy('timestamp', descending: _sortOrder == 'Latest');
+
+      if (_startDate != null) {
+        query = query.where('timestamp',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(_startDate!));
+      }
+
+      if (_endDate != null) {
+        query = query.where('timestamp',
+            isLessThanOrEqualTo: Timestamp.fromDate(_endDate!));
+      }
+
+      return query.snapshots();
     }
 
     return Scaffold(
@@ -216,7 +328,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(top: 66, left: 0),
+                        margin: EdgeInsets.only(top: 65, left: 0),
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         child: Text(
@@ -230,6 +342,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                       ),
                     ],
                   ),
+
                   // Expanded List + Refresh
                   Expanded(
                     child: Padding(
@@ -239,12 +352,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                       child: RefreshIndicator(
                         onRefresh: _refresh,
                         child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('disease_detections')
-                              .where('userId', isEqualTo: user?.uid)
-                              .orderBy('timestamp',
-                                  descending: _sortOrder == 'Latest')
-                              .snapshots(),
+                          stream: _filteredResults(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -253,21 +361,21 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                             if (!snapshot.hasData ||
                                 snapshot.data!.docs.isEmpty) {
                               return Center(
-                                child: Text(
-                                  'No previous results found.'.tr(),
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.grey),
-                                ),
+                                child: Text('No results found.'),
                               );
                             }
-
                             // Prepare chart data
                             _historyData = snapshot.data!.docs.map((doc) {
                               final timestamp = doc['timestamp'] as Timestamp;
                               final date = timestamp.toDate();
+                              final prediction = doc[
+                                  'prediction']; // <-- Fetch prediction too!
+
                               return {
                                 'date':
                                     DateTime(date.year, date.month, date.day),
+                                'prediction':
+                                    prediction, // <-- Store prediction in map
                               };
                             }).toList();
 
@@ -279,26 +387,80 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 16),
                                     child: SizedBox(
-                                      height: 180,
+                                      height: MediaQuery.of(context)
+                                              .size
+                                              .height *
+                                          0.25, // Adjust the height based on screen size (30% of the screen height)
+                                      width: double
+                                          .infinity, // Set the width to occupy the available space
                                       child: LineChart(
                                         LineChartData(
-                                          gridData: FlGridData(show: false),
+                                          gridData: FlGridData(
+                                              show: false), // Hide grid lines
                                           titlesData: FlTitlesData(
                                             leftTitles: AxisTitles(
-                                              sideTitles:
-                                                  SideTitles(showTitles: true),
+                                              sideTitles: SideTitles(
+                                                  showTitles:
+                                                      false), // Hide left axis labels (y-axis)
                                             ),
                                             bottomTitles: AxisTitles(
-                                              sideTitles:
-                                                  SideTitles(showTitles: false),
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                getTitlesWidget: (value, meta) {
+                                                  List<String> days = [
+                                                    'Mon',
+                                                    'Tue',
+                                                    'Wed',
+                                                    'Thu',
+                                                    'Fri',
+                                                    'Sat',
+                                                    'Sun'
+                                                  ];
+                                                  if (value >= 0 &&
+                                                      value <= 6 &&
+                                                      value == value.toInt()) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 8),
+                                                      child: Text(
+                                                        days[value.toInt()],
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                  return const SizedBox
+                                                      .shrink(); // Empty for others
+                                                },
+                                              ),
                                             ),
                                           ),
-                                          borderData: FlBorderData(show: true),
+                                          borderData: FlBorderData(
+                                              show: false), // Hide the border
                                           lineBarsData: [
+                                            // Brown Rust Line
                                             LineChartBarData(
-                                              spots: _generateSpots(),
+                                              spots:
+                                                  _generateBrownRustSpots(), // Brown Rust spots
                                               isCurved: true,
-                                              color: Color(0xFF7B5228),
+                                              color: Color(
+                                                  0xFF7B5228), // Brown color for Brown Rust
+                                              barWidth: 3,
+                                              belowBarData:
+                                                  BarAreaData(show: false),
+                                            ),
+                                            // Yellow Rust Line
+                                            LineChartBarData(
+                                              spots:
+                                                  _generateYellowRustSpots(), // Yellow Rust spots
+                                              isCurved: true,
+                                              color: Color(
+                                                  0xFFFFD700), // Yellow color for Yellow Rust
                                               barWidth: 3,
                                               belowBarData:
                                                   BarAreaData(show: false),
@@ -308,10 +470,22 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                                       ),
                                     ),
                                   ),
+
                                 Container(
                                   margin: EdgeInsets.only(top: 0, right: 16),
                                   child: DropdownButton<String>(
                                     value: _sortOrder,
+                                    dropdownColor: Color(
+                                        0xFFE5D188), // Light yellow background inside dropdown
+                                    style: TextStyle(
+                                      // Text color inside dropdown
+                                      color:
+                                          Color(0xFF7B5228), // Brown text color
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    iconEnabledColor: Color(
+                                        0xFF7B5228), // Brown color for dropdown arrow
                                     items: ['Latest', 'Oldest']
                                         .map((value) => DropdownMenuItem(
                                               value: value,
@@ -324,6 +498,108 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                                       });
                                     },
                                   ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(10),
+                                        onTap: () async {
+                                          DateTime? picked =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime(2100),
+                                          );
+                                          if (picked != null) {
+                                            setState(() {
+                                              _startDate = picked;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFF7B5228),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.calendar_today,
+                                                  size: 20,
+                                                  color: Colors.white),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                _startDate == null
+                                                    ? 'Start Date'
+                                                    : '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(10),
+                                        onTap: () async {
+                                          DateTime? picked =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime(2100),
+                                          );
+                                          if (picked != null) {
+                                            setState(() {
+                                              _endDate = picked.add(Duration(
+                                                hours: 23,
+                                                minutes: 59,
+                                                seconds: 59,
+                                              ));
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFE5D188),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.calendar_today,
+                                                  size: 20,
+                                                  color: Color(0xFF7B5228)),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                _endDate == null
+                                                    ? 'End Date'
+                                                    : '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}',
+                                                style: TextStyle(
+                                                  color: Color(0xFF7B5228),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
 
                                 // Scrollable list
