@@ -3,13 +3,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
-import 'package:flutter_application_1/PreviousResultsScreen.dart';
-import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
-import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,8 +17,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoginSelected = true; // Tracks whether Login is selected
-  GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>(); // Key for scaffold
 
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -97,121 +91,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      key: _scaffoldKey,
-      drawer: Drawer(
-        child: Container(
-          color: Color(0xFFE5D188), // Light yellow background
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // Top Section with Background Image
-                  Container(
-                    height: screenHeight * 0.25,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/Sidebar_Top.png"),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 20), // Spacing
-
-                  // Sidebar Buttons
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/Home_icon.png",
-                    text: 'Home'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/profile_icon.png",
-                    text: 'Profile'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/history_icon.png",
-                    text: 'History'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviousResultsScreen()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/help_icon.png",
-                    text: 'Help'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Onboarding1()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/feedback_icon.png",
-                    text: 'Feedback'.tr(),
-                    onTap: () {
-                      // Handle Profile Navigation
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/info_icon.png",
-                    text: 'About Us'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AboutUsScreen()),
-                      );
-                    },
-                  ),
-                  Column(
-                    children: [
-                      if (user != null)
-                        buildSidebarButton(
-                          customIconPath: "assets/icons/logout_icon.png",
-                          text: 'Logout'.tr(),
-                          onTap: () {
-                            logout();
-                          },
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Logo Positioned Below Top Section
-              Positioned(
-                top: screenHeight * 0.1, // Adjust for desired position
-                left: 0,
-                right: 140,
-                child: Center(
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    height: 140, // Adjust size as needed
-                    width: 140, // Adjust size as needed
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
       body: GestureDetector(
         onTap: () {
           // Dismiss the keyboard when tapping outside the TextField
@@ -250,22 +129,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 fit: BoxFit.cover,
                 height: screenHeight * 0.2,
                 width: screenWidth,
-              ),
-            ),
-
-            // Sidebar Icon at Top Right
-            Positioned(
-              top: 25, // Adjust for desired position
-              right: 5, // Adjust for desired position
-              child: GestureDetector(
-                onTap: () {
-                  _scaffoldKey.currentState?.openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png", // Path to your custom image
-                  height: 62, // Adjust size as needed
-                  width: 62, // Adjust size as needed
-                ),
               ),
             ),
 
@@ -622,66 +485,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
-
-/// Custom Sidebar Button
-Widget buildSidebarButton({
-  IconData? icon,
-  String? customIconPath,
-  required String text,
-  required VoidCallback onTap,
-}) {
-  return Padding(
-    padding:
-        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
-    child: GestureDetector(
-      onTap: onTap,
-      child: Transform.translate(
-        offset: Offset(-10, 0), // Move button slightly left
-        child: Container(
-          height: 64,
-          width: 250,
-          decoration: BoxDecoration(
-            color: Color(0xFF7B5228), // Brown background for button
-            borderRadius: BorderRadius.circular(30), // Rounded button shape
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          child: Row(
-            children: [
-              // Circular icon background
-              Transform.translate(
-                offset: Offset(-8, 0), // Moves the icon slightly left
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFE5D188), // Light background for icon
-                    shape: BoxShape.circle,
-                  ),
-                  padding:
-                      EdgeInsets.all(10), // Adjust for proper icon placement
-                  child: customIconPath != null
-                      ? Image.asset(
-                          customIconPath,
-                          height: 26,
-                          width: 26,
-                        )
-                      : Icon(icon, color: Colors.black, size: 24),
-                ),
-              ),
-              SizedBox(width: 10), // Space between icon and text
-
-              // Profile text
-              Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 }

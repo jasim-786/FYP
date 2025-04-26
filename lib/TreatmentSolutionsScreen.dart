@@ -739,6 +739,7 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
   }
 }
 
+/// Custom Sidebar Button
 Widget buildSidebarButton({
   IconData? icon,
   String? customIconPath,
@@ -746,28 +747,32 @@ Widget buildSidebarButton({
   required VoidCallback onTap,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+    padding:
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
-        offset: Offset(-10, 0),
+        offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
-            color: Color(0xFF7B5228),
-            borderRadius: BorderRadius.circular(30),
+            color: Color(0xFF7B5228), // Brown background for button
+            borderRadius: BorderRadius.circular(30), // Rounded button shape
           ),
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           child: Row(
             children: [
+              // Circular icon background
               Transform.translate(
-                offset: Offset(-8, 0),
+                offset: Offset(-8, 0), // Moves the icon slightly left
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFE5D188),
+                    color: Color(0xFFE5D188), // Light background for icon
                     shape: BoxShape.circle,
                   ),
-                  padding: EdgeInsets.all(10),
+                  padding:
+                      EdgeInsets.all(10), // Adjust for proper icon placement
                   child: customIconPath != null
                       ? Image.asset(
                           customIconPath,
@@ -777,7 +782,9 @@ Widget buildSidebarButton({
                       : Icon(icon, color: Colors.black, size: 24),
                 ),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 10), // Space between icon and text
+
+              // Profile text
               Text(
                 text,
                 style: TextStyle(

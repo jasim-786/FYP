@@ -751,6 +751,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
   }
 }
 
+/// Custom Sidebar Button
 Widget buildSidebarButton({
   IconData? icon,
   String? customIconPath,
@@ -759,12 +760,13 @@ Widget buildSidebarButton({
 }) {
   return Padding(
     padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
         offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
             color: Color(0xFF7B5228), // Brown background for button

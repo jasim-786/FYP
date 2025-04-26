@@ -95,6 +95,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: Drawer(
         child: Container(
@@ -213,310 +214,319 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            top: screenHeight * 0.16,
-            bottom: screenHeight * 0.15,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Write Feedback'.tr(),
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF7B5228),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Expanded(
-                      child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss the keyboard when tapping outside the TextField
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              top: screenHeight * 0.16,
+              bottom: screenHeight * 0.15,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF4F4F6),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: Color(0xFF7B5228),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                padding: EdgeInsets.all(16),
-                                child: TextField(
-                                  controller: _feedbackController,
-                                  maxLines: 5,
-                                  decoration: InputDecoration.collapsed(
-                                    hintText:
-                                        'Say what you think about this app'
-                                            .tr(),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 2),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  '${_feedbackController.text.length} chars'
-                                      .tr()
-                                      .tr(),
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: _categories.map((category) {
-                                  bool isSelected =
-                                      _selectedCategory == category;
-                                  return GestureDetector(
-                                    onTap: () => setState(
-                                        () => _selectedCategory = category),
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 20),
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? Color(0xFF7B5228)
-                                            : Color(0xFFF0F0F0),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Text(
-                                        category,
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      ),
+                        Text(
+                          'Write Feedback'.tr(),
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF7B5228),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF4F4F6),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Color(0xFF7B5228),
+                                      width: 1.5,
                                     ),
-                                  );
-                                }).toList(),
-                              ),
-                              SizedBox(height: 15),
-                              Center(
-                                child: Text(
-                                  'How was your experience with us?'.tr(),
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF7B5228),
-                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  padding: EdgeInsets.all(16),
+                                  child: TextField(
+                                    controller: _feedbackController,
+                                    maxLines: 5,
+                                    decoration: InputDecoration.collapsed(
+                                      hintText:
+                                          'Say what you think about this app'
+                                              .tr(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 5),
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF4F4F6),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: Color(0xFF7B5228),
-                                    width: 1.5,
+                                SizedBox(height: 2),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    '${_feedbackController.text.length} chars'
+                                        .tr()
+                                        .tr(),
+                                    style: TextStyle(color: Colors.grey[600]),
                                   ),
                                 ),
-                                child: Row(
+                                SizedBox(height: 10),
+                                Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
-                                  children:
-                                      List.generate(_emojis.length, (index) {
+                                  children: _categories.map((category) {
                                     bool isSelected =
-                                        _selectedEmojiIndex == index;
+                                        _selectedCategory == category;
                                     return GestureDetector(
                                       onTap: () => setState(
-                                          () => _selectedEmojiIndex = index),
+                                          () => _selectedCategory = category),
                                       child: Container(
-                                        padding: EdgeInsets.all(8),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 20),
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? Color(0xFFE5D188)
-                                              : Colors.transparent,
-                                          shape: BoxShape.circle,
+                                              ? Color(0xFF7B5228)
+                                              : Color(0xFFF0F0F0),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
                                         ),
                                         child: Text(
-                                          _emojis[index],
-                                          style: TextStyle(fontSize: 22),
+                                          category,
+                                          style: TextStyle(
+                                            color: isSelected
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
                                         ),
                                       ),
                                     );
-                                  }),
+                                  }).toList(),
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: _submitFeedback,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF7B5228),
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(32),
+                                SizedBox(height: 15),
+                                Center(
+                                  child: Text(
+                                    'How was your experience with us?'.tr(),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF7B5228),
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  child: Text(
-                                    'Send Feedback'.tr(),
-                                    style: TextStyle(
-                                        fontSize: 22, color: Colors.white),
+                                ),
+                                SizedBox(height: 5),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF4F4F6),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Color(0xFF7B5228),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children:
+                                        List.generate(_emojis.length, (index) {
+                                      bool isSelected =
+                                          _selectedEmojiIndex == index;
+                                      return GestureDetector(
+                                        onTap: () => setState(
+                                            () => _selectedEmojiIndex = index),
+                                        child: Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: isSelected
+                                                ? Color(0xFFE5D188)
+                                                : Colors.transparent,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Text(
+                                            _emojis[index],
+                                            style: TextStyle(fontSize: 22),
+                                          ),
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Display previous feedbacks
-                        Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Previous Feedbacks'.tr(),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              previousFeedbacks.isEmpty
-                                  ? Text('No feedback available yet.'.tr())
-                                  : SizedBox(
-                                      height:
-                                          300, // adjust height based on your UI needs
-                                      child: ListView.builder(
-                                        itemCount: previousFeedbacks.length,
-                                        itemBuilder: (context, index) {
-                                          final feedback =
-                                              previousFeedbacks[index];
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 16.0),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color:
-                                                      const Color(0xFF7B5228),
-                                                  width: 1.5,
-                                                ),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    feedback['name'],
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Row(
-                                                    children: List.generate(5,
-                                                        (starIndex) {
-                                                      return Icon(
-                                                        feedback['rating'] >
-                                                                starIndex
-                                                            ? Icons.star
-                                                            : Icons.star_border,
-                                                        color: Colors.yellow,
-                                                        size: 20,
-                                                      );
-                                                    }),
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(feedback['feedback']),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                SizedBox(height: 20),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: _submitFeedback,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF7B5228),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(32),
                                       ),
                                     ),
-                            ],
+                                    child: Text(
+                                      'Send Feedback'.tr(),
+                                      style: TextStyle(
+                                          fontSize: 22, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: screenHeight * 0.2),
-                      ],
-                    ),
-                  )),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: -1,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Top.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.25,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            top: 25,
-            right: 5,
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png",
-                  height: 62,
-                  width: 62,
+                          // Display previous feedbacks
+                          Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Previous Feedbacks'.tr(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                previousFeedbacks.isEmpty
+                                    ? Text('No feedback available yet.'.tr())
+                                    : SizedBox(
+                                        height:
+                                            300, // adjust height based on your UI needs
+                                        child: ListView.builder(
+                                          itemCount: previousFeedbacks.length,
+                                          itemBuilder: (context, index) {
+                                            final feedback =
+                                                previousFeedbacks[index];
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 16.0),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color:
+                                                        const Color(0xFF7B5228),
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      feedback['name'],
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Row(
+                                                      children: List.generate(5,
+                                                          (starIndex) {
+                                                        return Icon(
+                                                          feedback['rating'] >
+                                                                  starIndex
+                                                              ? Icons.star
+                                                              : Icons
+                                                                  .star_border,
+                                                          color: Colors.yellow,
+                                                          size: 20,
+                                                        );
+                                                      }),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(feedback['feedback']),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.2),
+                        ],
+                      ),
+                    )),
+                  ],
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Bottom.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.2,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            top: 30,
-            left: 12,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
+            Positioned(
+              top: -1,
+              left: 0,
+              right: 0,
               child: Image.asset(
-                "assets/icons/Back_arrow.png",
-                height: 35,
-                width: 35,
+                "assets/images/Top.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.25,
+                width: screenWidth,
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 25,
+              right: 5,
+              child: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Image.asset(
+                    "assets/icons/menu.png",
+                    height: 62,
+                    width: 62,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                "assets/images/Bottom.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.2,
+                width: screenWidth,
+              ),
+            ),
+            Positioned(
+              top: 30,
+              left: 12,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  "assets/icons/Back_arrow.png",
+                  height: 35,
+                  width: 35,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -580,6 +590,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 }
 
+/// Custom Sidebar Button
 Widget buildSidebarButton({
   IconData? icon,
   String? customIconPath,
@@ -587,28 +598,32 @@ Widget buildSidebarButton({
   required VoidCallback onTap,
 }) {
   return Padding(
-    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+    padding:
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
-        offset: Offset(-10, 0),
+        offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
-            color: Color(0xFF7B5228),
-            borderRadius: BorderRadius.circular(30),
+            color: Color(0xFF7B5228), // Brown background for button
+            borderRadius: BorderRadius.circular(30), // Rounded button shape
           ),
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           child: Row(
             children: [
+              // Circular icon background
               Transform.translate(
-                offset: Offset(-8, 0),
+                offset: Offset(-8, 0), // Moves the icon slightly left
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFE5D188),
+                    color: Color(0xFFE5D188), // Light background for icon
                     shape: BoxShape.circle,
                   ),
-                  padding: EdgeInsets.all(10),
+                  padding:
+                      EdgeInsets.all(10), // Adjust for proper icon placement
                   child: customIconPath != null
                       ? Image.asset(
                           customIconPath,
@@ -618,7 +633,9 @@ Widget buildSidebarButton({
                       : Icon(icon, color: Colors.black, size: 24),
                 ),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 10), // Space between icon and text
+
+              // Profile text
               Text(
                 text,
                 style: TextStyle(

@@ -152,6 +152,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: Drawer(
         child: Container(
@@ -268,131 +269,137 @@ class _ChangePasswordState extends State<ChangePassword> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          // Top background
-          Positioned(
-            top: -1,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Top.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.25,
-              width: screenWidth,
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss the keyboard when tapping outside the TextField
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            // Top background
+            Positioned(
+              top: -1,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                "assets/images/Top.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.25,
+                width: screenWidth,
+              ),
             ),
-          ),
 
-          // Bottom background
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Bottom.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.2,
-              width: screenWidth,
+            // Bottom background
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                "assets/images/Bottom.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.2,
+                width: screenWidth,
+              ),
             ),
-          ),
-          Positioned(
-            top: 25,
-            right: 5,
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png",
-                  height: 62,
-                  width: 62,
+            Positioned(
+              top: 25,
+              right: 5,
+              child: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Image.asset(
+                    "assets/icons/menu.png",
+                    height: 62,
+                    width: 62,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: 30, // Adjust vertically
-            left: 12, // Adjust horizontally
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.asset(
-                "assets/icons/Back_arrow.png",
-                height: 35,
-                width: 35,
+            Positioned(
+              top: 30, // Adjust vertically
+              left: 12, // Adjust horizontally
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  "assets/icons/Back_arrow.png",
+                  height: 35,
+                  width: 35,
+                ),
               ),
             ),
-          ),
 
-          // Main content inside SafeArea
-          Positioned.fill(
-            top: screenHeight * 0.20,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Change Password'.tr(),
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Enter your current and new password'.tr(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                    icon: Icons.lock_outline,
-                    hintText: 'Old Password'.tr(),
-                    controller: _oldPassController,
-                    obscureText: _obscureOld,
-                    toggle: () => setState(() => _obscureOld = !_obscureOld),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    icon: Icons.lock,
-                    hintText: 'New Password'.tr(),
-                    controller: _newPassController,
-                    obscureText: _obscureNew,
-                    toggle: () => setState(() => _obscureNew = !_obscureNew),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    icon: Icons.lock,
-                    hintText: 'Confirm Password'.tr(),
-                    controller: _confirmPassController,
-                    obscureText: _obscureConfirm,
-                    toggle: () =>
-                        setState(() => _obscureConfirm = !_obscureConfirm),
-                  ),
-                  const SizedBox(height: 40),
-                  SizedBox(
-                    width: screenWidth * 0.6,
-                    height: screenHeight * 0.06,
-                    child: ElevatedButton(
-                      onPressed: _changePassword,
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: const Color(0xFF7B5228),
-                      ),
-                      child: Text(
-                        'Change'.tr(),
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
+            // Main content inside SafeArea
+            Positioned.fill(
+              top: screenHeight * 0.20,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Change Password'.tr(),
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Enter your current and new password'.tr(),
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                      icon: Icons.lock_outline,
+                      hintText: 'Old Password'.tr(),
+                      controller: _oldPassController,
+                      obscureText: _obscureOld,
+                      toggle: () => setState(() => _obscureOld = !_obscureOld),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      icon: Icons.lock,
+                      hintText: 'New Password'.tr(),
+                      controller: _newPassController,
+                      obscureText: _obscureNew,
+                      toggle: () => setState(() => _obscureNew = !_obscureNew),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      icon: Icons.lock,
+                      hintText: 'Confirm Password'.tr(),
+                      controller: _confirmPassController,
+                      obscureText: _obscureConfirm,
+                      toggle: () =>
+                          setState(() => _obscureConfirm = !_obscureConfirm),
+                    ),
+                    const SizedBox(height: 40),
+                    SizedBox(
+                      width: screenWidth * 0.6,
+                      height: screenHeight * 0.06,
+                      child: ElevatedButton(
+                        onPressed: _changePassword,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: const Color(0xFF7B5228),
+                        ),
+                        child: Text(
+                          'Change'.tr(),
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

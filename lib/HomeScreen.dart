@@ -329,7 +329,83 @@ class HomeScreen extends StatelessWidget {
             child: Builder(
               builder: (context) => GestureDetector(
                 onTap: () {
-                  Scaffold.of(context).openDrawer();
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    Scaffold.of(context).openDrawer();
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor:
+                            Color(0xFFE5D188), // Light yellow background
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        title: Text(
+                          'Login Required',
+                          style: TextStyle(
+                            color: Color(0xFF7B5228), // Brown color
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          'Please log in to access the menu.',
+                          style: TextStyle(
+                            color: Colors.black87,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Colors.grey.shade400, // Light grey for Cancel
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(); // Just close the dialog
+                            },
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Color(0xFF7B5228), // Brown for Login
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AboutUsScreen()),
+                              );
+                            },
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
                 child: Image.asset(
                   "assets/icons/menu.png",

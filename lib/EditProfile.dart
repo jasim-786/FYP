@@ -123,6 +123,7 @@ class _EditProfileState extends State<EditProfile> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: Drawer(
         child: Container(
@@ -238,225 +239,232 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Positioned(
-            top: -1,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Top.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.25,
-              width: screenWidth,
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss the keyboard when tapping outside the TextField
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            Positioned(
+              top: -1,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                "assets/images/Top.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.25,
+                width: screenWidth,
+              ),
             ),
-          ),
-          // Sidebar Icon at Top Right
-          Positioned(
-            top: 25,
-            right: 5,
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png",
-                  height: 62,
-                  width: 62,
+            // Sidebar Icon at Top Right
+            Positioned(
+              top: 25,
+              right: 5,
+              child: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Image.asset(
+                    "assets/icons/menu.png",
+                    height: 62,
+                    width: 62,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Bottom.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.2,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            top: 30, // Adjust vertically
-            left: 12, // Adjust horizontally
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Image.asset(
-                "assets/icons/Back_arrow.png",
-                height: 35,
-                width: 35,
+                "assets/images/Bottom.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.2,
+                width: screenWidth,
               ),
             ),
-          ),
-          Positioned.fill(
-            top: screenHeight * 0.16,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Transform.translate(
-                        offset: const Offset(-30, -40),
-                        child: Image.asset(
-                          "assets/icons/edit_icon.png",
-                          height: screenHeight * 0.14,
-                          width: screenHeight * 0.14,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Transform.translate(
-                        offset: const Offset(-40, -10),
-                        child: Text(
-                          'Edit\nProfile'.tr(),
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.08,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+            Positioned(
+              top: 30, // Adjust vertically
+              left: 12, // Adjust horizontally
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  "assets/icons/Back_arrow.png",
+                  height: 35,
+                  width: 35,
+                ),
+              ),
+            ),
+            Positioned.fill(
+              top: screenHeight * 0.16,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(-30, -40),
+                          child: Image.asset(
+                            "assets/icons/edit_icon.png",
+                            height: screenHeight * 0.14,
+                            width: screenHeight * 0.14,
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: const Color(0xFF7B5228),
-                            width: 2.0,
+                        const SizedBox(width: 8),
+                        Transform.translate(
+                          offset: const Offset(-40, -10),
+                          child: Text(
+                            'Edit\nProfile'.tr(),
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.08,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 5,
-                              offset: Offset(1, 1),
-                            ),
-                          ],
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(height: 8),
-                            _buildTextField(
-                              Icons.person,
-                              'Fullname'.tr(),
-                              _fullnameController,
-                              isEditable: _isNameEditable,
-                              onEdit: () {
-                                setState(() {
-                                  _isNameEditable = !_isNameEditable;
-                                });
-                              },
+                      ],
+                    ),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFF7B5228),
+                              width: 2.0,
                             ),
-                            const SizedBox(height: 16),
-                            _buildTextField(
-                              Icons.email,
-                              'Email Address'.tr(),
-                              _emailController,
-                              isEditable: _isEmailEditable,
-                              onEdit: () {
-                                setState(() {
-                                  _isEmailEditable = !_isEmailEditable;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            _buildTextField(
-                              Icons.phone,
-                              'Phone Number'.tr(),
-                              _phoneController,
-                              isEditable: _isPhoneEditable,
-                              onEdit: () {
-                                setState(() {
-                                  _isPhoneEditable = !_isPhoneEditable;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            _buildTextField(
-                              Icons.lock,
-                              '**************'.tr(),
-                              _passwordController,
-                              isPassword: true,
-                              isEditable:
-                                  false, // password shouldn't be editable here
-                              onEdit: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ChangePassword()),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: -80,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: SizedBox(
-                            width: screenWidth * 0.5,
-                            height: screenHeight * 0.06,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                final user = FirebaseAuth.instance.currentUser;
-                                if (user != null) {
-                                  await FirebaseFirestore.instance
-                                      .collection('user_details')
-                                      .doc(user.uid)
-                                      .update({
-                                    'Full_name': _fullnameController.text,
-                                    'Email': _emailController.text,
-                                    'Phone Number': _phoneController.text,
-                                    // Password change not allowed here for security
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Profile updated successfully')),
-                                  );
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: const Color(0xFF7B5228),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 5,
+                                offset: Offset(1, 1),
                               ),
-                              child: Text(
-                                'Save'.tr(),
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(height: 8),
+                              _buildTextField(
+                                Icons.person,
+                                'Fullname'.tr(),
+                                _fullnameController,
+                                isEditable: _isNameEditable,
+                                onEdit: () {
+                                  setState(() {
+                                    _isNameEditable = !_isNameEditable;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              _buildTextField(
+                                Icons.email,
+                                'Email Address'.tr(),
+                                _emailController,
+                                isEditable: _isEmailEditable,
+                                onEdit: () {
+                                  setState(() {
+                                    _isEmailEditable = !_isEmailEditable;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              _buildTextField(
+                                Icons.phone,
+                                'Phone Number'.tr(),
+                                _phoneController,
+                                isEditable: _isPhoneEditable,
+                                onEdit: () {
+                                  setState(() {
+                                    _isPhoneEditable = !_isPhoneEditable;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              _buildTextField(
+                                Icons.lock,
+                                '**************'.tr(),
+                                _passwordController,
+                                isPassword: true,
+                                isEditable:
+                                    false, // password shouldn't be editable here
+                                onEdit: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ChangePassword()),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          bottom: -80,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: SizedBox(
+                              width: screenWidth * 0.5,
+                              height: screenHeight * 0.06,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final user =
+                                      FirebaseAuth.instance.currentUser;
+                                  if (user != null) {
+                                    await FirebaseFirestore.instance
+                                        .collection('user_details')
+                                        .doc(user.uid)
+                                        .update({
+                                      'Full_name': _fullnameController.text,
+                                      'Email': _emailController.text,
+                                      'Phone Number': _phoneController.text,
+                                      // Password change not allowed here for security
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Profile updated successfully')),
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: const Color(0xFF7B5228),
+                                ),
+                                child: Text(
+                                  'Save'.tr(),
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -534,6 +542,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 }
 
+/// Custom Sidebar Button
 Widget buildSidebarButton({
   IconData? icon,
   String? customIconPath,
@@ -542,12 +551,13 @@ Widget buildSidebarButton({
 }) {
   return Padding(
     padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+        EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
     child: GestureDetector(
       onTap: onTap,
       child: Transform.translate(
         offset: Offset(-10, 0), // Move button slightly left
         child: Container(
+          height: 64,
           width: 250,
           decoration: BoxDecoration(
             color: Color(0xFF7B5228), // Brown background for button
