@@ -1,7 +1,7 @@
 // ignore_for_file: use_super_parameters, use_build_context_synchronously, file_names
+//adding refresh and sorting
 
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +10,7 @@ import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class PreviousResultsScreen extends StatefulWidget {
   const PreviousResultsScreen({Key? key}) : super(key: key);
@@ -20,6 +21,8 @@ class PreviousResultsScreen extends StatefulWidget {
 
 class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
+  String _sortOrder = 'Latest';
+  List<Map<String, dynamic>> _historyData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +69,24 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
           );
         },
       );
+    }
+
+    Future<void> _refresh() async {
+      setState(() {}); // Trigger rebuild
+    }
+
+    List<FlSpot> _generateSpots() {
+      Map<DateTime, int> counts = {};
+      for (var item in _historyData) {
+        DateTime date = item['date'];
+        counts[date] = (counts[date] ?? 0) + 1;
+      }
+      final sortedKeys = counts.keys.toList()..sort();
+      List<FlSpot> spots = [];
+      for (int i = 0; i < sortedKeys.length; i++) {
+        spots.add(FlSpot(i.toDouble(), counts[sortedKeys[i]]!.toDouble()));
+      }
+      return spots;
     }
 
     return Scaffold(
@@ -182,123 +203,215 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
       body: Stack(
         children: [
           // Foreground content
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        top: 70, left: 5), // moved up and to the left
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Text(
-                      'Previous Results'.tr(),
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF7B5228),
+          Positioned.fill(
+            top: screenHeight * 0.05,
+            bottom: screenHeight * 0.18,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 66, left: 0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        child: Text(
+                          'Previous Results'.tr(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF7B5228),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Expanded List + Refresh
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.02,
+                      ),
+                      child: RefreshIndicator(
+                        onRefresh: _refresh,
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('disease_detections')
+                              .where('userId', isEqualTo: user?.uid)
+                              .orderBy('timestamp',
+                                  descending: _sortOrder == 'Latest')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            if (!snapshot.hasData ||
+                                snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  'No previous results found.'.tr(),
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.grey),
+                                ),
+                              );
+                            }
+
+                            // Prepare chart data
+                            _historyData = snapshot.data!.docs.map((doc) {
+                              final timestamp = doc['timestamp'] as Timestamp;
+                              final date = timestamp.toDate();
+                              return {
+                                'date':
+                                    DateTime(date.year, date.month, date.day),
+                              };
+                            }).toList();
+
+                            return Column(
+                              children: [
+                                // History chart
+                                if (_historyData.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: SizedBox(
+                                      height: 180,
+                                      child: LineChart(
+                                        LineChartData(
+                                          gridData: FlGridData(show: false),
+                                          titlesData: FlTitlesData(
+                                            leftTitles: AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: true),
+                                            ),
+                                            bottomTitles: AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: false),
+                                            ),
+                                          ),
+                                          borderData: FlBorderData(show: true),
+                                          lineBarsData: [
+                                            LineChartBarData(
+                                              spots: _generateSpots(),
+                                              isCurved: true,
+                                              color: Color(0xFF7B5228),
+                                              barWidth: 3,
+                                              belowBarData:
+                                                  BarAreaData(show: false),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 0, right: 16),
+                                  child: DropdownButton<String>(
+                                    value: _sortOrder,
+                                    items: ['Latest', 'Oldest']
+                                        .map((value) => DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            ))
+                                        .toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _sortOrder = value!;
+                                      });
+                                    },
+                                  ),
+                                ),
+
+                                // Scrollable list
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: snapshot.data!.docs.length,
+                                    padding: EdgeInsets.only(bottom: 15),
+                                    itemBuilder: (context, index) {
+                                      final doc = snapshot.data!.docs[index];
+                                      final String disease = doc['prediction'];
+                                      final String base64Image =
+                                          doc['image_base64'];
+                                      final Timestamp timestamp =
+                                          doc['timestamp'];
+                                      final DateTime dateTime =
+                                          timestamp.toDate();
+
+                                      return Card(
+                                        elevation: 10,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          side: BorderSide(
+                                              color: Color(0xFF7B5228),
+                                              width: 1.5),
+                                        ),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 10),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                child: Image.memory(
+                                                  base64Decode(base64Image),
+                                                  height: 100,
+                                                  width: 100,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              SizedBox(width: 15),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Prediction: $disease",
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20,
+                                                        color:
+                                                            Color(0xFF7B5228),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    Text(
+                                                      "Date: ${dateTime.day}/${dateTime.month}/${dateTime.year}  "
+                                                      "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.grey[800],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-
-                // Expanded scrollable results
-                Expanded(
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('disease_detections')
-                          .where('userId', isEqualTo: user?.uid)
-                          .orderBy('timestamp', descending: true)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Center(
-                            child: Text(
-                              'No previous results found.'.tr(),
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
-                            ),
-                          );
-                        }
-
-                        return ListView.builder(
-                          padding: EdgeInsets.only(bottom: 16),
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            final doc = snapshot.data!.docs[index];
-                            final String disease = doc['prediction'];
-                            final String base64Image = doc['image_base64'];
-                            final Timestamp timestamp = doc['timestamp'];
-                            final DateTime dateTime = timestamp.toDate();
-
-                            return Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                side: BorderSide(
-                                    color: Color(0xFF7B5228), width: 1.5),
-                              ),
-                              margin: EdgeInsets.symmetric(vertical: 10),
-                              child: Padding(
-                                padding: EdgeInsets.all(12),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.memory(
-                                        base64Decode(base64Image),
-                                        height: 120,
-                                        width: 120,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Prediction: $disease",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                              color: Color(0xFF7B5228),
-                                            ),
-                                          ),
-                                          SizedBox(height: 6),
-                                          Text(
-                                            "Date: ${dateTime.day}/${dateTime.month}/${dateTime.year}  "
-                                            "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.grey[800],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Positioned(
