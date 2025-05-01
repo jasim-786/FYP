@@ -290,12 +290,23 @@ class _DetectionScreenState extends State<DetectionScreen> {
       final imageBytes = await imageFile.readAsBytes();
       final base64Image = base64Encode(imageBytes);
 
+      // Load treatments from solutions.json
+      final jsonString = await rootBundle.loadString('assets/solutions.json');
+      final Map<String, dynamic> allData = json.decode(jsonString);
+
+      // Find treatments for the detected disease
+      final diseaseData = allData[diseaseName];
+      Map<String, dynamic> treatments = diseaseData?['treatments'] ?? {};
+      List<dynamic> prevention = diseaseData?['prevention'] ?? [];
+
       // Save to Firestore
       await FirebaseFirestore.instance.collection('disease_detections').add({
         'userId': user.uid,
         'timestamp': Timestamp.now(),
         'prediction': diseaseName,
         'image_base64': base64Image,
+        'treatments': treatments,
+        'prevention': prevention,
       });
 
       print("✅ Detection result uploaded to Firestore.");

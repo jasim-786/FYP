@@ -45,6 +45,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   // Fetch previous feedbacks from Firestore
   Future<void> fetchPreviousFeedbacks() async {
     try {
+      // Fetch all feedbacks, not filtered by user
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('feedbacks')
           .orderBy('timestamp', descending: true)
@@ -53,9 +54,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       setState(() {
         previousFeedbacks = querySnapshot.docs.map((doc) {
           return {
-            'name': doc['name'],
             'feedback': doc['feedback'],
-            'rating': doc['rating'],
+            'category': doc['category'],
+            'emoji': doc['emoji'],
           };
         }).toList();
       });
@@ -69,7 +70,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     if (user == null) return;
 
     final feedbackData = {
-      'uid': user.uid,
+      'userId': user.uid,
       'feedback': _feedbackController.text,
       'category': _selectedCategory,
       'emoji': _emojis[_selectedEmojiIndex],
@@ -410,6 +411,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                           itemBuilder: (context, index) {
                                             final feedback =
                                                 previousFeedbacks[index];
+                                            final emoji = feedback['emoji'] ??
+                                                0; // Set a default value (e.g., 0) if rating is null
                                             return Padding(
                                               padding: const EdgeInsets.only(
                                                   bottom: 16.0),
@@ -431,30 +434,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      feedback['name'],
+                                                      emoji,
                                                       style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontSize: 24,
                                                       ),
                                                     ),
                                                     const SizedBox(height: 8),
-                                                    Row(
-                                                      children: List.generate(5,
-                                                          (starIndex) {
-                                                        return Icon(
-                                                          feedback['rating'] >
-                                                                  starIndex
-                                                              ? Icons.star
-                                                              : Icons
-                                                                  .star_border,
-                                                          color: Colors.yellow,
-                                                          size: 20,
-                                                        );
-                                                      }),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(feedback['feedback']),
+                                                    Text(feedback['feedback'] ??
+                                                        'No feedback provided'),
                                                   ],
                                                 ),
                                               ),
