@@ -204,7 +204,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
         result = "Prediction: $disease";
       });
       await _storeDetectionResult(disease);
-      await _showTreatmentDialog(disease.replaceAll(' ', '_'));
+      if (user != null) {
+        await _showTreatmentDialog(disease.replaceAll(' ', '_'));
+      } else {
+        // Optionally show a login prompt
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please log in to view treatments.')),
+        );
+      }
     } catch (e) {
       print("❌ Error during detection: $e");
       setState(() {
