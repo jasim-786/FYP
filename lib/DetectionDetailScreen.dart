@@ -101,21 +101,20 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
           'Detection_Report_${DateTime.now().millisecondsSinceEpoch}.pdf';
 
       if (Platform.isAndroid) {
-        targetDir = Directory(
-            '/storage/emulated/0/Download'); // public Downloads folder
+        targetDir = await getExternalStorageDirectory();
       } else {
         targetDir = await getApplicationDocumentsDirectory();
       }
 
-      if (await targetDir.exists()) {
+      if (targetDir != null && await targetDir.exists()) {
         final file = File('${targetDir.path}/$fileName');
         await file.writeAsBytes(await pdf.save());
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("✅ PDF saved to Downloads as $fileName")),
+          SnackBar(content: Text("✅ PDF saved to Documents as $fileName")),
         );
       } else {
-        throw Exception("Download folder not found.");
+        throw Exception("Target folder not found.");
       }
     } catch (e) {
       print("PDF save error: $e");

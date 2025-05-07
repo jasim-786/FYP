@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, file_names, prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: avoid_print, file_names, prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_null_comparison
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
 import 'package:flutter_application_1/CompareImagesScreen.dart';
+import 'package:flutter_application_1/CropDiaryScreen.dart';
 import 'package:flutter_application_1/EditProfile.dart';
 import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
@@ -27,6 +28,7 @@ class PreHomeScreen extends StatelessWidget {
 
     User? user = FirebaseAuth.instance.currentUser;
     bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+    String userId = user!.uid;
 
     void logout() async {
       showDialog(
@@ -365,6 +367,26 @@ class PreHomeScreen extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         TreatmentSolutionsScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Wheat Diary".tr(),
+                            "assets/icons/home_diary.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CropDiaryScreen(userId: userId),
                                   ),
                                 );
                               } else {

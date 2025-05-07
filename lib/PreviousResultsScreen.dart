@@ -189,23 +189,22 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
     Stream<QuerySnapshot> _filteredResults() {
       Query<Map<String, dynamic>> query = FirebaseFirestore.instance
           .collection('disease_detections')
-          .where('userId', isEqualTo: user?.uid);
+          .where('userId', isEqualTo: user?.uid)
+          .orderBy('timestamp', descending: _sortOrder == 'Latest');
 
+      // Apply date filters *after* orderBy on 'timestamp'
       if (_startDate != null) {
-        query = query.where('timestamp',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(_startDate!));
+        query = query.where(
+          'timestamp',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(_startDate!),
+        );
       }
 
       if (_endDate != null) {
-        query = query.where('timestamp',
-            isLessThanOrEqualTo: Timestamp.fromDate(_endDate!));
-      }
-
-      // Apply sorting based on _sortOrder
-      if (_sortOrder == 'Latest') {
-        query = query.orderBy('timestamp', descending: true);
-      } else {
-        query = query.orderBy('timestamp', descending: false);
+        query = query.where(
+          'timestamp',
+          isLessThanOrEqualTo: Timestamp.fromDate(_endDate!),
+        );
       }
 
       return query.snapshots();
