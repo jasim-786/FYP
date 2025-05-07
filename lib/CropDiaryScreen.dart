@@ -246,7 +246,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
     super.dispose();
   }
 
-  /// Checks if this is the first launch and shows region dialog if needed.
+  /// Checks if this is the first launch and shows region dialog if needed, also checks for Tillering stage.
   Future<void> _checkFirstLaunch() async {
     final prefs = await SharedPreferences.getInstance();
     final bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
@@ -258,7 +258,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
       await prefs.setBool('isFirstLaunch', false);
     }
 
-    // Load preferences after checking first launch
+    // Load preferences
     setState(() {
       _selectedRegion = prefs.getString('region');
       final sowingDateString = prefs.getString('sowingDate');
@@ -266,17 +266,67 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
         _sowingDate = DateTime.tryParse(sowingDateString);
       }
     });
+
+    // Check for Tillering stage and send notification if needed
+    await _checkAndNotifyTillering();
   }
 
-  /// Saves user preferences to SharedPreferences.
+  /// Checks if the crop is in Tillering stage and sends a rust scan notification if not already sent.
+  Future<void> _checkAndNotifyTillering({bool fromScreenVisit = false}) async {
+    if (_sowingDate == null) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    final daysSinceSowing = now.difference(_sowingDate!).inDays;
+
+    // Find current stage
+    final currentStage = AppConstants.growthStages.firstWhere(
+      (stage) {
+        final start = stage['daysAfterSowing'] as int;
+        final duration = stage['duration'] as int;
+        return daysSinceSowing >= start && daysSinceSowing < start + duration;
+      },
+      orElse: () => AppConstants.growthStages.last,
+    );
+
+    if (currentStage['stage'] == 'Tillering') {
+      final String notificationKey =
+          'tillering_notification_${_sowingDate!.toIso8601String()}';
+      final bool notificationSent = prefs.getBool(notificationKey) ?? false;
+
+      if (!notificationSent || fromScreenVisit) {
+        await _showNotification(
+          'Rust Disease Alert',
+          'Your crop is in the Tillering stage. Please scan for rust disease.',
+        );
+        // Mark notification as sent only for stage-based trigger, not screen visit
+        if (!fromScreenVisit) {
+          await prefs.setBool(notificationKey, true);
+        }
+      }
+    }
+  }
+
+  /// Saves user preferences to SharedPreferences and resets Tillering notification if sowing date changes.
   Future<void> _savePreferences() async {
     final prefs = await SharedPreferences.getInstance();
+    final previousSowingDate = prefs.getString('sowingDate');
+
     if (_selectedRegion != null) {
       await prefs.setString('region', _selectedRegion!);
     }
     if (_sowingDate != null) {
-      await prefs.setString('sowingDate', _sowingDate!.toIso8601String());
+      final newSowingDate = _sowingDate!.toIso8601String();
+      await prefs.setString('sowingDate', newSowingDate);
+      // Reset Tillering notification if sowing date changes
+      if (previousSowingDate != newSowingDate) {
+        final oldNotificationKey = 'tillering_notification_$previousSowingDate';
+        await prefs.remove(oldNotificationKey);
+      }
     }
+
+    // Check for Tillering stage after saving new sowing date
+    await _checkAndNotifyTillering();
   }
 
   /// Shows a dialog for initial region selection, preventing dismissal until a region is selected.
@@ -988,6 +1038,11 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
       );
     }
 
+    // Check for Tillering stage on screen visit
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndNotifyTillering(fromScreenVisit: true);
+    });
+
     final now = DateTime.now();
     final daysSinceSowing = now.difference(_sowingDate!).inDays;
     final currentStage = AppConstants.growthStages.firstWhere(
@@ -1516,7 +1571,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
             child: CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  expandedHeight: 90,
+                  expandedHeight: 80,
                   floating: true,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
@@ -1530,6 +1585,25 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                     ),
                   ),
                   backgroundColor: AppConstants.primaryColor,
+                  leading: IconButton(
+                    icon: Image.asset(
+                      "assets/icons/Back_arrow.png",
+                      height: 35,
+                      width: 35,
+                      color: Colors
+                          .white, // Optional: tint with white to match theme
+                    ),
+                    onPressed: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      } else {
+                        // Optional: Handle case where back navigation isn't possible
+                        _showErrorDialog('Navigation Error',
+                            'No previous screen to go back to.');
+                      }
+                    },
+                    tooltip: 'Back',
+                  ),
                 ),
                 SliverToBoxAdapter(child: _buildKebabMenu()),
                 SliverToBoxAdapter(child: _buildSettingsSection()),
