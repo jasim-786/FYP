@@ -17,6 +17,7 @@ import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:flutter_application_1/TimeWidget.dart';
 import 'package:flutter_application_1/TreatmentSolutionsScreen.dart';
 import 'package:flutter_application_1/WeatherWidget.dart';
+import 'package:flutter_application_1/WheatResourceEstimatorScreen.dart';
 
 class PreHomeScreen extends StatelessWidget {
   const PreHomeScreen({super.key});
@@ -387,6 +388,26 @@ class PreHomeScreen extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         CropDiaryScreen(userId: userId),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Wheat Diary".tr(),
+                            "assets/icons/home_land.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        WheatResourceEstimatorScreen(),
                                   ),
                                 );
                               } else {
