@@ -1,19 +1,14 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_1/AboutUsScreen.dart';
-import 'package:flutter_application_1/LoginScreen.dart';
-import 'package:flutter_application_1/Onboarding1.dart';
-import 'package:flutter_application_1/PreHomeScreen.dart';
-import 'package:flutter_application_1/PreviousResultsScreen.dart';
-import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:location/location.dart';
 
 class AppConstants {
   static const primaryColor = Color(0xFF7B5228); // Rich brown
@@ -56,6 +51,11 @@ class AppConstants {
     'Khyber Pakhtunkhwa - Irrigated',
     'Balochistan'
   ];
+  static const openWeatherApiKey = '4ab9233283f57f45274343fb85c16583';
+  static const fallbackCoordinates = {
+    'lat': 30.3753, // Multan (Punjab - Cotton Zone)
+    'lon': 71.6922,
+  };
   static const List<Map<String, dynamic>> growthStages = [
     {
       'stage': 'Germination',
@@ -228,52 +228,10 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
   DateTime? _sowingDate;
   late AnimationController _fabAnimationController;
   late Animation<double> _fabAnimation;
+  final Location _location = Location();
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
-  User? user = FirebaseAuth.instance.currentUser;
-  void logout() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to log out?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close dialog
-              },
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context); // Close dialog
-
-                await FirebaseAuth.instance.signOut();
-
-                // Show logout success message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Logged out successfully"),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-
-                // Navigate back to login screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   void initState() {
@@ -318,11 +276,161 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
       }
     });
 
-    // Check for Tillering stage and send notification if needed
+    // Check for Tillering stage and send notifications if needed
     await _checkAndNotifyTillering();
   }
 
-  /// Checks if the crop is in Tillering stage and sends a rust scan notification if not already sent.
+  /// Checks weather conditions using OpenWeather API for Harvesting, mock data for others.
+  Future<Map<String, dynamic>?> _checkWeatherConditions(
+      String stage, String? region) async {
+    if (region == null) return null;
+
+    switch (stage) {
+      case 'Tillering':
+        return {
+          'condition': 'High Humidity',
+          'message':
+              'High humidity detected during Tillering. Increase monitoring for rust disease.'
+        };
+      case 'Flowering/Anthesis':
+        return {
+          'condition': 'High Temperature',
+          'message':
+              'High temperatures during Flowering/Anthesis. Apply biostimulants to counter heat stress.'
+        };
+      case 'Harvesting':
+        try {
+          bool serviceEnabled;
+          PermissionStatus permissionGranted;
+
+          // Check if location services are enabled
+          serviceEnabled = await _location.serviceEnabled();
+          if (!serviceEnabled) {
+            serviceEnabled = await _location.requestService();
+            if (!serviceEnabled) {
+              _showErrorDialog(
+                  'Location Error', 'Location services are disabled.');
+              // Use fallback coordinates
+              final lat = AppConstants.fallbackCoordinates['lat'];
+              final lon = AppConstants.fallbackCoordinates['lon'];
+              return await _fetchWeatherData(lat!, lon!, region);
+            }
+          }
+
+          // Check location permissions
+          permissionGranted = await _location.hasPermission();
+          if (permissionGranted == PermissionStatus.denied) {
+            permissionGranted = await _location.requestPermission();
+            if (permissionGranted != PermissionStatus.granted) {
+              _showErrorDialog('Permission Error',
+                  'Location permissions are required for weather forecasts.');
+              // Use fallback coordinates
+              final lat = AppConstants.fallbackCoordinates['lat'];
+              final lon = AppConstants.fallbackCoordinates['lon'];
+              return await _fetchWeatherData(lat!, lon!, region);
+            }
+          }
+
+          // Get current location
+          final locationData = await _location.getLocation();
+          final lat = locationData.latitude;
+          final lon = locationData.longitude;
+          if (lat == null || lon == null) {
+            _showErrorDialog(
+                'Location Error', 'Failed to retrieve location data.');
+            // Use fallback coordinates
+            final fallbackLat = AppConstants.fallbackCoordinates['lat'];
+            final fallbackLon = AppConstants.fallbackCoordinates['lon'];
+            return await _fetchWeatherData(fallbackLat!, fallbackLon!, region);
+          }
+
+          return await _fetchWeatherData(lat, lon, region);
+        } catch (e) {
+          print('Weather API or Location error: $e');
+          // Use fallback coordinates on error
+          final lat = AppConstants.fallbackCoordinates['lat'];
+          final lon = AppConstants.fallbackCoordinates['lon'];
+          return await _fetchWeatherData(lat!, lon!, region);
+        }
+      default:
+        return null; // No weather alert for other stages
+    }
+  }
+
+  /// Fetches weather data from OpenWeather API for given coordinates.
+  Future<Map<String, dynamic>?> _fetchWeatherData(
+      double lat, double lon, String region) async {
+    try {
+      final url =
+          'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=${AppConstants.openWeatherApiKey}';
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final weather = data['weather'] as List<dynamic>;
+        if (weather.isNotEmpty && weather[0]['main'] == 'Rain') {
+          return {
+            'condition': 'Rain Forecast',
+            'message':
+                'Rain is expected in $region. Avoid harvesting to prevent crop damage.'
+          };
+        }
+      }
+      return null; // No rain forecast
+    } catch (e) {
+      print('Weather API error: $e');
+      return null; // Fallback to no rain forecast on error
+    }
+  }
+
+  /// Shows a weather alert dialog based on the current crop stage and weather conditions.
+  Future<void> _showWeatherAlertDialog(
+      String stage, Map<String, dynamic> weatherData,
+      {bool fromScreenVisit = false}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String weatherAlertKey =
+        'weather_alert_${stage}_${_sowingDate!.toIso8601String()}';
+    final bool weatherAlertShown = prefs.getBool(weatherAlertKey) ?? false;
+
+    if (!weatherAlertShown || fromScreenVisit) {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(
+            'Weather Alert',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppConstants.primaryColor,
+            ),
+          ),
+          content: Text(
+            '${weatherData['condition']}: ${weatherData['message']}',
+            style: const TextStyle(color: AppConstants.primaryColor),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'OK',
+                style: TextStyle(color: AppConstants.accentColor),
+              ),
+            ),
+          ],
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+
+      // Mark alert as shown only for stage-based triggers
+      if (!fromScreenVisit) {
+        await prefs.setBool(weatherAlertKey, true);
+      }
+    }
+  }
+
+  /// Checks if the crop is in Tillering stage and sends rust, fertilizer, and weather notifications if needed.
   Future<void> _checkAndNotifyTillering({bool fromScreenVisit = false}) async {
     if (_sowingDate == null) return;
 
@@ -340,25 +448,52 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
       orElse: () => AppConstants.growthStages.last,
     );
 
-    if (currentStage['stage'] == 'Tillering') {
-      final String notificationKey =
-          'tillering_notification_${_sowingDate!.toIso8601String()}';
-      final bool notificationSent = prefs.getBool(notificationKey) ?? false;
+    final stageName = currentStage['stage'] as String;
+    final weatherData =
+        await _checkWeatherConditions(stageName, _selectedRegion);
 
-      if (!notificationSent || fromScreenVisit) {
+    // Handle Tillering-specific notifications
+    if (stageName == 'Tillering') {
+      final String rustNotificationKey =
+          'tillering_rust_notification_${_sowingDate!.toIso8601String()}';
+      final String fertilizerNotificationKey =
+          'tillering_fertilizer_notification_${_sowingDate!.toIso8601String()}';
+      final bool rustNotificationSent =
+          prefs.getBool(rustNotificationKey) ?? false;
+      final bool fertilizerNotificationSent =
+          prefs.getBool(fertilizerNotificationKey) ?? false;
+
+      // Rust disease notification
+      if (!rustNotificationSent || fromScreenVisit) {
         await _showNotification(
           'Rust Disease Alert',
           'Your crop is in the Tillering stage. Please scan for rust disease.',
         );
-        // Mark notification as sent only for stage-based trigger, not screen visit
         if (!fromScreenVisit) {
-          await prefs.setBool(notificationKey, true);
+          await prefs.setBool(rustNotificationKey, true);
+        }
+      }
+
+      // Fertilizer top-dressing notification
+      if (!fertilizerNotificationSent || fromScreenVisit) {
+        await _showNotification(
+          'Fertilizer Alert',
+          'Your crop is in the Tillering stage. Apply fertilizer top-dressing.',
+        );
+        if (!fromScreenVisit) {
+          await prefs.setBool(fertilizerNotificationKey, true);
         }
       }
     }
+
+    // Weather alert for any stage with relevant weather conditions
+    if (weatherData != null) {
+      await _showWeatherAlertDialog(stageName, weatherData,
+          fromScreenVisit: fromScreenVisit);
+    }
   }
 
-  /// Saves user preferences to SharedPreferences and resets Tillering notification if sowing date changes.
+  /// Saves user preferences to SharedPreferences and resets Tillering and weather notifications if sowing date changes.
   Future<void> _savePreferences() async {
     final prefs = await SharedPreferences.getInstance();
     final previousSowingDate = prefs.getString('sowingDate');
@@ -369,14 +504,24 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
     if (_sowingDate != null) {
       final newSowingDate = _sowingDate!.toIso8601String();
       await prefs.setString('sowingDate', newSowingDate);
-      // Reset Tillering notification if sowing date changes
+      // Reset Tillering and weather notifications if sowing date changes
       if (previousSowingDate != newSowingDate) {
-        final oldNotificationKey = 'tillering_notification_$previousSowingDate';
-        await prefs.remove(oldNotificationKey);
+        final oldRustNotificationKey =
+            'tillering_rust_notification_$previousSowingDate';
+        final oldFertilizerNotificationKey =
+            'tillering_fertilizer_notification_$previousSowingDate';
+        for (var stage in AppConstants.growthStages) {
+          final stageName = stage['stage'] as String;
+          final oldWeatherAlertKey =
+              'weather_alert_${stageName}_$previousSowingDate';
+          await prefs.remove(oldWeatherAlertKey);
+        }
+        await prefs.remove(oldRustNotificationKey);
+        await prefs.remove(oldFertilizerNotificationKey);
       }
     }
 
-    // Check for Tillering stage after saving new sowing date
+    // Check for Tillering stage and weather conditions after saving new sowing date
     await _checkAndNotifyTillering();
   }
 
@@ -654,6 +799,33 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
         AppConstants.activityTypes.first;
     String stage = entry?['crop_stage'] ?? AppConstants.cropStages.first;
     _reminderTime = null;
+    bool isRainForecast = false;
+    String? rainMessage;
+
+    // Check if crop is in Harvesting stage and if rain is forecast
+    if (_sowingDate != null) {
+      final now = DateTime.now();
+      final daysSinceSowing = now.difference(_sowingDate!).inDays;
+      final currentStage = AppConstants.growthStages.firstWhere(
+        (stage) {
+          final start = stage['daysAfterSowing'] as int;
+          final duration = stage['duration'] as int;
+          return daysSinceSowing >= start && daysSinceSowing < start + duration;
+        },
+        orElse: () => AppConstants.growthStages.last,
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final weatherData = await _checkWeatherConditions(
+            currentStage['stage'] as String, _selectedRegion);
+        if (weatherData != null &&
+            weatherData['condition'] == 'Rain Forecast') {
+          setState(() {
+            isRainForecast = activity == 'Harvest';
+            rainMessage = weatherData['message'] as String;
+          });
+        }
+      });
+    }
 
     showGeneralDialog(
       context: context,
@@ -717,8 +889,43 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                                           const TextStyle(color: Colors.white)),
                                 ))
                             .toList(),
-                        onChanged: (value) =>
-                            setDialogState(() => activity = value!),
+                        onChanged: (value) async {
+                          setDialogState(() {
+                            activity = value!;
+                            // Re-check weather conditions when activity changes
+                            if (_sowingDate != null) {
+                              final now = DateTime.now();
+                              final daysSinceSowing =
+                                  now.difference(_sowingDate!).inDays;
+                              final currentStage =
+                                  AppConstants.growthStages.firstWhere(
+                                (stage) {
+                                  final start = stage['daysAfterSowing'] as int;
+                                  final duration = stage['duration'] as int;
+                                  return daysSinceSowing >= start &&
+                                      daysSinceSowing < start + duration;
+                                },
+                                orElse: () => AppConstants.growthStages.last,
+                              );
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback((_) async {
+                                final weatherData =
+                                    await _checkWeatherConditions(
+                                        currentStage['stage'] as String,
+                                        _selectedRegion);
+                                setDialogState(() {
+                                  isRainForecast = value == 'Harvest' &&
+                                      weatherData != null &&
+                                      weatherData['condition'] ==
+                                          'Rain Forecast';
+                                  rainMessage = isRainForecast
+                                      ? (weatherData!['message'] as String)
+                                      : null;
+                                });
+                              });
+                            }
+                          });
+                        },
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
@@ -782,6 +989,19 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                           }
                         },
                       ),
+                      if (isRainForecast) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          rainMessage ??
+                              'Cannot add Harvest activity due to expected rain.',
+                          style: const TextStyle(
+                            color: Colors.redAccent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -793,56 +1013,61 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppConstants.accentColor,
+                              backgroundColor: isRainForecast
+                                  ? Colors.grey
+                                  : AppConstants.accentColor,
                               foregroundColor: AppConstants.primaryColor,
                               elevation: 4,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            onPressed: () async {
-                              final notes = notesController.text.trim();
-                              if (notes.isEmpty) {
-                                _showErrorDialog('Validation Error',
-                                    'Please enter notes for the entry.');
-                                return;
-                              }
-                              try {
-                                if (isEdit) {
-                                  await FirebaseFirestore.instance
-                                      .collection('crop_diary')
-                                      .doc(widget.userId)
-                                      .collection('logs')
-                                      .doc(entry!.id)
-                                      .update({
-                                    'activity_type': activity,
-                                    'crop_stage': stage,
-                                    'notes': notes,
-                                  });
-                                  _showNotification('Entry Updated',
-                                      'Your crop diary entry has been updated.');
-                                } else {
-                                  await FirebaseFirestore.instance
-                                      .collection('crop_diary')
-                                      .doc(widget.userId)
-                                      .collection('logs')
-                                      .add({
-                                    'activity_type': activity,
-                                    'crop_stage': stage,
-                                    'notes': notes,
-                                    'date': Timestamp.now(),
-                                  });
-                                  _showNotification('Entry Added',
-                                      'A new crop diary entry has been added.');
-                                }
-                                _scheduleReminder(activity, DateTime.now());
-                                Navigator.pop(context);
-                                _loadInitialEntries();
-                              } catch (e) {
-                                _showErrorDialog('Saving Error',
-                                    'Failed to save entry. Please check your connection.');
-                              }
-                            },
+                            onPressed: isRainForecast
+                                ? null
+                                : () async {
+                                    final notes = notesController.text.trim();
+                                    if (notes.isEmpty) {
+                                      _showErrorDialog('Validation Error',
+                                          'Please enter notes for the entry.');
+                                      return;
+                                    }
+                                    try {
+                                      if (isEdit) {
+                                        await FirebaseFirestore.instance
+                                            .collection('crop_diary')
+                                            .doc(widget.userId)
+                                            .collection('logs')
+                                            .doc(entry!.id)
+                                            .update({
+                                          'activity_type': activity,
+                                          'crop_stage': stage,
+                                          'notes': notes,
+                                        });
+                                        _showNotification('Entry Updated',
+                                            'Your crop diary entry has been updated.');
+                                      } else {
+                                        await FirebaseFirestore.instance
+                                            .collection('crop_diary')
+                                            .doc(widget.userId)
+                                            .collection('logs')
+                                            .add({
+                                          'activity_type': activity,
+                                          'crop_stage': stage,
+                                          'notes': notes,
+                                          'date': Timestamp.now(),
+                                        });
+                                        _showNotification('Entry Added',
+                                            'A new crop diary entry has been added.');
+                                      }
+                                      _scheduleReminder(
+                                          activity, DateTime.now());
+                                      Navigator.pop(context);
+                                      _loadInitialEntries();
+                                    } catch (e) {
+                                      _showErrorDialog('Saving Error',
+                                          'Failed to save entry. Please check your connection.');
+                                    }
+                                  },
                             child: Text(
                               isEdit ? 'Save' : 'Add',
                               style:
@@ -1089,7 +1314,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
       );
     }
 
-    // Check for Tillering stage on screen visit
+    // Check for Tillering stage and weather conditions on screen visit
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndNotifyTillering(fromScreenVisit: true);
     });
@@ -1615,121 +1840,6 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      drawer: Drawer(
-        child: Container(
-          color: Color(0xFFE5D188), // Light yellow background
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // Top Section with Background Image
-                  Container(
-                    height: screenHeight * 0.25,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/Sidebar_Top.png"),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 20), // Spacing
-
-                  // Sidebar Buttons
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/Home_icon.png",
-                    text: 'Home'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreHomeScreen()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/profile_icon.png",
-                    text: 'Profile'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/history_icon.png",
-                    text: 'History'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviousResultsScreen()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/help_icon.png",
-                    text: 'Help'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Onboarding1()),
-                      );
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/feedback_icon.png",
-                    text: 'Feedback'.tr(),
-                    onTap: () {
-                      // Handle Profile Navigation
-                    },
-                  ),
-                  buildSidebarButton(
-                    customIconPath: "assets/icons/info_icon.png",
-                    text: 'About Us'.tr(),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AboutUsScreen()),
-                      );
-                    },
-                  ),
-                  Column(
-                    children: [
-                      if (user != null)
-                        buildSidebarButton(
-                          customIconPath: "assets/icons/logout_icon.png",
-                          text: 'Logout'.tr(),
-                          onTap: () {
-                            logout();
-                          },
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Logo Positioned Below Top Section
-              Positioned(
-                top: screenHeight * 0.1, // Adjust for desired position
-                left: 0,
-                right: 140,
-                child: Center(
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    height: 140, // Adjust size as needed
-                    width: 140, // Adjust size as needed
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
       body: Stack(
         children: [
           Container(
@@ -1737,7 +1847,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
             child: CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  expandedHeight: 80,
+                  expandedHeight: 90,
                   floating: true,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
