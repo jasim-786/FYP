@@ -196,8 +196,8 @@ class PreHomeScreen extends StatelessWidget {
             top: screenHeight * 0.02,
             child: SingleChildScrollView(
               child: Container(
-                height:
-                    screenHeight, // Ensures it can scroll beyond screen height
+                height: screenHeight +
+                    80, // Ensures it can scroll beyond screen height
                 child: Stack(
                   children: [
                     Positioned(

@@ -88,7 +88,7 @@ class _WheatResourceEstimatorScreenState
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: accentColor.withOpacity(0.3),
+        color: accentColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -134,6 +134,7 @@ class _WheatResourceEstimatorScreenState
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -145,17 +146,6 @@ class _WheatResourceEstimatorScreenState
               "assets/images/Top.png",
               fit: BoxFit.cover,
               height: screenHeight * 0.25,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Bottom.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.2,
               width: screenWidth,
             ),
           ),
@@ -185,22 +175,30 @@ class _WheatResourceEstimatorScreenState
               ),
             ),
           ),
-          Positioned(
-            top: screenHeight * 0.22,
-            left: 0,
-            right: 0,
-            bottom: 0,
+          Positioned.fill(
+            top: screenHeight * 0.12,
+            bottom: screenHeight * 0.18,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text(
-                    'Wheat Resource Estimator',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 0, left: 0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        child: Text(
+                          'Wheat Resource\nEstimator',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF7B5228),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -248,18 +246,28 @@ class _WheatResourceEstimatorScreenState
                   const SizedBox(height: 20),
                   _buildDiseaseSelection(),
                   const SizedBox(height: 20),
-                  ElevatedButton.icon(
+                  ElevatedButton(
                     onPressed: _calculateResources,
-                    icon: Icon(Icons.calculate),
-                    label: Text('Calculate Resources'),
                     style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
                       backgroundColor: primaryColor,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                      textStyle:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      padding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                      elevation: 6,
+                      shadowColor: Colors.black45,
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Calculate Resources',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -312,7 +320,80 @@ class _WheatResourceEstimatorScreenState
               ),
             ),
           ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Bottom.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.2,
+              width: screenWidth,
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  /// Custom Sidebar Button
+  Widget buildSidebarButton({
+    IconData? icon,
+    String? customIconPath,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding:
+          EdgeInsets.symmetric(vertical: 6, horizontal: 15), // Button Spacing
+      child: GestureDetector(
+        onTap: onTap,
+        child: Transform.translate(
+          offset: Offset(-10, 0), // Move button slightly left
+          child: Container(
+            height: 64,
+            width: 250,
+            decoration: BoxDecoration(
+              color: Color(0xFF7B5228), // Brown background for button
+              borderRadius: BorderRadius.circular(30), // Rounded button shape
+            ),
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            child: Row(
+              children: [
+                // Circular icon background
+                Transform.translate(
+                  offset: Offset(-8, 0), // Moves the icon slightly left
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE5D188), // Light background for icon
+                      shape: BoxShape.circle,
+                    ),
+                    padding:
+                        EdgeInsets.all(10), // Adjust for proper icon placement
+                    child: customIconPath != null
+                        ? Image.asset(
+                            customIconPath,
+                            height: 26,
+                            width: 26,
+                          )
+                        : Icon(icon, color: Colors.black, size: 24),
+                  ),
+                ),
+                SizedBox(width: 10), // Space between icon and text
+
+                // Profile text
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
