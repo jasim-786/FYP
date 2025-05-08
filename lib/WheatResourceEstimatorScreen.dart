@@ -1,4 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/AboutUsScreen.dart';
+import 'package:flutter_application_1/LoginScreen.dart';
+import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
+import 'package:flutter_application_1/PreviousResultsScreen.dart';
+import 'package:flutter_application_1/ProfileScreen.dart';
 
 class WheatResourceEstimatorScreen extends StatefulWidget {
   @override
@@ -62,6 +70,49 @@ class _WheatResourceEstimatorScreenState
         }
       });
     }
+  }
+
+  User? user = FirebaseAuth.instance.currentUser;
+  void logout() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context); // Close dialog
+
+                await FirebaseAuth.instance.signOut();
+
+                // Show logout success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Logged out successfully"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+
+                // Navigate back to login screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildSectionTitle(String title) {
@@ -135,6 +186,121 @@ class _WheatResourceEstimatorScreenState
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      drawer: Drawer(
+        child: Container(
+          color: Color(0xFFE5D188), // Light yellow background
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  // Top Section with Background Image
+                  Container(
+                    height: screenHeight * 0.25,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/Sidebar_Top.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20), // Spacing
+
+                  // Sidebar Buttons
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/Home_icon.png",
+                    text: 'Home'.tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: 'Profile'.tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/history_icon.png",
+                    text: 'History'.tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/help_icon.png",
+                    text: 'Help'.tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Onboarding1()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/feedback_icon.png",
+                    text: 'Feedback'.tr(),
+                    onTap: () {
+                      // Handle Profile Navigation
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/info_icon.png",
+                    text: 'About Us'.tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AboutUsScreen()),
+                      );
+                    },
+                  ),
+                  Column(
+                    children: [
+                      if (user != null)
+                        buildSidebarButton(
+                          customIconPath: "assets/icons/logout_icon.png",
+                          text: 'Logout'.tr(),
+                          onTap: () {
+                            logout();
+                          },
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Logo Positioned Below Top Section
+              Positioned(
+                top: screenHeight * 0.1, // Adjust for desired position
+                left: 0,
+                right: 140,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 140, // Adjust size as needed
+                    width: 140, // Adjust size as needed
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
