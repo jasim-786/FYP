@@ -41,9 +41,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
     _loadLabels(); // Load labels.txt
   }
 
-  Future<void> _showTreatmentDialog(String diseaseKey) async {
+  Future<void> _showTreatmentBottomSheet(String diseaseKey) async {
     try {
-      // Load and decode the JSON file
       final jsonString = await rootBundle.loadString('assets/solutions.json');
       final Map<String, dynamic> allData = json.decode(jsonString);
 
@@ -55,14 +54,12 @@ class _DetectionScreenState extends State<DetectionScreen> {
       final treatments = diseaseData['treatments'] ?? {};
       final prevention = diseaseData['prevention'] ?? [];
 
-      // Function to format lists with bullet points
       String formatList(String title, List<dynamic> items) {
         return items.isNotEmpty ? "$title\n• ${items.join('\n• ')}\n\n" : '';
       }
 
       String treatmentText = "";
 
-      // Add treatments if available
       if (treatments.isNotEmpty) {
         if (treatments['chemical'] != null) {
           treatmentText +=
@@ -78,54 +75,81 @@ class _DetectionScreenState extends State<DetectionScreen> {
         }
       }
 
-      // Add prevention tips if available
       if (prevention.isNotEmpty) {
         treatmentText += formatList("🛡️ Prevention Tips", prevention);
       }
 
-      // Show the dialog with animation
-      showGeneralDialog(
+      // Use showModalBottomSheet with a regular Container (not draggable)
+      await showModalBottomSheet(
         context: context,
-        barrierLabel: "Treatment Info",
-        barrierDismissible: true,
-        barrierColor: Colors.black54,
-        transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (context, anim1, anim2) => SizedBox.shrink(),
-        transitionBuilder: (context, animation, _, __) {
-          return Transform.scale(
-            scale: animation.value,
-            child: Opacity(
-              opacity: animation.value,
-              child: AlertDialog(
-                scrollable: true,
-                backgroundColor: Color(0xFFE5D188),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                title: Text(
-                  "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
-                  style: TextStyle(
-                    color: Color(0xFF7B5228),
-                    fontWeight: FontWeight.bold,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent, // So rounded corners show properly
+        builder: (context) {
+          return Container(
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.85),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Color(0xFFE5D188),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                content: Text(
-                  treatmentText.trim(),
-                  style: TextStyle(
-                    color: Colors.black87,
-                    height: 1.4,
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Color(0xFF7B5228),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
+                          style: TextStyle(
+                            color: Color(0xFF7B5228),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          treatmentText.trim(),
+                          style: TextStyle(
+                            color: Colors.black87,
+                            height: 1.5,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        Align(
+                          alignment: Alignment.center,
+                          child: ElevatedButton.icon(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(Icons.close, color: Colors.white),
+                            label: Text("Close",
+                                style: TextStyle(color: Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF7B5228),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Text("OK"),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
@@ -205,7 +229,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
       });
       await _storeDetectionResult(disease);
       if (user != null) {
-        await _showTreatmentDialog(disease.replaceAll(' ', '_'));
+        await _showTreatmentBottomSheet(disease.replaceAll(' ', '_'));
       } else {
         // Optionally show a login prompt
         ScaffoldMessenger.of(context).showSnackBar(
