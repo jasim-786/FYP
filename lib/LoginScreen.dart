@@ -3,6 +3,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/PhoneNumberScreen.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
@@ -134,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Main Content Positioned
             Positioned.fill(
-              top: screenHeight * 0.15,
+              top: screenHeight * 0.1,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                 child: SingleChildScrollView(
@@ -142,36 +143,39 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Logo Image
-                      Image.asset(
-                        "assets/images/logo.png",
-                        height: screenHeight * 0.17,
-                        width: screenWidth * 0.4,
-                      ),
-                      SizedBox(height: screenHeight * 0.00),
-
-                      // Welcome Text
-                      Text(
-                        isLoginSelected
-                            ? 'welcome_back'.tr()
-                            : 'create_an_account'.tr(),
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.08,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                      Transform.translate(
+                        offset:
+                            Offset(-80, -10), // Negative Y value moves it up
+                        child: Image.asset(
+                          "assets/images/logo.png",
+                          height: screenHeight * 0.17,
+                          width: screenWidth * 0.4,
                         ),
                       ),
-
-                      SizedBox(height: screenHeight * 0.01),
-
+                      // Welcome Text
+                      Transform.translate(
+                        offset: Offset(0,
+                            0), // Adjust the Y value to move it up (negative moves up)
+                        child: Text(
+                          isLoginSelected
+                              ? 'welcome_back'.tr()
+                              : 'create_an_account'.tr(),
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.08,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                       // Login Form & Buttons Stack
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
                           // Login Form Container
                           SizedBox(
-                            height: screenHeight * 0.288,
+                            height: screenHeight * 0.275,
                             child: Container(
-                              padding: EdgeInsets.all(6),
+                              padding: EdgeInsets.all(4),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(16),
@@ -424,7 +428,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
 
                       // Forgot Password & Continue Without Login
-                      SizedBox(height: 25), // Add spacing
+                      SizedBox(height: 20), // Add spacing
 
                       if (isLoginSelected)
                         TextButton(
@@ -445,36 +449,103 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                      SizedBox(height: 6), // Extra spacing
-                      SizedBox(
-                        width: screenWidth * 0.7,
-                        height: screenHeight * 0.07,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Onboarding1(),
+                      SizedBox(height: 15),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width:
+                                    screenWidth * 0.4, // Adjust width as needed
+                                height: screenHeight * 0.06,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PhoneNumberScreen(),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Color(0xFF7B5228),
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Phone Login'.tr(),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Color(0xFF7B5228),
-                            padding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(32),
+                              SizedBox(width: 16), // Space between the buttons
+                              SizedBox(
+                                width:
+                                    screenWidth * 0.4, // Adjust width as needed
+                                height: screenHeight * 0.06,
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Color(0xFF7B5228),
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Gmail Login'.tr(),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              height:
+                                  20), // Space between the row and the next button
+                          SizedBox(
+                            width: screenWidth * 0.5,
+                            height: screenHeight * 0.06,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Onboarding1(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color(0xFF7B5228),
+                                padding: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                              ),
+                              child: Text(
+                                'Login as Guest'.tr(),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                          child: Text(
-                            'Continue Without Login'.tr(),
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+                        ],
+                      )
                     ],
                   ),
                 ),
