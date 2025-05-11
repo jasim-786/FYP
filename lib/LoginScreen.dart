@@ -8,6 +8,7 @@ import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -492,7 +493,41 @@ class _LoginScreenState extends State<LoginScreen> {
                                     screenWidth * 0.4, // Adjust width as needed
                                 height: screenHeight * 0.06,
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    try {
+                                      final GoogleSignInAccount? googleUser =
+                                          await GoogleSignIn().signIn();
+
+                                      if (googleUser == null)
+                                        return; // User cancelled
+
+                                      final GoogleSignInAuthentication
+                                          googleAuth =
+                                          await googleUser.authentication;
+
+                                      final credential =
+                                          GoogleAuthProvider.credential(
+                                        accessToken: googleAuth.accessToken,
+                                        idToken: googleAuth.idToken,
+                                      );
+
+                                      // Sign in to Firebase
+                                      UserCredential userCredential =
+                                          await FirebaseAuth.instance
+                                              .signInWithCredential(credential);
+
+                                      // Optional: Navigate or show success message
+                                      final user = userCredential.user;
+                                      if (user != null) {
+                                        print(
+                                            'Signed in as ${user.displayName}');
+                                        // Navigate to home screen or show toast
+                                      }
+                                    } catch (e) {
+                                      print('Google Sign-In failed: $e');
+                                      // Show error to user
+                                    }
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.white,
                                     backgroundColor: Color(0xFF7B5228),

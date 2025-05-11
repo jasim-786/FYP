@@ -7,6 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
 class DetectionDetailScreen extends StatelessWidget {
   final String disease;
@@ -23,34 +25,91 @@ class DetectionDetailScreen extends StatelessWidget {
     required this.treatments,
     required this.prevention,
   }) : super(key: key);
-
   Future<void> _shareDetection(BuildContext context) async {
-    final bytes = base64Decode(base64Image);
     final tempDir = await getTemporaryDirectory();
-    final file =
-        await File('${tempDir.path}/detection_image.png').writeAsBytes(bytes);
+
+    // Generate the PDF
+    final pdf = pw.Document();
+    final image = base64Decode(base64Image);
+    final dateString =
+        "${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}";
+    final treatmentText = treatments.entries.map((e) {
+      final points =
+          (e.value as List<dynamic>).map((item) => "• $item").join("\n");
+      return "${e.key.toUpperCase()}:\n$points";
+    }).join("\n\n");
+    final preventionText = prevention.map((p) => "• $p").join("\n");
+
+    pdf.addPage(
+      pw.MultiPage(
+        build: (context) => [
+          pw.Text("Disease Detection Report",
+              style:
+                  pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+          pw.SizedBox(height: 16),
+          pw.Image(pw.MemoryImage(image), height: 200, fit: pw.BoxFit.cover),
+          pw.SizedBox(height: 20),
+          pw.Text("Prediction: $disease",
+              style:
+                  pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+          pw.Text("Detected on: $dateString",
+              style: pw.TextStyle(fontSize: 16)),
+          pw.SizedBox(height: 20),
+          pw.Text("Recommended Treatments",
+              style:
+                  pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+          pw.Text(treatmentText),
+          pw.SizedBox(height: 20),
+          pw.Text("Preventions",
+              style:
+                  pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+          pw.Text(preventionText),
+        ],
+      ),
+    );
+
+    // Save the PDF to a temporary file
+    final pdfFile = await File(
+            '${tempDir.path}/Detection_Report_${DateTime.now().millisecondsSinceEpoch}.pdf')
+        .writeAsBytes(await pdf.save());
 
     final text = '''
 Prediction: $disease
 Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}
 ''';
 
-    await Share.shareXFiles([XFile(file.path)], text: text);
+    // Share only the PDF
+    await Share.shareXFiles(
+      [XFile(pdfFile.path)],
+      text: text,
+    );
   }
 
-  void _generateAndDownloadPDF(BuildContext context) async {
-    // Ask for storage permission (and manageExternalStorage on Android 11+)
+  Future<void> _generateAndDownloadPDF(BuildContext context) async {
+    // Request storage permission only for Android 9 and below (API < 29)
     if (Platform.isAndroid) {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.storage,
-        Permission.manageExternalStorage,
-      ].request();
+      // Check Android version using DeviceInfoPlugin
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+      final sdkVersion = androidInfo.version.sdkInt;
 
-      if (statuses[Permission.storage] != PermissionStatus.granted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("❌ Storage permission denied")),
-        );
-        return;
+      if (sdkVersion < 29) {
+        // Android 9 (API 28) or below
+        var status = await Permission.storage.request();
+        if (status.isPermanentlyDenied) {
+          openAppSettings();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("❌ Please grant storage permission in settings")),
+          );
+          return;
+        }
+        if (!status.isGranted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("❌ Storage permission denied")),
+          );
+          return;
+        }
       }
     }
 
@@ -96,30 +155,30 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
     );
 
     try {
-      Directory? targetDir;
-      String fileName =
+      // Save to app-specific Documents directory
+      final targetDir = await getApplicationDocumentsDirectory();
+      final fileName =
           'Detection_Report_${DateTime.now().millisecondsSinceEpoch}.pdf';
-
-      if (Platform.isAndroid) {
-        targetDir = await getExternalStorageDirectory();
-      } else {
-        targetDir = await getApplicationDocumentsDirectory();
-      }
-
-      if (targetDir != null && await targetDir.exists()) {
-        final file = File('${targetDir.path}/$fileName');
-        await file.writeAsBytes(await pdf.save());
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("✅ PDF saved to Documents as $fileName")),
-        );
-      } else {
-        throw Exception("Target folder not found.");
-      }
-    } catch (e) {
-      print("PDF save error: $e");
+      final file = File('${targetDir.path}/$fileName');
+      await file.writeAsBytes(await pdf.save());
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("❌ Failed to save PDF")),
+        SnackBar(
+          content:
+              Text("✅ PDF saved to app's Documents folder. Opening now..."),
+        ),
+      );
+
+      // Open the PDF
+      final result = await OpenFile.open(file.path);
+      if (result.type != ResultType.done) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("❌ Failed to open PDF: ${result.message}")),
+        );
+      }
+    } catch (e, stackTrace) {
+      print("PDF save/open error: $e\n$stackTrace");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("❌ Failed to save or open PDF: $e")),
       );
     }
   }

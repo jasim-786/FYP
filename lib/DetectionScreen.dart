@@ -43,49 +43,56 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
   Future<void> _showTreatmentBottomSheet(String diseaseKey) async {
     try {
-      final jsonString = await rootBundle.loadString('assets/solutions.json');
-      final Map<String, dynamic> allData = json.decode(jsonString);
-
-      if (!allData.containsKey(diseaseKey)) {
-        throw Exception("Disease not found in treatment data.");
-      }
-
-      final diseaseData = allData[diseaseKey];
-      final treatments = diseaseData['treatments'] ?? {};
-      final prevention = diseaseData['prevention'] ?? [];
-
-      String formatList(String title, List<dynamic> items) {
-        return items.isNotEmpty ? "$title\n• ${items.join('\n• ')}\n\n" : '';
-      }
-
       String treatmentText = "";
 
-      if (treatments.isNotEmpty) {
-        if (treatments['chemical'] != null) {
-          treatmentText +=
-              formatList("🧪 Chemical Treatments", treatments['chemical']);
+      if (diseaseKey == "Unknown") {
+        // Show custom message for unknown cases
+        treatmentText =
+            "❗ This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results.";
+      } else {
+        // Load JSON and treatment data
+        final jsonString = await rootBundle.loadString('assets/solutions.json');
+        final Map<String, dynamic> allData = json.decode(jsonString);
+
+        if (!allData.containsKey(diseaseKey)) {
+          throw Exception("Disease not found in treatment data.");
         }
-        if (treatments['biological'] != null) {
-          treatmentText +=
-              formatList("🌱 Biological Treatments", treatments['biological']);
+
+        final diseaseData = allData[diseaseKey];
+        final treatments = diseaseData['treatments'] ?? {};
+        final prevention = diseaseData['prevention'] ?? [];
+
+        String formatList(String title, List<dynamic> items) {
+          return items.isNotEmpty ? "$title\n• ${items.join('\n• ')}\n\n" : '';
         }
-        if (treatments['cultural'] != null) {
-          treatmentText +=
-              formatList("🚜 Cultural Practices", treatments['cultural']);
+
+        if (treatments.isNotEmpty) {
+          if (treatments['chemical'] != null) {
+            treatmentText +=
+                formatList("🧪 Chemical Treatments", treatments['chemical']);
+          }
+          if (treatments['biological'] != null) {
+            treatmentText += formatList(
+                "🌱 Biological Treatments", treatments['biological']);
+          }
+          if (treatments['cultural'] != null) {
+            treatmentText +=
+                formatList("🚜 Cultural Practices", treatments['cultural']);
+          }
+        }
+
+        if (prevention.isNotEmpty) {
+          treatmentText += formatList("🛡️ Prevention Tips", prevention);
         }
       }
 
-      if (prevention.isNotEmpty) {
-        treatmentText += formatList("🛡️ Prevention Tips", prevention);
-      }
-
-      // Use showModalBottomSheet with a regular Container (not draggable)
+      // Show Bottom Sheet
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         isDismissible: false,
         enableDrag: false,
-        backgroundColor: Colors.transparent, // So rounded corners show properly
+        backgroundColor: Colors.transparent,
         builder: (context) {
           return Container(
             constraints: BoxConstraints(
@@ -113,7 +120,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
+                          diseaseKey == "Unknown"
+                              ? "Unknown Detection"
+                              : "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
                           style: TextStyle(
                             color: Color(0xFF7B5228),
                             fontSize: 20,
@@ -321,14 +330,21 @@ class _DetectionScreenState extends State<DetectionScreen> {
       final imageBytes = await imageFile.readAsBytes();
       final base64Image = base64Encode(imageBytes);
 
-      // Load treatments from solutions.json
-      final jsonString = await rootBundle.loadString('assets/solutions.json');
-      final Map<String, dynamic> allData = json.decode(jsonString);
+      Map<String, dynamic> treatments = {};
+      List<dynamic> prevention = [];
 
-      // Find treatments for the detected disease
-      final diseaseData = allData[diseaseName];
-      Map<String, dynamic> treatments = diseaseData?['treatments'] ?? {};
-      List<dynamic> prevention = diseaseData?['prevention'] ?? [];
+      if (diseaseName != "Unknown") {
+        // Load treatments from solutions.json only if disease is known
+        final jsonString = await rootBundle.loadString('assets/solutions.json');
+        final Map<String, dynamic> allData = json.decode(jsonString);
+
+        final diseaseData = allData[diseaseName];
+        treatments = diseaseData?['treatments'] ?? {};
+        prevention = diseaseData?['prevention'] ?? [];
+      } else {
+        // Add custom message for unknown detection
+        treatments = {"note": "This image does not appear to be a wheat leaf."};
+      }
 
       // Save to Firestore
       await FirebaseFirestore.instance.collection('disease_detections').add({
