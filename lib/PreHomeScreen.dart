@@ -29,7 +29,7 @@ class PreHomeScreen extends StatelessWidget {
 
     User? user = FirebaseAuth.instance.currentUser;
     bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
-    String userId = user!.uid;
+    String? userId = user?.uid;
 
     void logout() async {
       showDialog(
@@ -387,7 +387,7 @@ class PreHomeScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        CropDiaryScreen(userId: userId),
+                                        CropDiaryScreen(userId: userId!),
                                   ),
                                 );
                               } else {
@@ -441,7 +441,11 @@ class PreHomeScreen extends StatelessWidget {
             child: Builder(
               builder: (context) => GestureDetector(
                 onTap: () {
-                  Scaffold.of(context).openDrawer();
+                  if (isLoggedIn) {
+                    Scaffold.of(context).openDrawer();
+                  } else {
+                    _showLoginDialog(context);
+                  }
                 },
                 child: Image.asset(
                   "assets/icons/menu.png",
@@ -692,7 +696,7 @@ class PreHomeScreen extends StatelessWidget {
     );
   }
 
-  _showLoginDialog(BuildContext context) {
+  void _showLoginDialog(BuildContext context) {
     print("Displaying login dialog...");
 
     showDialog(
@@ -701,14 +705,27 @@ class PreHomeScreen extends StatelessWidget {
           false, // Prevent closing by tapping outside the dialog
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Login Required".tr()),
-          content: Text("Please log in to access this feature.".tr()),
+          backgroundColor: Color(0xFFE5D188),
+          title: Text(
+            "Login Required".tr(),
+            style: TextStyle(
+              color: Color(0xFF7B5228),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            "Please log in to access this feature.".tr(),
+            style: TextStyle(color: Color(0xFF7B5228)),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text("Cancel".tr()),
+              child: Text(
+                "Cancel".tr(),
+                style: TextStyle(color: Color(0xFF7B5228)),
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -717,9 +734,16 @@ class PreHomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text("Login".tr(), style: TextStyle(color: Colors.blue)),
+              child: Text(
+                "Login".tr(),
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
         );
       },
     );
