@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
 import 'package:flutter_application_1/EditProfile.dart';
+import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
@@ -188,7 +189,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(

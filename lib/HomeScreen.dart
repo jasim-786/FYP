@@ -6,8 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/DetectionScreen.dart';
+import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:image_picker/image_picker.dart';
@@ -207,7 +209,8 @@ class HomeScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
                       );
                     },
                   ),
@@ -248,7 +251,11 @@ class HomeScreen extends StatelessWidget {
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(

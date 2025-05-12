@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
+import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
@@ -255,7 +256,11 @@ class _WheatResourceEstimatorScreenState
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(

@@ -8,10 +8,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/DetectionDetailScreen.dart';
-import 'package:flutter_application_1/HomeScreen.dart';
+import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
 
 class PreviousResultsScreen extends StatefulWidget {
   const PreviousResultsScreen({Key? key}) : super(key: key);
@@ -239,7 +240,8 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
                       );
                     },
                   ),
@@ -275,7 +277,11 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
+import 'package:flutter_application_1/FeedbackScreen.dart';
 import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
@@ -193,7 +194,11 @@ class _EditProfileState extends State<EditProfile> {
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: 'Feedback'.tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(

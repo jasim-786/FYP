@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/FeedbackScreen.dart';
-import 'package:flutter_application_1/HomeScreen.dart';
+import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
@@ -87,7 +87,8 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => PreHomeScreen()),
                       );
                     },
                   ),
