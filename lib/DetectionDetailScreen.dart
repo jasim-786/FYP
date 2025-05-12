@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +30,9 @@ class DetectionDetailScreen extends StatelessWidget {
     final tempDir = await getTemporaryDirectory();
 
     // Generate the PDF
+    final Uint8List logoImage = await rootBundle
+        .load('assets/images/logo.png')
+        .then((data) => data.buffer.asUint8List());
     final pdf = pw.Document();
     final image = base64Decode(base64Image);
     final dateString =
@@ -40,28 +46,105 @@ class DetectionDetailScreen extends StatelessWidget {
 
     pdf.addPage(
       pw.MultiPage(
+        margin: const pw.EdgeInsets.all(32),
+
+        // Header added
+        header: (context) => pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Row(
+              children: [
+                pw.Image(pw.MemoryImage(logoImage), width: 80, height: 80),
+                pw.SizedBox(width: 8),
+                pw.Text(
+                  "Wheat Rust Guard",
+                  style: pw.TextStyle(
+                    fontSize: 18,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.brown800,
+                  ),
+                ),
+              ],
+            ),
+            pw.Text(
+              "Detection Report",
+              style: pw.TextStyle(
+                fontSize: 14,
+                color: PdfColors.grey700,
+              ),
+            ),
+          ],
+        ),
+
+        // Footer
+        footer: (context) => pw.Container(
+          alignment: pw.Alignment.center,
+          margin: const pw.EdgeInsets.only(top: 20),
+          child: pw.Column(
+            children: [
+              pw.Divider(),
+              pw.Text(
+                "Wheat Rust Guard  Empowering Farmers with AI",
+                style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
+              ),
+              pw.Text(
+                "This report is generated for informational purposes only.",
+                style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
+              ),
+            ],
+          ),
+        ),
+
         build: (context) => [
-          pw.Text("Disease Detection Report",
-              style:
-                  pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
-          pw.SizedBox(height: 16),
-          pw.Image(pw.MemoryImage(image), height: 200, fit: pw.BoxFit.cover),
           pw.SizedBox(height: 20),
-          pw.Text("Prediction: $disease",
+          pw.Center(
+            child: pw.Text(
+              "Disease Detection Report",
+              style: pw.TextStyle(fontSize: 26, fontWeight: pw.FontWeight.bold),
+            ),
+          ),
+          pw.SizedBox(height: 16),
+          pw.Center(
+            child: pw.Container(
+              decoration: pw.BoxDecoration(
+                border: pw.Border.all(color: PdfColors.grey),
+                borderRadius: pw.BorderRadius.circular(8),
+              ),
+              child: pw.ClipRRect(
+                horizontalRadius: 8,
+                verticalRadius: 8,
+                child: pw.Image(
+                  pw.MemoryImage(image),
+                  height: 200,
+                  fit: pw.BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          pw.SizedBox(height: 20),
+          pw.Divider(),
+          pw.Text("Prediction",
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+          pw.SizedBox(height: 6),
+          pw.Text("Disease: $disease", style: pw.TextStyle(fontSize: 16)),
           pw.Text("Detected on: $dateString",
               style: pw.TextStyle(fontSize: 16)),
           pw.SizedBox(height: 20),
+          pw.Divider(),
           pw.Text("Recommended Treatments",
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
-          pw.Text(treatmentText),
+          pw.SizedBox(height: 6),
+          pw.Text(treatmentText, style: pw.TextStyle(fontSize: 14)),
           pw.SizedBox(height: 20),
+          pw.Divider(),
           pw.Text("Preventions",
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
-          pw.Text(preventionText),
+          pw.SizedBox(height: 6),
+          pw.Text(preventionText, style: pw.TextStyle(fontSize: 14)),
         ],
       ),
     );
@@ -110,7 +193,9 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
         }
       }
     }
-
+    final Uint8List logoImage = await rootBundle
+        .load('assets/images/logo.png')
+        .then((data) => data.buffer.asUint8List());
     final pdf = pw.Document();
     final image = base64Decode(base64Image);
     final dateString =
@@ -126,28 +211,105 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
 
     pdf.addPage(
       pw.MultiPage(
+        margin: const pw.EdgeInsets.all(32),
+
+        // Header added
+        header: (context) => pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Row(
+              children: [
+                pw.Image(pw.MemoryImage(logoImage), width: 80, height: 80),
+                pw.SizedBox(width: 8),
+                pw.Text(
+                  "Wheat Rust Guard",
+                  style: pw.TextStyle(
+                    fontSize: 18,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.brown800,
+                  ),
+                ),
+              ],
+            ),
+            pw.Text(
+              "Detection Report",
+              style: pw.TextStyle(
+                fontSize: 14,
+                color: PdfColors.grey700,
+              ),
+            ),
+          ],
+        ),
+
+        // Footer
+        footer: (context) => pw.Container(
+          alignment: pw.Alignment.center,
+          margin: const pw.EdgeInsets.only(top: 20),
+          child: pw.Column(
+            children: [
+              pw.Divider(),
+              pw.Text(
+                "Wheat Rust Guard  Empowering Farmers with AI",
+                style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
+              ),
+              pw.Text(
+                "This report is generated for informational purposes only.",
+                style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
+              ),
+            ],
+          ),
+        ),
+
         build: (context) => [
-          pw.Text("Disease Detection Report",
-              style:
-                  pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
-          pw.SizedBox(height: 16),
-          pw.Image(pw.MemoryImage(image), height: 200, fit: pw.BoxFit.cover),
           pw.SizedBox(height: 20),
-          pw.Text("Prediction: $disease",
+          pw.Center(
+            child: pw.Text(
+              "Disease Detection Report",
+              style: pw.TextStyle(fontSize: 26, fontWeight: pw.FontWeight.bold),
+            ),
+          ),
+          pw.SizedBox(height: 16),
+          pw.Center(
+            child: pw.Container(
+              decoration: pw.BoxDecoration(
+                border: pw.Border.all(color: PdfColors.grey),
+                borderRadius: pw.BorderRadius.circular(8),
+              ),
+              child: pw.ClipRRect(
+                horizontalRadius: 8,
+                verticalRadius: 8,
+                child: pw.Image(
+                  pw.MemoryImage(image),
+                  height: 200,
+                  fit: pw.BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          pw.SizedBox(height: 20),
+          pw.Divider(),
+          pw.Text("Prediction",
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+          pw.SizedBox(height: 6),
+          pw.Text("Disease: $disease", style: pw.TextStyle(fontSize: 16)),
           pw.Text("Detected on: $dateString",
               style: pw.TextStyle(fontSize: 16)),
           pw.SizedBox(height: 20),
+          pw.Divider(),
           pw.Text("Recommended Treatments",
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
-          pw.Text(treatmentText),
+          pw.SizedBox(height: 6),
+          pw.Text(treatmentText, style: pw.TextStyle(fontSize: 14)),
           pw.SizedBox(height: 20),
+          pw.Divider(),
           pw.Text("Preventions",
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
-          pw.Text(preventionText),
+          pw.SizedBox(height: 6),
+          pw.Text(preventionText, style: pw.TextStyle(fontSize: 14)),
         ],
       ),
     );
@@ -181,16 +343,17 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
     }
   }
 
-  IconData _getIconForCategory(String category) {
+  Widget _getIconForCategory(String category) {
     switch (category.toLowerCase()) {
       case 'chemical':
-        return Icons.science;
+        return Image.asset('assets/icons/biotech.png', width: 34, height: 34);
       case 'biological':
-        return Icons.biotech;
+        return Image.asset('assets/icons/science.png', width: 34, height: 34);
       case 'cultural':
-        return Icons.agriculture;
+        return Image.asset('assets/icons/agriculture.png',
+            width: 34, height: 34);
       default:
-        return Icons.info;
+        return Image.asset('assets/icons/info_icon.png', width: 34, height: 34);
     }
   }
 
@@ -201,18 +364,32 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Detection Details"),
+        title: const Text(
+          "Detection Details",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF7B5228),
+        foregroundColor: Colors.white, // Ensures text and icons are white
         actions: [
           IconButton(
-            icon: const Icon(Icons.share),
+            icon: const Icon(Icons.share, color: Colors.white),
             onPressed: () => _shareDetection(context),
           ),
           IconButton(
-            icon: const Icon(Icons.download),
+            icon: const Icon(Icons.download, color: Colors.white),
             onPressed: () => _generateAndDownloadPDF(context),
           ),
         ],
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: SizedBox(
+            height: 35,
+            width: 35,
+            child: Image.asset('assets/icons/Back_arrow.png'),
+          ),
+        ),
       ),
       backgroundColor: const Color(0xFFE5D188),
       body: Padding(
@@ -265,8 +442,7 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                     children: [
                       Row(
                         children: [
-                          Icon(_getIconForCategory(category),
-                              color: Colors.teal[700]),
+                          _getIconForCategory(category),
                           const SizedBox(width: 6),
                           Text(
                             category[0].toUpperCase() + category.substring(1),

@@ -143,7 +143,11 @@ class PreHomeScreen extends StatelessWidget {
                     customIconPath: "assets/icons/feedback_icon.png",
                     text: "Feedback".tr(),
                     onTap: () {
-                      // Handle Profile Navigation
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
                     },
                   ),
                   buildSidebarButton(
