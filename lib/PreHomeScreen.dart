@@ -324,17 +324,37 @@ class PreHomeScreen extends StatelessWidget {
                             screenHeight,
                             screenWidth,
                             () {
-                              if (isLoggedIn) {
+                              if (!isLoggedIn) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+
+                              final user = FirebaseAuth.instance.currentUser;
+                              bool isPasswordUser = false;
+
+                              if (user != null) {
+                                for (final info in user.providerData) {
+                                  if (info.providerId == 'password') {
+                                    isPasswordUser = true;
+                                    break;
+                                  }
+                                }
+                              }
+
+                              if (isPasswordUser) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ChangePassword(),
+                                    builder: (context) =>
+                                        const ChangePassword(),
                                   ),
                                 );
                               } else {
-                                _showLoginDialog(context);
+                                _showChangePasswordRestrictionDialog(
+                                    context); // Styled like your login dialog
                               }
                             },
+
                             disabled: !isLoggedIn, // controls visual only
                           ),
                           _buildFeatureButton(
@@ -738,6 +758,44 @@ class PreHomeScreen extends StatelessWidget {
                 "Login".tr(),
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showChangePasswordRestrictionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFFE5D188),
+          title: Text(
+            "Access Denied".tr(),
+            style: const TextStyle(
+              color: Color(0xFF7B5228),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            "You cannot change your password because you signed in using Google or Phone."
+                .tr(),
+            style: const TextStyle(color: Color(0xFF7B5228)),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK".tr(),
+                style: const TextStyle(color: Color(0xFF7B5228)),
               ),
             ),
           ],
