@@ -61,6 +61,7 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: Drawer(
         child: Container(
@@ -175,237 +176,245 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            top: screenHeight * 0.16,
-            bottom: screenHeight * 0.16,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Treatment Solutions'.tr(),
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF7B5228),
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss the keyboard when tapping outside the TextField
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              top: screenHeight * 0.15,
+              bottom: screenHeight * 0.16,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Wheatopedia'.tr(),
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF7B5228),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF4F4F6),
-                                    borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(
-                                      color: Color(0xFF7B5228),
-                                      width: 1.5,
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF4F4F6),
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(
+                                        color: Color(0xFF7B5228),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.search,
+                                            color: Color(0xFF7B5228)),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: TextField(
+                                            controller: TextEditingController(
+                                                text: _searchQuery),
+                                            decoration:
+                                                InputDecoration.collapsed(
+                                              hintText: 'Search Disease'.tr(),
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _searchQuery = value;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.search,
-                                          color: Color(0xFF7B5228)),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: TextEditingController(
-                                              text: _searchQuery),
-                                          decoration: InputDecoration.collapsed(
-                                            hintText: 'Search Disease'.tr(),
-                                          ),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _searchQuery = value;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          _isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF7B5228)),
-                                  ),
-                                )
-                              : _diseaseData == null
-                                  ? Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.error_outline,
-                                            size: 64,
-                                            color: Color(0xFF7B5228)
-                                                .withOpacity(0.8),
-                                          ),
-                                          SizedBox(height: 16),
-                                          Text(
-                                            'Error loading disease data'.tr(),
-                                            style: TextStyle(
-                                              color: Color(0xFF7B5228),
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                            _isLoading
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xFF7B5228)),
+                                    ),
+                                  )
+                                : _diseaseData == null
+                                    ? Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.error_outline,
+                                              size: 64,
+                                              color: Color(0xFF7B5228)
+                                                  .withOpacity(0.8),
                                             ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          ElevatedButton(
-                                            onPressed: _loadDiseaseData,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.green,
-                                              foregroundColor: Colors.white,
+                                            SizedBox(height: 16),
+                                            Text(
+                                              'Error loading disease data'.tr(),
+                                              style: TextStyle(
+                                                color: Color(0xFF7B5228),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                            child: Text('Retry'.tr()),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : _diseaseData!.keys
-                                          .where((disease) => disease
-                                              .toLowerCase()
-                                              .contains(
-                                                  _searchQuery.toLowerCase()))
-                                          .isEmpty
-                                      ? Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.search_off,
-                                                size: 64,
-                                                color: Colors.grey.shade400,
+                                            SizedBox(height: 8),
+                                            ElevatedButton(
+                                              onPressed: _loadDiseaseData,
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                                foregroundColor: Colors.white,
                                               ),
-                                              SizedBox(height: 16),
-                                              Text(
-                                                'No diseases found'.tr(),
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey.shade600,
+                                              child: Text('Retry'.tr()),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : _diseaseData!.keys
+                                            .where((disease) => disease
+                                                .toLowerCase()
+                                                .contains(
+                                                    _searchQuery.toLowerCase()))
+                                            .isEmpty
+                                        ? Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.search_off,
+                                                  size: 64,
+                                                  color: Colors.grey.shade400,
                                                 ),
-                                              ),
-                                              SizedBox(height: 8),
-                                              Text(
-                                                'Try a different search term'
-                                                    .tr(),
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade500,
+                                                SizedBox(height: 16),
+                                                Text(
+                                                  'No diseases found'.tr(),
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey.shade600,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      : ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 12),
-                                          itemCount: _diseaseData!.keys
-                                              .where((disease) => disease
-                                                  .toLowerCase()
-                                                  .contains(_searchQuery
-                                                      .toLowerCase()))
-                                              .length,
-                                          itemBuilder: (context, index) {
-                                            final disease = _diseaseData!.keys
+                                                SizedBox(height: 8),
+                                                Text(
+                                                  'Try a different search term'
+                                                      .tr(),
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            itemCount: _diseaseData!.keys
                                                 .where((disease) => disease
                                                     .toLowerCase()
                                                     .contains(_searchQuery
                                                         .toLowerCase()))
-                                                .elementAt(index);
-                                            return _buildEnhancedDiseaseCard(
-                                                disease,
-                                                _diseaseData![disease]);
-                                          },
-                                        ),
-                          SizedBox(height: screenHeight * 0.2),
-                        ],
+                                                .length,
+                                            itemBuilder: (context, index) {
+                                              final disease = _diseaseData!.keys
+                                                  .where((disease) => disease
+                                                      .toLowerCase()
+                                                      .contains(_searchQuery
+                                                          .toLowerCase()))
+                                                  .elementAt(index);
+                                              return _buildEnhancedDiseaseCard(
+                                                  disease,
+                                                  _diseaseData![disease]);
+                                            },
+                                          ),
+                            SizedBox(height: screenHeight * 0.2),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: -1,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Top.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.25,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            top: 25,
-            right: 5,
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  _scaffoldKey.currentState?.openDrawer();
-                },
-                child: Image.asset(
-                  "assets/icons/menu.png",
-                  height: 62,
-                  width: 62,
+                  ],
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              "assets/images/Bottom.png",
-              fit: BoxFit.cover,
-              height: screenHeight * 0.2,
-              width: screenWidth,
-            ),
-          ),
-          Positioned(
-            top: 30,
-            left: 12,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
+            Positioned(
+              top: -1,
+              left: 0,
+              right: 0,
               child: Image.asset(
-                "assets/icons/Back_arrow.png",
-                height: 35,
-                width: 35,
+                "assets/images/Top.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.25,
+                width: screenWidth,
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 25,
+              right: 5,
+              child: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
+                  child: Image.asset(
+                    "assets/icons/menu.png",
+                    height: 62,
+                    width: 62,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                "assets/images/Bottom.png",
+                fit: BoxFit.cover,
+                height: screenHeight * 0.2,
+                width: screenWidth,
+              ),
+            ),
+            Positioned(
+              top: 30,
+              left: 12,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  "assets/icons/Back_arrow.png",
+                  height: 35,
+                  width: 35,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -66,5 +66,182 @@
       "Intercropping with non-host plants to reduce rust spread",
       "Field sanitation and residue destruction (avoid open burning)"
     ]
+  },
+      "Stem Rust": {
+      "scientificName": "Puccinia graminis f. sp. tritici",
+      "symptoms": "Reddish-brown, elongated pustules on stems, leaves, and leaf sheaths; later black pustules form; weakening and lodging of plants",
+      "environmentalConditions": "Favored by warm temperatures (25-30\u00b0C) with high moisture or dew",
+      "vulnerableStages": "From tillering to grain filling stages",
+      "treatments": {
+        "chemical": [
+          "Spray Propiconazole (25% EC) at 1ml/L water",
+          "Tebuconazole (25% EC) at 1ml/L water",
+          "Triadimefon (25% WP) at 1g/L water"
+        ],
+        "biological": [
+          "Apply Bacillus subtilis-based biocontrol agents",
+          "Use Trichoderma harzianum soil treatments"
+        ],
+        "cultural": [
+          "Grow resistant varieties (e.g., Sr31, Sr24 containing lines)",
+          "Remove volunteer wheat and grassy weeds",
+          "Crop rotation with non-host crops"
+        ]
+      },
+      "prevention": [
+        "Use certified rust-resistant seeds",
+        "Monitor fields regularly and spray at first sign",
+        "Early sowing to avoid peak rust season"
+      ],
+      "economicThreshold": "When 5% of plants show early rust pustules",
+      "traditionalPractices": [
+        "Use of mixed cropping to reduce rust spread",
+        "Ash application on stems (traditional practice)"
+      ]
+    },
+     "Loose Smut": {
+      "scientificName": "Ustilago tritici",
+      "symptoms": "Dark olive-black spore masses replace the grains; infected heads emerge earlier than healthy ones",
+      "environmentalConditions": "Favored by cool, moist weather during flowering",
+      "vulnerableStages": "Flowering stage",
+      "treatments": {
+        "chemical": [
+          "Seed treatment with Carboxin (37.5% + Thiram 37.5%) at 2g/kg seed",
+          "Use Tebuconazole (2% DS) at 1.5g/kg seed"
+        ],
+        "biological": [
+          "Seed biopriming with Trichoderma viride",
+          "Application of Bacillus subtilis on seeds"
+        ],
+        "cultural": [
+          "Use disease-free seeds",
+          "Hot water seed treatment (52\u00b0C for 10 minutes)"
+        ]
+      },
+      "prevention": [
+        "Grow resistant varieties",
+        "Proper seed treatment"
+      ],
+      "economicThreshold": "When 2% of plants show symptoms",
+      "traditionalPractices": [
+        "Hot water treatment by farmers using traditional methods"
+      ]
+    },
+    "Fusarium Head Blight": {
+      "scientificName": "Fusarium graminearum",
+      "symptoms": "Bleached spikelets; pink or orange fungal growth at the base of glumes; shriveled grains",
+      "environmentalConditions": "Warm, humid conditions during flowering (25-30\u00b0C)",
+      "vulnerableStages": "Flowering to early grain filling",
+      "treatments": {
+        "chemical": [
+          "Spray Tebuconazole (25% EC) at early flowering",
+          "Prothioconazole-based products"
+        ],
+        "biological": [
+          "Application of Trichoderma spp. on heads",
+          "Use Bacillus subtilis sprays"
+        ],
+        "cultural": [
+          "Crop rotation with non-hosts (e.g., legumes)",
+          "Residue management to reduce inoculum"
+        ]
+      },
+      "prevention": [
+        "Use resistant cultivars",
+        "Avoid continuous wheat cropping"
+      ],
+      "economicThreshold": "When 10% of heads are infected",
+      "traditionalPractices": [
+        "Residue burning (traditional, now discouraged)"
+      ]
+    },
+    "Powdery Mildew": {
+      "scientificName": "Blumeria graminis f. sp. tritici",
+      "symptoms": "White, powdery fungal growth on leaves and stems; later turning gray-brown",
+      "environmentalConditions": "Cool, dry weather (15-20\u00b0C)",
+      "vulnerableStages": "From seedling to heading stages",
+      "treatments": {
+        "chemical": [
+          "Spray Hexaconazole (5% EC) at 2ml/L",
+          "Sulphur dusting at 20-25 kg/ha"
+        ],
+        "biological": [
+          "Application of Pseudomonas fluorescens",
+          "Use Trichoderma spp. foliar sprays"
+        ],
+        "cultural": [
+          "Grow resistant varieties",
+          "Avoid excessive nitrogen fertilization"
+        ]
+      },
+      "prevention": [
+        "Maintain field hygiene",
+        "Early sowing"
+      ],
+      "economicThreshold": "When 10% of the leaf area is covered",
+      "traditionalPractices": [
+        "Application of wood ash to control mildew"
+      ]
+    },
+    "Septoria_Leaf_Spot": {
+    "scientificName": "Septoria tritici",
+    "symptoms": "Small, dark brown to black lesions with yellow halos on the leaves; premature leaf death.",
+    "environmentalConditions": "Cool, wet conditions (15-20°C) promote disease development.",
+    "vulnerableStages": "From tillering to early grain filling.",
+    "treatments": {
+      "chemical": [
+        "Chlorothalonil (75% WP) at 2.5 g/L",
+        "Tebuconazole (25.9% EC) at 1 ml/L"
+      ],
+      "biological": [
+        "Use Bacillus subtilis foliar sprays",
+        "Trichoderma spp. as biocontrol agents"
+      ],
+      "cultural": [
+        "Use resistant wheat varieties",
+        "Proper field sanitation and residue management"
+      ]
+    },
+    "prevention": [
+      "Monitor fields regularly and remove infected leaves",
+      "Avoid excessive nitrogen fertilization"
+    ],
+    "economicThreshold": "When 5% of the leaf area is infected",
+    "traditionalPractices": [
+      "Burning infected leaves (traditional practice)"
+    ]
+  },
+  "Septoria Leaf Blotch": {
+    "scientificName": "Septoria tritici",
+    "symptoms": "Small, dark, water-soaked lesions on the leaves, which eventually turn into elongated, dark brown or black streaks; premature leaf death.",
+    "environmentalConditions": "Favored by cool, wet conditions (12–18°C) during early wheat growth.",
+    "vulnerableStages": "From tillering to flag leaf stages.",
+    "treatments": {
+      "chemical": [
+        "Tebuconazole (25.9% EC) at 1 ml/L water",
+        "Trifloxystrobin (25% SC) at 1 ml/L water",
+        "Chlorothalonil (75% WP) at 2.5 g/L water"
+      ],
+      "biological": [
+        "Use Trichoderma harzianum as foliar spray",
+        "Apply Bacillus subtilis as a seed treatment"
+      ],
+      "cultural": [
+        "Crop rotation with non-host crops",
+        "Remove infected crop residues after harvest",
+        "Use of resistant wheat varieties"
+      ]
+    },
+    "prevention": [
+      "Grow resistant varieties",
+      "Ensure proper field drainage",
+      "Avoid excessive nitrogen fertilization"
+    ],
+    "economicThreshold": "When 5-10% of the leaf area is infected during the grain-filling stage",
+    "traditionalPractices": [
+      "Application of wood ash on affected areas",
+      "Use of garlic-based natural sprays"
+    ]
   }
+
 }

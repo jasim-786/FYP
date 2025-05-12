@@ -23,11 +23,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       GlobalKey<ScaffoldState>(); // Key for scaffold
 
   User? user = FirebaseAuth.instance.currentUser;
+  String _selectedLanguage = 'en'; // Default language
 
   @override
   void initState() {
     super.initState();
     _loadUserDetails();
+    _selectedLanguage = context.locale.languageCode;
   }
 
   Future<void> _loadUserDetails() async {
@@ -330,11 +332,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       screenWidth: screenWidth,
                     ),
-                    buildProfileOption(
-                      icon: Icons.language,
-                      text: 'Change Language'.tr(),
-                      onTap: () => _showLanguageDialog(context),
-                      screenWidth: screenWidth,
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Container(
+                        width: double.infinity,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF7B5228),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.language, color: Colors.white),
+                            SizedBox(width: screenWidth * 0.04),
+                            Expanded(
+                              child: DropdownButton<String>(
+                                value: _selectedLanguage,
+                                isExpanded: true,
+                                underline: SizedBox(),
+                                dropdownColor: Color(0xFF7B5228),
+                                iconEnabledColor:
+                                    Colors.white, // makes the arrow icon white
+                                iconDisabledColor: Colors.white,
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.050,
+                                  color: Colors.white,
+                                ),
+                                items: [
+                                  DropdownMenuItem(
+                                    value: 'en',
+                                    child: Text('english'.tr()),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'ur',
+                                    child: Text('urdu'.tr()),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'pa',
+                                    child: Text('punjabi'.tr()),
+                                  ),
+                                ],
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      _selectedLanguage = newValue;
+                                    });
+                                    context.setLocale(Locale(newValue));
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     buildProfileOption(
                       icon: Icons.logout,
