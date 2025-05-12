@@ -23,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _phone = TextEditingController();
   TextEditingController _password = TextEditingController();
   TextEditingController _name = TextEditingController();
+  TextEditingController _confirmPassword = TextEditingController();
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
@@ -45,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .collection('users_details')
           .doc(uid)
           .set({
-        'userId': uid, // ✅ ADD THIS LINE
+        'userId': uid,
         'Full_name': _name.text.trim(),
         'Email': _email.text.trim(),
         'Phone Number': _phone.text.trim(),
@@ -60,6 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _email.clear();
       _phone.clear();
       _password.clear();
+      _confirmPassword.clear();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error saving details: $e")),
@@ -461,45 +463,62 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             return null;
                                           },
                                         ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          // Changed from TextField to TextFormField for validation
+                                          controller: _confirmPassword,
+                                          obscureText: true,
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.lock),
+                                            hintText: 'Confirm Password'.tr(),
+                                            filled: true,
+                                            fillColor: Colors.transparent,
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                              borderSide: BorderSide(
+                                                color: Color(0xFF7B5228),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                              borderSide: BorderSide(
+                                                color: Color(0xFF7B5228),
+                                                width: 2,
+                                              ),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                              borderSide: BorderSide(
+                                                color: Colors.red,
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            focusedErrorBorder:
+                                                OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32),
+                                              borderSide: BorderSide(
+                                                color: Colors.red,
+                                                width: 2,
+                                              ),
+                                            ),
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Confirm password cannot be empty';
+                                            } else if (value !=
+                                                _password.text) {
+                                              return 'Passwords do not match';
+                                            }
+                                            return null;
+                                          },
+                                        ),
                                       ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  TextField(
-                                    obscureText: true,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.lock),
-                                      hintText: 'Confirm Password'.tr(),
-                                      filled: true,
-                                      fillColor: Colors.transparent,
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(32),
-                                        borderSide: BorderSide(
-                                          color: Color(0xFF7B5228),
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(32),
-                                        borderSide: BorderSide(
-                                          color: Color(0xFF7B5228),
-                                          width: 2,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(32),
-                                        borderSide: BorderSide(
-                                          color: Colors.red,
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(32),
-                                        borderSide: BorderSide(
-                                          color: Colors.red,
-                                          width: 2,
-                                        ),
-                                      ),
                                     ),
                                   ),
                                 ],

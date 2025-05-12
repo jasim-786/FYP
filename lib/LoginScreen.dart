@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, prefer_final_fields, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
+import 'package:flutter_application_1/UserDetailScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -489,8 +491,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(width: 16), // Space between the buttons
                               SizedBox(
-                                width:
-                                    screenWidth * 0.4, // Adjust width as needed
+                                width: screenWidth * 0.4,
                                 height: screenHeight * 0.06,
                                 child: ElevatedButton(
                                   onPressed: () async {
@@ -498,8 +499,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       final GoogleSignInAccount? googleUser =
                                           await GoogleSignIn().signIn();
 
-                                      if (googleUser == null)
-                                        return; // User cancelled
+                                      if (googleUser == null) return;
 
                                       final GoogleSignInAuthentication
                                           googleAuth =
@@ -511,21 +511,45 @@ class _LoginScreenState extends State<LoginScreen> {
                                         idToken: googleAuth.idToken,
                                       );
 
-                                      // Sign in to Firebase
                                       UserCredential userCredential =
                                           await FirebaseAuth.instance
                                               .signInWithCredential(credential);
 
-                                      // Optional: Navigate or show success message
                                       final user = userCredential.user;
                                       if (user != null) {
-                                        print(
-                                            'Signed in as ${user.displayName}');
-                                        // Navigate to home screen or show toast
+                                        DocumentSnapshot doc =
+                                            await FirebaseFirestore.instance
+                                                .collection(
+                                                    'users_details') // Use correct collection name
+                                                .doc(user.uid)
+                                                .get();
+
+                                        if (!doc.exists) {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UserDetailScreen(
+                                                isGoogleLogin: true,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Onboarding1()),
+                                          );
+                                        }
                                       }
                                     } catch (e) {
-                                      print('Google Sign-In failed: $e');
-                                      // Show error to user
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Google Sign-In failed: $e')), // Remove .tr()
+                                      );
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -544,7 +568,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                           SizedBox(

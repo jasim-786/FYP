@@ -12,6 +12,7 @@ class TimeWidget extends StatefulWidget {
 class _TimeWidgetState extends State<TimeWidget> {
   late String _currentTime;
   late String _greeting;
+  Timer? _timer; // <-- Track the timer
 
   @override
   void initState() {
@@ -38,12 +39,19 @@ class _TimeWidgetState extends State<TimeWidget> {
   }
 
   void _startTimer() {
-    Timer.periodic(const Duration(seconds: 30), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (!mounted) return; // check to avoid setState after dispose
       setState(() {
         _currentTime = _getCurrentTime();
         _greeting = _getGreeting();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // <-- Cancel the timer
+    super.dispose();
   }
 
   @override
@@ -69,7 +77,6 @@ class _TimeWidgetState extends State<TimeWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Time
           Text(
             _currentTime,
             style: const TextStyle(
@@ -78,8 +85,6 @@ class _TimeWidgetState extends State<TimeWidget> {
               color: Colors.white,
             ),
           ),
-
-          // Greeting below the time
           Text(
             _greeting,
             style: const TextStyle(

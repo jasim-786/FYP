@@ -29,6 +29,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadUserDetails();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Safely access context.locale here
     _selectedLanguage = context.locale.languageCode;
   }
 
@@ -44,17 +50,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         if (doc.exists) {
           setState(() {
-            fullName = doc.data()?['Full_name'] ?? 'No Name';
+            fullName = doc.data()?['full_name'] ?? 'No Name'.tr();
           });
         } else {
           setState(() {
-            fullName = 'No Name Found';
+            fullName = 'No Name Found'.tr();
           });
         }
+      } else {
+        setState(() {
+          fullName = 'Not Logged In'.tr();
+        });
       }
     } catch (e) {
       setState(() {
-        fullName = 'Error loading name';
+        fullName = 'Error loading name'.tr();
       });
       print("Error loading user details: $e");
     }

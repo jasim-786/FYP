@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'Onboarding1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Onboarding1.dart';
+import 'UserDetailScreen.dart'; // Import UserDetailScreen
 
 class OTPVerificationScreen extends StatefulWidget {
   final String verificationId;
@@ -20,7 +21,7 @@ class OTPVerificationScreen extends StatefulWidget {
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   final TextEditingController _otpController = TextEditingController();
   bool _isLoading = false;
-  bool _isResendEnabled = false; // To control the resend button's state
+  bool _isResendEnabled = false;
   late String _verificationId;
   late String _phoneNumber;
 
@@ -29,7 +30,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     super.initState();
     _verificationId = widget.verificationId;
     _phoneNumber = widget.phoneNumber;
-    _isResendEnabled = false; // Start with resend disabled
+    _isResendEnabled = false;
   }
 
   void _verifyOTP() async {
@@ -41,7 +42,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
 
     setState(() {
-      _isLoading = true; // Show loading indicator while verifying OTP
+      _isLoading = true;
     });
 
     try {
@@ -54,103 +55,44 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           await FirebaseAuth.instance.signInWithCredential(credential);
       String uid = userCredential.user!.uid;
 
-// Show a dialog or a bottom sheet to enter full name
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          final TextEditingController _nameController = TextEditingController();
-          return AlertDialog(
-            backgroundColor: const Color(0xFFE5D188),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+      // Check if user details exist in Firestore
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('users_details')
+          .doc(uid)
+          .get();
+
+      if (!doc.exists) {
+        // Navigate to UserDetailScreen if details don't exist
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => UserDetailScreen(
+              phoneNumber: _phoneNumber,
+              isGoogleLogin: false,
             ),
-            title: const Text(
-              "Enter Full Name",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF7B5228),
-              ),
-            ),
-            content: TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                hintText: "Full Name",
-                hintStyle: TextStyle(color: Colors.black54),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF7B5228)),
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF7B5228),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () async {
-                  String fullName = _nameController.text.trim();
-
-                  // Validate: not empty and only alphabets/spaces
-                  if (fullName.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Full name cannot be empty')),
-                    );
-                    return;
-                  } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(fullName)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Only alphabets are allowed in name')),
-                    );
-                    return;
-                  }
-
-                  final uid = FirebaseAuth.instance.currentUser!.uid;
-
-                  await FirebaseFirestore.instance
-                      .collection('user_details')
-                      .doc(uid)
-                      .set({
-                    'userId': uid,
-                    'full_name': fullName,
-                    'phone_number': widget.phoneNumber,
-                    'timestamp': FieldValue.serverTimestamp(),
-                  });
-
-                  Navigator.of(context).pop(); // Close the dialog
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => Onboarding1()),
-                  );
-                },
-                child: const Text(
-                  "Submit",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          );
-        },
-      );
+          ),
+        );
+      } else {
+        // Navigate to Onboarding1 if details already exist
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => Onboarding1()),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid OTP. Please try again')),
       );
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator after verification attempt
+        _isLoading = false;
       });
     }
   }
 
-  // Resend OTP method
   void _resendOTP() async {
     setState(() {
-      _isResendEnabled = false; // Disable resend button while requesting OTP
+      _isResendEnabled = false;
     });
 
     await FirebaseAuth.instance.verifyPhoneNumber(
@@ -166,10 +108,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           _verificationId = verificationId;
         });
 
-        // Enable resend after a delay (e.g., 30 seconds)
         Future.delayed(Duration(seconds: 30), () {
           setState(() {
-            _isResendEnabled = true; // Enable the resend button
+            _isResendEnabled = true;
           });
         });
 
@@ -190,7 +131,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () {
-          // Dismiss the keyboard when tapping outside the TextField
           FocusScope.of(context).unfocus();
         },
         child: Stack(
@@ -234,13 +174,13 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     TextFormField(
                       controller: _otpController,
                       keyboardType: TextInputType.number,
-                      maxLength: 6, // Limit input to 6 digits
+                      maxLength: 6,
                       decoration: InputDecoration(
                         hintText: 'Enter 6-digit OTP',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(32),
                         ),
-                        counterText: "", // Hide the counter text
+                        counterText: "",
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
@@ -248,9 +188,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       width: screenWidth * 0.6,
                       height: screenHeight * 0.07,
                       child: ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : _verifyOTP, // Disable while loading
+                        onPressed: _isLoading ? null : _verifyOTP,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF7B5228),
                           shape: RoundedRectangleBorder(
@@ -269,7 +207,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
-                    // Resend OTP button
                     _isResendEnabled
                         ? TextButton(
                             onPressed: _resendOTP,
