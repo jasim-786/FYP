@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/firebase_options.dart';
 import 'package:flutter_application_1/SplashScreen.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +15,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  final appDocDir = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter(appDocDir.path);
+  await Hive.openBox('offline_feedbacks');
+  await Hive.openBox('offline_detections');
 
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,

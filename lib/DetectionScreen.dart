@@ -11,6 +11,7 @@ import 'package:flutter_application_1/HomeScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
+import 'package:hive/hive.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -37,6 +38,12 @@ class _DetectionScreenState extends State<DetectionScreen> {
   @override
   void initState() {
     super.initState();
+    _syncOfflineDetections(); // On app load
+    Connectivity().onConnectivityChanged.listen((status) {
+      if (status != ConnectivityResult.none) {
+        _syncOfflineDetections();
+      }
+    });
     imagePath = widget.imagePath; // Initialize state with the initial image
     print("📍 Navigated to DetectionScreen with: $imagePath");
     _loadModel();
@@ -330,37 +337,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
         print("⚠️ Image file not found. Skipping upload.");
         return;
       }
-      if (!await isOnline()) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Offline: Data will sync when online")),
-        );
-        return; // Exit to avoid showing loading dialog
-      }
-      // Show loading dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 10),
-              Text("Uploading..."),
-            ],
-          ),
-        ),
-      );
 
-      // Resize and compress image
+      // Resize & convert image to base64
       var image = img.decodeImage(imageFile.readAsBytesSync())!;
-      image =
-          img.copyResize(image, width: 224, height: 224); // Resize to 224x224
-      final compressedImage =
-          img.encodeJpg(image, quality: 85); // Compress to JPEG
-      final base64Image = base64Encode(compressedImage); // Convert to Base64
+      image = img.copyResize(image, width: 224, height: 224);
+      final compressedImage = img.encodeJpg(image, quality: 85);
+      final base64Image = base64Encode(compressedImage);
 
-      // Load treatments and prevention data
+      // Get disease data
       Map<String, dynamic> treatments = {};
       List<dynamic> prevention = [];
       if (diseaseName != "Unknown") {
@@ -374,25 +358,54 @@ class _DetectionScreenState extends State<DetectionScreen> {
         prevention = ["This image does not appear to be a wheat leaf."];
       }
 
-      // Save to Firestore with batch write
-      final batch = FirebaseFirestore.instance.batch();
-      final docRef =
-          FirebaseFirestore.instance.collection('disease_detections').doc();
-      batch.set(docRef, {
+      // Build detection data
+      final detectionData = {
         'userId': user.uid,
-        'timestamp': Timestamp.now(),
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
         'prediction': diseaseName,
         'image_base64': base64Image,
         'treatments': treatments,
         'prevention': prevention,
+      };
+
+      // Check online status
+      if (!await isOnline()) {
+        Hive.box('offline_detections').add(detectionData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Offline: Detection saved locally.")),
+        );
+        return;
+      }
+
+      // Upload online with loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 10),
+              Text("Uploading..."),
+            ],
+          ),
+        ),
+      );
+
+      final batch = FirebaseFirestore.instance.batch();
+      final docRef =
+          FirebaseFirestore.instance.collection('disease_detections').doc();
+      batch.set(docRef, {
+        ...detectionData,
+        'timestamp': Timestamp.now(), // Firestore needs proper format
       });
       await batch.commit();
 
-      // Close loading dialog
-      Navigator.pop(context);
+      Navigator.pop(context); // Close dialog
       print("✅ Detection result uploaded to Firestore.");
     } catch (e) {
-      Navigator.pop(context); // Close loading dialog
+      Navigator.pop(context);
       print("❌ Error uploading to Firestore: $e");
       if (e.toString().contains('Document too large')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -406,6 +419,27 @@ class _DetectionScreenState extends State<DetectionScreen> {
         );
       }
     }
+  }
+
+  Future<void> _syncOfflineDetections() async {
+    if (!await isOnline()) return;
+    final box = Hive.box('offline_detections');
+    final items = box.values.toList();
+
+    for (var item in items) {
+      try {
+        await FirebaseFirestore.instance.collection('disease_detections').add({
+          ...Map<String, dynamic>.from(item),
+          'timestamp': Timestamp.fromMillisecondsSinceEpoch(item['timestamp']),
+        });
+      } catch (e) {
+        print("❌ Sync failed for one item: $e");
+        return;
+      }
+    }
+
+    await box.clear();
+    print("✅ All offline detections synced.");
   }
 
   void logout(BuildContext context) async {

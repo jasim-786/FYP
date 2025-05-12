@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/LoginScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -39,6 +41,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   void initState() {
     super.initState();
+    _listenToConnectivityChanges();
+    syncOfflineFeedbacks();
     fetchPreviousFeedbacks();
   }
 
@@ -65,6 +69,42 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     }
   }
 
+  Future<bool> isOnline() async {
+    var result = await Connectivity().checkConnectivity();
+    return result != ConnectivityResult.none;
+  }
+
+  void _listenToConnectivityChanges() {
+    Connectivity().onConnectivityChanged.listen((result) {
+      if (result != ConnectivityResult.none) {
+        syncOfflineFeedbacks();
+      }
+    });
+  }
+
+  Future<void> syncOfflineFeedbacks() async {
+    final online = await isOnline();
+    if (!online) return;
+
+    final box = Hive.box('offline_feedbacks');
+    final items = box.values.toList();
+
+    for (var item in items) {
+      try {
+        await FirebaseFirestore.instance.collection('feedbacks').add({
+          ...Map<String, dynamic>.from(item),
+          'timestamp': Timestamp.fromMillisecondsSinceEpoch(item['timestamp']),
+        });
+      } catch (e) {
+        print("❌ Failed to sync item: $e");
+        return;
+      }
+    }
+
+    await box.clear();
+    print("✅ Offline feedbacks synced.");
+  }
+
   void _submitFeedback() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -74,14 +114,24 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       'feedback': _feedbackController.text,
       'category': _selectedCategory,
       'emoji': _emojis[_selectedEmojiIndex],
-      'timestamp': Timestamp.now(),
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
 
-    await FirebaseFirestore.instance.collection('feedbacks').add(feedbackData);
+    if (await isOnline()) {
+      await FirebaseFirestore.instance.collection('feedbacks').add({
+        ...feedbackData,
+        'timestamp': Timestamp.now(),
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Feedback submitted!')),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Feedback submitted!')),
+      );
+    } else {
+      Hive.box('offline_feedbacks').add(feedbackData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Offline: Feedback saved locally.')),
+      );
+    }
 
     setState(() {
       _feedbackController.clear();
