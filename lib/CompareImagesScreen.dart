@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,9 +32,9 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
     try {
       _interpreter =
           await Interpreter.fromAsset('assets/Model/hybrid_model.tflite');
-      print("✅ TFLite model loaded successfully.");
+      print("✅ TFLite model loaded successfully.".tr());
     } catch (e) {
-      print("❌ Error loading TFLite model: $e");
+      print("❌ Error loading TFLite model: $e".tr());
     }
   }
 
@@ -61,7 +62,7 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
       final XFile? pickedFile = await picker.pickImage(source: source);
 
       if (pickedFile != null) {
-        print("Picked file: ${pickedFile.path}");
+        print("Picked file: ${pickedFile.path}".tr());
         setState(() {
           if (isFirst) {
             _firstImage = File(pickedFile.path); // Set the first image
@@ -70,7 +71,7 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
           }
         });
       } else {
-        print('No image selected');
+        print('No image selected'.tr());
       }
     } else {
       // Handle permission denied case
@@ -109,8 +110,8 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
 
       return _getDiseaseLabel(predictedClass);
     } catch (e) {
-      print("❌ Detection error: $e");
-      return "❌ Detection failed!";
+      print("❌ Detection error: $e".tr());
+      return "❌ Detection failed!".tr();
     }
   }
 
@@ -124,12 +125,12 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
       final prediction2 = await _detectDisease(_secondImage!);
 
       setState(() {
-        result1 = "Prediction (1st): $prediction1";
-        result2 = "Prediction (2nd): $prediction2";
+        result1 = "Prediction (1st): $prediction1".tr();
+        result2 = "Prediction (2nd): $prediction2".tr();
       });
     } else {
       setState(() {
-        result1 = result2 = "⚠️ Please select both images!";
+        result1 = result2 = "⚠️ Please select both images!".tr();
       });
     }
   }
@@ -176,7 +177,7 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
             )
           : Center(
               child: Text(
-                'No $label Image Selected',
+                'No $label Image Selected'.tr(),
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
             ),
@@ -197,7 +198,7 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
         ElevatedButton.icon(
           onPressed: () => _pickImage(isFirst, ImageSource.gallery),
           icon: Icon(Icons.image),
-          label: Text('Upload ${isFirst ? "1st" : "2nd"} Photo'),
+          label: Text('Upload ${isFirst ? "1st" : "2nd"} Photo'.tr()),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             backgroundColor: Color(0xFF7B5228),
@@ -213,7 +214,7 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
         ElevatedButton.icon(
           onPressed: () => _pickImage(isFirst, ImageSource.camera),
           icon: Icon(Icons.camera_alt),
-          label: Text('Take ${isFirst ? "1st" : "2nd"} Photo'),
+          label: Text("Take ${isFirst ? '1st' : '2nd'} Photo".tr()),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             backgroundColor: Color(0xFF7B5228),
@@ -231,14 +232,14 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Permission Denied"),
-        content: Text("Please grant permission to access the camera."),
+        title: Text("Permission Denied".tr()),
+        content: Text("Please grant permission to access the camera.".tr()),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('OK'),
+            child: Text('OK'.tr()),
           ),
         ],
       ),
@@ -267,13 +268,13 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
                       child: Column(
                         children: [
                           _buildImageContainer(
-                              _firstImage, "First", screenHeight),
+                              _firstImage, "First".tr(), screenHeight),
                           _buildImageButtons(true),
                           if (result1.isNotEmpty)
                             Text(result1, style: TextStyle(fontSize: 16)),
                           SizedBox(height: 10),
                           _buildImageContainer(
-                              _secondImage, "Second", screenHeight),
+                              _secondImage, "Second".tr(), screenHeight),
                           _buildImageButtons(false),
                           if (result2.isNotEmpty)
                             Text(result2, style: TextStyle(fontSize: 16)),
@@ -281,7 +282,7 @@ class _CompareImagesScreenState extends State<CompareImagesScreen> {
                           if (_firstImage != null && _secondImage != null)
                             ElevatedButton(
                               onPressed: _compareImages,
-                              child: Text("Compare"),
+                              child: Text("Compare".tr()),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFF7B5228),
                                 foregroundColor: Colors.white,

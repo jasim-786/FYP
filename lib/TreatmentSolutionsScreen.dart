@@ -48,7 +48,7 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading disease data: $e');
+      print('Error loading disease data: $e'.tr());
       setState(() {
         _isLoading = false;
       });
@@ -461,9 +461,9 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
                         color: Color(0xFF7B5228),
                       ),
                     ),
-                    if (diseaseInfo['scientificName'] != null)
+                    if (diseaseInfo['scientificName'.tr()] != null)
                       Text(
-                        diseaseInfo['scientificName'],
+                        diseaseInfo['scientificName'.tr()],
                         style: TextStyle(
                           fontSize: 12,
                           fontStyle: FontStyle.italic,
@@ -478,23 +478,23 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
           SizedBox(height: 20),
           _buildInfoSection(
             'Symptoms'.tr(),
-            diseaseInfo['symptoms'] ?? "No data available".tr(),
+            diseaseInfo['symptoms'.tr()] ?? "No data available".tr(),
             Icons.medical_services,
             Color(0xFFD32F2F),
           ),
-          if (diseaseInfo['environmentalConditions'] != null)
+          if (diseaseInfo['environmentalConditions'.tr()] != null)
             Column(
               children: [
                 SizedBox(height: 20),
                 _buildInfoSection(
                   'Environmental Conditions'.tr(),
-                  diseaseInfo['environmentalConditions'],
+                  diseaseInfo['environmentalConditions'.tr()],
                   Icons.wb_sunny,
                   Color(0xFFFFA000),
                 ),
               ],
             ),
-          if (diseaseInfo['vulnerableStages'] != null)
+          if (diseaseInfo['vulnerableStages'.tr()] != null)
             Column(
               children: [
                 SizedBox(height: 20),
@@ -513,50 +513,52 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
             iconColor: Color(0xFFD32F2F),
             initiallyExpanded: true,
             children: [
-              if (diseaseInfo['treatments'] is List)
-                ...List<String>.from(diseaseInfo['treatments'])
+              if (diseaseInfo['treatments'.tr()] is List)
+                ...List<String>.from(diseaseInfo['treatments'.tr()])
                     .map<Widget>((treatment) => _buildTreatmentItem(treatment))
                     .toList()
-              else if (diseaseInfo['treatments'] is Map)
+              else if (diseaseInfo['treatments'.tr()] is Map)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (diseaseInfo['treatments']['chemical'] != null)
+                    if (diseaseInfo['treatments'.tr()]['chemical'.tr()] != null)
                       _buildExpandableSection(
                         title: 'Chemical'.tr(),
                         icon: Icons.science,
                         iconColor: Colors.red.shade400,
                         initiallyExpanded: true,
                         children: List<String>.from(
-                                diseaseInfo['treatments']['chemical'])
+                                diseaseInfo['treatments'.tr()]['chemical'.tr()])
                             .map<Widget>((treatment) => _buildTreatmentItem(
                                 treatment,
                                 Colors.red.shade50,
                                 Colors.red.shade100))
                             .toList(),
                       ),
-                    if (diseaseInfo['treatments']['biological'] != null)
+                    if (diseaseInfo['treatments'.tr()]['biological'.tr()] !=
+                        null)
                       _buildExpandableSection(
                         title: 'Biological'.tr(),
                         icon: Icons.eco,
                         iconColor: Colors.blue.shade400,
                         initiallyExpanded: false,
                         children: List<String>.from(
-                                diseaseInfo['treatments']['biological'])
+                                diseaseInfo['treatments'.tr()]
+                                    ['biological'.tr()])
                             .map<Widget>((treatment) => _buildTreatmentItem(
                                 treatment,
                                 Colors.blue.shade50,
                                 Colors.blue.shade100))
                             .toList(),
                       ),
-                    if (diseaseInfo['treatments']['cultural'] != null)
+                    if (diseaseInfo['treatments'.tr()]['cultural'.tr()] != null)
                       _buildExpandableSection(
                         title: 'Cultural'.tr(),
                         icon: Icons.agriculture,
                         iconColor: Colors.green.shade400,
                         initiallyExpanded: false,
                         children: List<String>.from(
-                                diseaseInfo['treatments']['cultural'])
+                                diseaseInfo['treatments'.tr()]['cultural'.tr()])
                             .map<Widget>((treatment) => _buildTreatmentItem(
                                 treatment,
                                 Colors.green.shade50,
@@ -573,8 +575,8 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
             icon: Icons.shield,
             iconColor: Colors.blue.shade700,
             initiallyExpanded: false,
-            children: diseaseInfo['prevention'] is List
-                ? List<String>.from(diseaseInfo['prevention'])
+            children: diseaseInfo['prevention'.tr()] is List
+                ? List<String>.from(diseaseInfo['prevention'.tr()])
                     .map<Widget>((item) => _buildTreatmentItem(
                         item, Colors.blue.shade50, Colors.blue.shade100))
                     .toList()
@@ -587,7 +589,8 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
                         border: Border.all(color: Colors.blue.shade100),
                       ),
                       child: Text(
-                        diseaseInfo['prevention'] ?? "No data available".tr(),
+                        diseaseInfo['prevention'.tr()] ??
+                            "No data available".tr(),
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey.shade800,
@@ -597,7 +600,7 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
                     ),
                   ],
           ),
-          if (diseaseInfo['traditionalPractices'] != null)
+          if (diseaseInfo['traditionalPractices'.tr()] != null)
             Column(
               children: [
                 SizedBox(height: 20),

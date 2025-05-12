@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/firebase_options.dart';
 import 'package:flutter_application_1/SplashScreen.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 

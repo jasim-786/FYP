@@ -18,7 +18,7 @@ class WheatResourceEstimatorScreen extends StatefulWidget {
 class _WheatResourceEstimatorScreenState
     extends State<WheatResourceEstimatorScreen> {
   final TextEditingController _landController = TextEditingController();
-  String _selectedUnit = 'Acre';
+  String _selectedUnit = 'Acre'.tr();
   String _detectedDisease = '';
 
   double? seedKg, dapBags, ureaBags, waterLiters, medicineLiters;
@@ -29,9 +29,9 @@ class _WheatResourceEstimatorScreenState
       totalMedicineCost;
 
   final Map<String, double> unitToAcre = {
-    'Acre': 1.0,
-    'Kanal': 0.125,
-    'Marla': 0.00625,
+    'Acre'.tr(): 1.0,
+    'Kanal'.tr(): 0.125,
+    'Marla'.tr(): 0.00625,
   };
 
   final double seedPricePerKg = 150;
@@ -59,10 +59,10 @@ class _WheatResourceEstimatorScreenState
         totalUreaCost = ureaBags! * ureaPricePerBag;
         totalWaterCost = waterLiters! * waterPricePerLitre;
 
-        if (_detectedDisease == 'Brown Rust') {
+        if (_detectedDisease == 'Brown Rust'.tr()) {
           medicineLiters = acres * 1.5;
           totalMedicineCost = medicineLiters! * brownRustPricePerLitre;
-        } else if (_detectedDisease == 'Yellow Rust') {
+        } else if (_detectedDisease == 'Yellow Rust'.tr()) {
           medicineLiters = acres * 2.0;
           totalMedicineCost = medicineLiters! * yellowRustPricePerLitre;
         } else {
@@ -79,14 +79,14 @@ class _WheatResourceEstimatorScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to log out?"),
+          title: Text("Logout".tr()),
+          content: Text("Are you sure you want to log out?".tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
               },
-              child: Text("Cancel"),
+              child: Text("Cancel".tr()),
             ),
             TextButton(
               onPressed: () async {
@@ -97,7 +97,7 @@ class _WheatResourceEstimatorScreenState
                 // Show logout success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Logged out successfully"),
+                    content: Text("Logged out successfully".tr()),
                     duration: Duration(seconds: 2),
                   ),
                 );
@@ -108,7 +108,7 @@ class _WheatResourceEstimatorScreenState
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
+              child: Text("Logout".tr(), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -162,11 +162,12 @@ class _WheatResourceEstimatorScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('Detected Disease (if any)'),
-        ...['Brown Rust', 'Yellow Rust', 'No Disease'].map((disease) {
+        _buildSectionTitle('Detected Disease (if any)'.tr()),
+        ...['Brown Rust'.tr(), 'Yellow Rust'.tr(), 'No Disease'.tr()]
+            .map((disease) {
           return RadioListTile<String>(
             title: Text(disease),
-            value: disease == 'No Disease' ? '' : disease,
+            value: disease == 'No Disease'.tr() ? '' : disease,
             groupValue: _detectedDisease,
             activeColor: primaryColor,
             onChanged: (value) {
@@ -361,7 +362,7 @@ class _WheatResourceEstimatorScreenState
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         child: Text(
-                          'Wheat Resource\nEstimator',
+                          'Wheat Resource\nEstimator'.tr(),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -379,7 +380,7 @@ class _WheatResourceEstimatorScreenState
                           controller: _landController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            labelText: 'Land Area',
+                            labelText: 'Land Area'.tr(),
                             filled: true,
                             fillColor: accentColor.withOpacity(0.4),
                             prefixIcon:
@@ -399,7 +400,7 @@ class _WheatResourceEstimatorScreenState
                         child: DropdownButton<String>(
                           value: _selectedUnit,
                           underline: SizedBox(),
-                          items: ['Acre', 'Kanal', 'Marla']
+                          items: ['Acre'.tr(), 'Kanal'.tr(), 'Marla'.tr()]
                               .map((unit) => DropdownMenuItem(
                                     value: unit,
                                     child: Text(unit),
@@ -434,7 +435,7 @@ class _WheatResourceEstimatorScreenState
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       alignment: Alignment.center,
                       child: Text(
-                        'Calculate Resources',
+                        'Calculate Resources'.tr(),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -444,45 +445,45 @@ class _WheatResourceEstimatorScreenState
                   ),
                   const SizedBox(height: 20),
                   if (seedKg != null) ...[
-                    _buildSectionTitle('Estimation Results'),
-                    _buildResultRow('Wheat Seed Required',
+                    _buildSectionTitle('Estimation Results'.tr()),
+                    _buildResultRow('Wheat Seed Required'.tr(),
                         '${seedKg!.toStringAsFixed(1)} kg', Icons.grass),
                     _buildResultRow(
-                        'DAP Fertilizer',
+                        'DAP Fertilizer'.tr(),
                         '${dapBags!.toStringAsFixed(2)} bags',
                         Icons.local_florist),
-                    _buildResultRow('Urea Fertilizer',
+                    _buildResultRow('Urea Fertilizer'.tr(),
                         '${ureaBags!.toStringAsFixed(2)} bags', Icons.eco),
                     _buildResultRow(
-                        'Water per Irrigation',
+                        'Water per Irrigation'.tr(),
                         '${waterLiters!.toStringAsFixed(0)} liters',
                         Icons.water_drop),
                     if (medicineLiters != null)
                       _buildResultRow(
-                          'Medicine Required',
+                          'Medicine Required'.tr(),
                           '${medicineLiters!.toStringAsFixed(1)} liters',
                           Icons.medication),
                     Divider(height: 32, color: primaryColor, thickness: 1),
-                    _buildSectionTitle('Cost Estimations'),
+                    _buildSectionTitle('Cost Estimations'.tr()),
                     _buildResultRow(
-                        'Total Seed Cost',
+                        'Total Seed Cost'.tr(),
                         'PKR ${totalSeedCost!.toStringAsFixed(0)}',
                         Icons.monetization_on),
                     _buildResultRow(
-                        'Total DAP Cost',
+                        'Total DAP Cost'.tr(),
                         'PKR ${totalDapCost!.toStringAsFixed(0)}',
                         Icons.monetization_on),
                     _buildResultRow(
-                        'Total Urea Cost',
+                        'Total Urea Cost'.tr(),
                         'PKR ${totalUreaCost!.toStringAsFixed(0)}',
                         Icons.monetization_on),
                     _buildResultRow(
-                        'Total Water Cost',
+                        'Total Water Cost'.tr(),
                         'PKR ${totalWaterCost!.toStringAsFixed(0)}',
                         Icons.monetization_on),
                     if (totalMedicineCost != null)
                       _buildResultRow(
-                          'Total Medicine Cost',
+                          'Total Medicine Cost'.tr(),
                           'PKR ${totalMedicineCost!.toStringAsFixed(0)}',
                           Icons.monetization_on),
                   ],

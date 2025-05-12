@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -30,11 +30,11 @@ class _TimeWidgetState extends State<TimeWidget> {
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      return "Good Morning";
+      return "Good Morning".tr();
     } else if (hour < 17) {
-      return "Good Afternoon";
+      return "Good Afternoon".tr();
     } else {
-      return "Good Evening";
+      return "Good Evening".tr();
     }
   }
 

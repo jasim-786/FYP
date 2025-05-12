@@ -27,15 +27,21 @@ class AppConstants {
   static const cardGradientStart = Color(0xFFE5D188); // Accent yellow
   static const cardGradientEnd = Color(0xFFF5E8B8); // Softer yellow
   static const pageSize = 10;
-  static const activityTypes = [
-    'Sowing',
-    'Irrigation',
-    'Fertilizer',
-    'Spray',
-    'Harvest',
-    'Other'
-  ];
-  static const cropStages = ['Germination', 'Tillering', 'Heading', 'Ripening'];
+
+  static List<String> get activityTypes => [
+        'Sowing'.tr(),
+        'Irrigation'.tr(),
+        'Fertilizer'.tr(),
+        'Spray'.tr(),
+        'Harvest'.tr(),
+        'Other'.tr(),
+      ];
+  static List<String> get cropStages => [
+        'Germination'.tr(),
+        'Tillering'.tr(),
+        'Heading'.tr(),
+        'Ripening'.tr(),
+      ];
   static const activityColors = {
     'Sowing': Color(0xFF6D4C41), // Muted brown
     'Irrigation': Color(0xFF8D6E63), // Soft brown
@@ -50,6 +56,13 @@ class AppConstants {
     'Heading': 0.75,
     'Ripening': 1.0,
   };
+
+  static Map<String, double> get localizedStageProgress => {
+        'Germination'.tr(): 0.25,
+        'Tillering'.tr(): 0.5,
+        'Heading'.tr(): 0.75,
+        'Ripening'.tr(): 1.0,
+      };
   static const regions = [
     'Punjab - Cotton Zone',
     'Punjab - Central/Mixed Zone',
@@ -255,7 +268,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
               onPressed: () {
                 Navigator.pop(context); // Close dialog
               },
-              child: Text("Cancel"),
+              child: Text("Cancel".tr()),
             ),
             TextButton(
               onPressed: () async {
@@ -783,7 +796,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel',
+            child: Text('Cancel'.tr(),
                 style: TextStyle(color: AppConstants.primaryColor)),
           ),
           ElevatedButton(
@@ -912,7 +925,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        isEdit ? 'Edit Entry' : 'Add New Entry',
+                        isEdit ? 'Edit Entry'.tr() : 'Add New Entry'.tr(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -922,8 +935,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                       const SizedBox(height: 20),
                       DropdownButtonFormField<String>(
                         value: activity,
-                        decoration: const InputDecoration(
-                          labelText: 'Activity Type',
+                        decoration: InputDecoration(
+                          labelText: 'Activity Type'.tr(),
                           labelStyle: TextStyle(color: Colors.white70),
                           filled: true,
                           fillColor: Colors.white24,
@@ -982,8 +995,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                       const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
                         value: stage,
-                        decoration: const InputDecoration(
-                          labelText: 'Crop Stage',
+                        decoration: InputDecoration(
+                          labelText: 'Crop Stage'.tr(),
                           labelStyle: TextStyle(color: Colors.white70),
                           filled: true,
                           fillColor: Colors.white24,
@@ -1007,8 +1020,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                       const SizedBox(height: 16),
                       TextField(
                         controller: notesController,
-                        decoration: const InputDecoration(
-                          labelText: 'Notes',
+                        decoration: InputDecoration(
+                          labelText: 'Notes'.tr(),
                           labelStyle: TextStyle(color: Colors.white70),
                           filled: true,
                           fillColor: Colors.white24,
@@ -1021,12 +1034,12 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                         maxLines: 3,
                       ),
                       ListTile(
-                        title: const Text('Reminder Time',
+                        title: Text('Reminder Time'.tr(),
                             style: TextStyle(color: Colors.white)),
                         subtitle: Text(
                           _reminderTime != null
                               ? _reminderTime!.format(context)
-                              : 'No reminder set',
+                              : 'No reminder set'.tr(),
                           style: const TextStyle(color: Colors.white70),
                         ),
                         trailing: const Icon(Icons.alarm,
@@ -1045,7 +1058,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                         const SizedBox(height: 16),
                         Text(
                           rainMessage ??
-                              'Cannot add Harvest activity due to expected rain.',
+                              'Cannot add Harvest activity due to expected rain.'
+                                  .tr(),
                           style: const TextStyle(
                             color: Colors.redAccent,
                             fontSize: 12,
@@ -1060,7 +1074,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                         children: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancel',
+                            child: Text('Cancel'.tr(),
                                 style: TextStyle(color: Colors.white)),
                           ),
                           ElevatedButton(
@@ -1108,8 +1122,10 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                                           'notes': notes,
                                           'date': Timestamp.now(),
                                         });
-                                        _showNotification('Entry Added',
-                                            'A new crop diary entry has been added.');
+                                        _showNotification(
+                                            'Entry Added'.tr(),
+                                            'A new crop diary entry has been added.'
+                                                .tr());
                                       }
                                       _scheduleReminder(
                                           activity, DateTime.now());
@@ -1121,7 +1137,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                                     }
                                   },
                             child: Text(
-                              isEdit ? 'Save' : 'Add',
+                              isEdit ? 'Save'.tr() : 'Add'.tr(),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -1192,8 +1208,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Crop Settings',
+                  Text(
+                    'Crop Settings'.tr(),
                     style: TextStyle(
                       color: AppConstants.primaryColor,
                       fontSize: 18,
@@ -1204,7 +1220,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   DropdownButtonFormField<String>(
                     value: _selectedRegion,
                     decoration: InputDecoration(
-                      labelText: 'Select Region',
+                      labelText: 'Select Region'.tr(),
                       labelStyle:
                           const TextStyle(color: AppConstants.primaryColor),
                       filled: true,
@@ -1235,7 +1251,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   const SizedBox(height: 12),
                   ListTile(
                     title: Text(
-                      'Sowing Date: ${_sowingDate != null ? DateFormat('yyyy-MM-dd').format(_sowingDate!) : 'Not set'}',
+                      'Sowing Date: ${_sowingDate != null ? DateFormat('yyyy-MM-dd').format(_sowingDate!) : 'Not set'.tr()}',
                       style: const TextStyle(color: AppConstants.primaryColor),
                     ),
                     trailing: const Icon(Icons.calendar_today,
@@ -1255,7 +1271,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                                 surface: AppConstants.accentColor,
                                 onSurface: AppConstants.primaryColor,
                               ),
-                              dialogBackgroundColor: Colors.white,
+                              dialogTheme: DialogThemeData(
+                                  backgroundColor: Colors.white),
                             ),
                             child: child!,
                           );
@@ -1265,8 +1282,10 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                         setState(() {
                           _sowingDate = picked;
                           _savePreferences();
-                          _showNotification('Sowing Date Updated',
-                              'Sowing date set to ${DateFormat('yyyy-MM-dd').format(picked)}.');
+                          _showNotification(
+                              'Sowing Date Updated',
+                              'Sowing date set to ${DateFormat('yyyy-MM-dd').format(picked)}.'
+                                  .tr());
                         });
                       }
                     },
@@ -1288,11 +1307,11 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
           icon: const Icon(Icons.more_vert, color: AppConstants.primaryColor),
           onSelected: (value) {
             setState(() {
-              if (value == 'settings') {
+              if (value == 'settings'.tr()) {
                 _showSettings = !_showSettings;
-              } else if (value == 'guidance') {
+              } else if (value == 'guidance'.tr()) {
                 _showGuidance = !_showGuidance;
-              } else if (value == 'refresh') {
+              } else if (value == 'refresh'.tr()) {
                 _loadInitialEntries();
               }
             });
@@ -1308,7 +1327,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _showSettings ? 'Hide Settings' : 'Show Settings',
+                    _showSettings ? 'Hide Settings'.tr() : 'Show Settings'.tr(),
                     style: const TextStyle(color: AppConstants.primaryColor),
                   ),
                 ],
@@ -1324,7 +1343,9 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _showGuidance ? 'Hide Wheat Guide' : 'Show Wheat Guide',
+                    _showGuidance
+                        ? 'Hide Wheat Guide'.tr()
+                        : 'Show Wheat Guide'.tr(),
                     style: const TextStyle(color: AppConstants.primaryColor),
                   ),
                 ],
@@ -1337,7 +1358,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   Icon(Icons.refresh, color: AppConstants.primaryColor),
                   SizedBox(width: 8),
                   Text(
-                    'Refresh',
+                    "Refresh",
                     style: TextStyle(color: AppConstants.primaryColor),
                   ),
                 ],
@@ -1495,8 +1516,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                               child: TextButton.icon(
                                 icon: const Icon(Icons.add,
                                     size: 16, color: AppConstants.accentColor),
-                                label: const Text(
-                                  'Add to Diary',
+                                label: Text(
+                                  'Add to Diary'.tr(),
                                   style: TextStyle(
                                       color: AppConstants.accentColor),
                                 ),
@@ -1658,8 +1679,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Crop Progress',
+                        Text(
+                          'Crop Progress'.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -2022,8 +2043,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   floating: true,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: const Text(
-                      'Crop Diary',
+                    title: Text(
+                      'Crop Diary'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -2093,7 +2114,8 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                             child: Text(
                               _selectedActivities.isEmpty
                                   ? 'No entries yet. Start your crop diary!'
-                                  : 'No entries for selected activities.',
+                                      .tr()
+                                  : 'No entries for selected activities.'.tr(),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -2174,7 +2196,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
           backgroundColor: AppConstants.accentColor,
           elevation: 6,
           child: const Icon(Icons.grass, color: AppConstants.primaryColor),
-          tooltip: 'Add Entry',
+          tooltip: 'Add Entry'.tr(),
         ),
       ),
     );

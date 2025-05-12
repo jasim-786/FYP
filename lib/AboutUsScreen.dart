@@ -16,14 +16,14 @@ class AboutUsScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to log out?"),
+          title: Text('Logout'.tr()),
+          content: Text('Are you sure you want to log out?'.tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
               },
-              child: Text("Cancel"),
+              child: Text("Cancel".tr()),
             ),
             TextButton(
               onPressed: () async {
@@ -34,7 +34,7 @@ class AboutUsScreen extends StatelessWidget {
                 // Show logout success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Logged out successfully"),
+                    content: Text('Logged out successfully'.tr()),
                     duration: Duration(seconds: 2),
                   ),
                 );
@@ -45,7 +45,7 @@ class AboutUsScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
+              child: Text('Logout'.tr(), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -250,7 +250,7 @@ class AboutUsScreen extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        "About Us",
+                        'About Us'.tr(),
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,

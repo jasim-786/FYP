@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, avoid_print
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -66,18 +67,19 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           // December to March
           if (tempC > 22) {
             message =
-                "⚠️ Warning: Conditions may favor brown rust development.";
+                '⚠️ Warning: Conditions may favor brown rust development.'.tr();
           } else if (tempC >= 15 && tempC <= 22) {
-            message = "✅ Your wheat crop is safe from brown rust.";
+            message = '✅ Your wheat crop is safe from brown rust.'.tr();
           } else if (tempC > 15) {
             message =
-                "⚠️ Warning: Conditions may favor yellow rust development.";
+                '⚠️ Warning: Conditions may favor yellow rust development.'
+                    .tr();
           } else if (tempC >= 10 && tempC <= 15 && hum > 80) {
-            message = "✅ Your wheat crop is safe from yellow rust.";
+            message = '✅ Your wheat crop is safe from yellow rust.'.tr();
           }
         } else if (month >= 4 && month <= 6) {
           // April to June
-          message = "🌾 Happy harvesting!";
+          message = '🌾 Happy harvesting!'.tr();
         }
 
         setState(() {
@@ -105,7 +107,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                 title: Row(
                   children: [
                     Icon(
-                      message!.contains('safe')
+                      message!.contains('safe'.tr())
                           ? Icons.check_circle_outline
                           : Icons.warning_amber_rounded,
                       color: message.contains('safe')
@@ -114,7 +116,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      "Weather Advisory",
+                      'Weather Advisory'.tr(),
                       style: TextStyle(
                         color: const Color(0xFF7B5228),
                         fontWeight: FontWeight.bold,
@@ -143,7 +145,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Text(
-                        "OK",
+                        'OK',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -157,10 +159,10 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           });
         }
       } else {
-        print('Error: ${response.statusCode}');
+        print('Error: ${response.statusCode}'.tr());
       }
     } catch (e) {
-      print('Failed to fetch weather: $e');
+      print('Failed to fetch weather: $e'.tr());
     }
   }
 
@@ -168,13 +170,13 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final weekday = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday'
+      'Sunday'.tr(),
+      'Monday'.tr(),
+      'Tuesday'.tr(),
+      'Wednesday'.tr(),
+      'Thursday'.tr(),
+      'Friday'.tr(),
+      'Saturday'.tr()
     ][now.weekday % 7];
 
     return Padding(
@@ -199,68 +201,82 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                   ),
                 ],
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Icon
-                  Image.network(
-                    'https://openweathermap.org/img/wn/$weatherIconCode@2x.png',
-                    height: 40,
-                    width: 40,
-                    color: Colors.white,
-                  ),
-
-                  // Day
-                  Text(
-                    weekday,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.white70,
-                    ),
-                  ),
-
-                  const SizedBox(height: 1),
-
-                  // Temperature
-                  Text(
-                    temperature ?? '',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Icon
+                    Image.network(
+                      'https://openweathermap.org/img/wn/$weatherIconCode@2x.png',
+                      height: 40,
+                      width: 40,
                       color: Colors.white,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.error, color: Colors.white),
                     ),
-                  ),
 
-                  const SizedBox(height: 4),
+                    // Day
+                    Flexible(
+                      child: Text(
+                        weekday,
+                        style: const TextStyle(
+                          fontSize: 12, // Reduced for safety
+                          color: Colors.white70,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
 
-                  // City and Humidity in a Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          city ?? '',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                    const SizedBox(height: 2), // Reduced spacing
+
+                    // Temperature
+                    Flexible(
+                      child: Text(
+                        temperature ?? '',
+                        style: const TextStyle(
+                          fontSize: 22, // Slightly reduced
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+
+                    const SizedBox(height: 2), // Reduced spacing
+
+                    // City and Humidity in a Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            city ?? '',
+                            style: const TextStyle(
+                              fontSize: 13, // Reduced for safety
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          humidity != null ? 'Humidity: $humidity%' : '',
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
+                        Flexible(
+                          child: Text(
+                            humidity != null ? 'Humidity: $humidity%'.tr() : '',
+                            textAlign: TextAlign.right,
+                            style: const TextStyle(
+                              fontSize: 9, // Reduced for safety
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             )
           : const Center(child: CircularProgressIndicator()),

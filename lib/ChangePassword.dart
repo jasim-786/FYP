@@ -38,14 +38,14 @@ class _ChangePasswordState extends State<ChangePassword> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to log out?"),
+          title: Text('Logout'.tr()),
+          content: Text("Are you sure you want to log out?".tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
               },
-              child: Text("Cancel"),
+              child: Text("Cancel".tr()),
             ),
             TextButton(
               onPressed: () async {
@@ -56,7 +56,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 // Show logout success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Logged out successfully"),
+                    content: Text("Logged out successfully".tr()),
                     duration: Duration(seconds: 2),
                   ),
                 );
@@ -67,7 +67,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
+              child: Text("Logout".tr(), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -117,7 +117,8 @@ class _ChangePasswordState extends State<ChangePassword> {
     }
 
     if (newPass != confirmPass) {
-      _showDialog("Mismatch", "New passwords do not match.", isError: true);
+      _showDialog("Mismatch".tr(), "New passwords do not match.".tr(),
+          isError: true);
       return;
     }
 
@@ -143,7 +144,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       _showDialog('Success'.tr(), 'Your password has been changed.'.tr());
       Navigator.pop(context); // back to profile
     } catch (e) {
-      _showDialog("Error", e.toString(), isError: true);
+      _showDialog("Error".tr(), e.toString(), isError: true);
     }
   }
 
