@@ -120,8 +120,8 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           labelText: 'Phone Number',
-                          hintText: 'Enter your phone number',
-                          prefixText: '+92',
+                          hintText: ' Enter your phone number',
+                          prefixText: '+92 ',
                           prefixIcon: const Icon(Icons.phone),
                           filled: true,
                           fillColor: Colors.transparent,
