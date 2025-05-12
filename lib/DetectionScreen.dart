@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class DetectionScreen extends StatefulWidget {
   final String imagePath;
@@ -311,9 +312,13 @@ class _DetectionScreenState extends State<DetectionScreen> {
     );
   }
 
+  Future<bool> isOnline() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
+
   Future<void> _storeDetectionResult(String diseaseName) async {
     final user = FirebaseAuth.instance.currentUser;
-
     if (user == null) {
       print("⚠️ User not logged in. Skipping Firestore upload.");
       return;
@@ -321,34 +326,59 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
     try {
       File imageFile = File(imagePath);
-
       if (!imageFile.existsSync()) {
         print("⚠️ Image file not found. Skipping upload.");
         return;
       }
+      if (!await isOnline()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Offline: Data will sync when online")),
+        );
+        return; // Exit to avoid showing loading dialog
+      }
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 10),
+              Text("Uploading..."),
+            ],
+          ),
+        ),
+      );
 
-      // Convert image to base64
-      final imageBytes = await imageFile.readAsBytes();
-      final base64Image = base64Encode(imageBytes);
+      // Resize and compress image
+      var image = img.decodeImage(imageFile.readAsBytesSync())!;
+      image =
+          img.copyResize(image, width: 224, height: 224); // Resize to 224x224
+      final compressedImage =
+          img.encodeJpg(image, quality: 85); // Compress to JPEG
+      final base64Image = base64Encode(compressedImage); // Convert to Base64
 
+      // Load treatments and prevention data
       Map<String, dynamic> treatments = {};
       List<dynamic> prevention = [];
-
       if (diseaseName != "Unknown") {
-        // Load treatments from solutions.json only if disease is known
         final jsonString = await rootBundle.loadString('assets/solutions.json');
         final Map<String, dynamic> allData = json.decode(jsonString);
-
         final diseaseData = allData[diseaseName];
         treatments = diseaseData?['treatments'] ?? {};
         prevention = diseaseData?['prevention'] ?? [];
       } else {
-        // Add custom message for unknown detection
         treatments = {"note": "This image does not appear to be a wheat leaf."};
+        prevention = ["This image does not appear to be a wheat leaf."];
       }
 
-      // Save to Firestore
-      await FirebaseFirestore.instance.collection('disease_detections').add({
+      // Save to Firestore with batch write
+      final batch = FirebaseFirestore.instance.batch();
+      final docRef =
+          FirebaseFirestore.instance.collection('disease_detections').doc();
+      batch.set(docRef, {
         'userId': user.uid,
         'timestamp': Timestamp.now(),
         'prediction': diseaseName,
@@ -356,10 +386,25 @@ class _DetectionScreenState extends State<DetectionScreen> {
         'treatments': treatments,
         'prevention': prevention,
       });
+      await batch.commit();
 
+      // Close loading dialog
+      Navigator.pop(context);
       print("✅ Detection result uploaded to Firestore.");
     } catch (e) {
+      Navigator.pop(context); // Close loading dialog
       print("❌ Error uploading to Firestore: $e");
+      if (e.toString().contains('Document too large')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text("Image or data too large. Please try a smaller image.")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error uploading data")),
+        );
+      }
     }
   }
 

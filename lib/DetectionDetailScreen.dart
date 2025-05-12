@@ -39,10 +39,10 @@ class DetectionDetailScreen extends StatelessWidget {
         "${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}";
     final treatmentText = treatments.entries.map((e) {
       final points =
-          (e.value as List<dynamic>).map((item) => "• $item").join("\n");
+          (e.value as List<dynamic>).map((item) => "$item").join("\n");
       return "${e.key.toUpperCase()}:\n$points";
     }).join("\n\n");
-    final preventionText = prevention.map((p) => "• $p").join("\n");
+    final preventionText = prevention.map((p) => "$p").join("\n");
 
     pdf.addPage(
       pw.MultiPage(
@@ -203,11 +203,11 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
 
     final treatmentText = treatments.entries.map((e) {
       final points =
-          (e.value as List<dynamic>).map((item) => "• $item").join("\n");
+          (e.value as List<dynamic>).map((item) => "$item").join("\n");
       return "${e.key.toUpperCase()}:\n$points";
     }).join("\n\n");
 
-    final preventionText = prevention.map((p) => "• $p").join("\n");
+    final preventionText = prevention.map((p) => "$p").join("\n");
 
     pdf.addPage(
       pw.MultiPage(

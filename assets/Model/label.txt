@@ -1,4 +1,4 @@
 Brown_Rust
 Healthy
-Unknow
+Unknown
 Yellow_Rust

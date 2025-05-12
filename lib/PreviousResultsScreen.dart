@@ -43,27 +43,58 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
         7]; // Date.weekday returns 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
   }
 
+  (DateTime start, DateTime end) _getCurrentWeekBoundaries() {
+    final now = DateTime.now();
+    // Calculate days to subtract to get to Monday (weekday: 1 = Monday, 7 = Sunday)
+    final daysToMonday = now.weekday - 1;
+    // Start of the week (Monday, 00:00:00)
+    final startOfWeek = now.subtract(Duration(days: daysToMonday)).copyWith(
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+          microsecond: 0,
+        );
+    // End of the week (Sunday, 23:59:59)
+    final endOfWeek = startOfWeek.add(Duration(days: 6)).copyWith(
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+          microsecond: 999,
+        );
+    return (startOfWeek, endOfWeek);
+  }
+
   List<FlSpot> _generateBrownRustSpots() {
+    // Get current week boundaries
+    final (startOfWeek, endOfWeek) = _getCurrentWeekBoundaries();
+
     Map<String, int> brownRustCounts =
         {}; // To store counts of Brown Rust per day
 
-    // Loop through the history data
+    // Filter history data for the current week
     for (var item in _historyData) {
       DateTime date = item['date'];
       String? prediction = item['prediction'];
 
-      if (prediction == null) continue; // Skip if prediction is null
+      // Skip if prediction is null or date is outside the current week
+      if (prediction == null ||
+          date.isBefore(startOfWeek) ||
+          date.isAfter(endOfWeek)) {
+        continue;
+      }
 
       // Get the day of the week (Monday = 0, Sunday = 6)
       String dayOfWeek = _getDayOfWeek(date);
 
-      // Increment the count for each prediction type on that day
+      // Increment the count for Brown Rust
       if (prediction == 'Brown_Rust') {
         brownRustCounts[dayOfWeek] = (brownRustCounts[dayOfWeek] ?? 0) + 1;
       }
     }
 
-    // Days of the week to display (starting from Sunday to Saturday)
+    // Days of the week (Monday to Sunday)
     List<String> daysOfWeek = [
       'Monday',
       'Tuesday',
@@ -79,36 +110,41 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
     for (int i = 0; i < daysOfWeek.length; i++) {
       String day = daysOfWeek[i];
       int brownRustCount = brownRustCounts[day] ?? 0;
-
-      // Add spots for Brown Rust
-      brownRustSpots.add(FlSpot(i.toDouble(),
-          brownRustCount.toDouble().roundToDouble())); // Brown Rust count
+      brownRustSpots.add(FlSpot(i.toDouble(), brownRustCount.toDouble()));
     }
 
     return brownRustSpots;
   }
 
   List<FlSpot> _generateYellowRustSpots() {
+    // Get current week boundaries
+    final (startOfWeek, endOfWeek) = _getCurrentWeekBoundaries();
+
     Map<String, int> yellowRustCounts =
         {}; // To store counts of Yellow Rust per day
 
-    // Loop through the history data
+    // Filter history data for the current week
     for (var item in _historyData) {
       DateTime date = item['date'];
       String? prediction = item['prediction'];
 
-      if (prediction == null) continue; // Skip if prediction is null
+      // Skip if prediction is null or date is outside the current week
+      if (prediction == null ||
+          date.isBefore(startOfWeek) ||
+          date.isAfter(endOfWeek)) {
+        continue;
+      }
 
       // Get the day of the week (Monday = 0, Sunday = 6)
       String dayOfWeek = _getDayOfWeek(date);
 
-      // Increment the count for each prediction type on that day
+      // Increment the count for Yellow Rust
       if (prediction == 'Yellow_Rust') {
         yellowRustCounts[dayOfWeek] = (yellowRustCounts[dayOfWeek] ?? 0) + 1;
       }
     }
 
-    // Days of the week to display (starting from Sunday to Saturday)
+    // Days of the week (Monday to Sunday)
     List<String> daysOfWeek = [
       'Monday',
       'Tuesday',
@@ -124,13 +160,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
     for (int i = 0; i < daysOfWeek.length; i++) {
       String day = daysOfWeek[i];
       int yellowRustCount = yellowRustCounts[day] ?? 0;
-
-      // Add spots for Yellow Rust
-      yellowRustSpots.add(FlSpot(
-          i.toDouble(),
-          yellowRustCount
-              .toDouble()
-              .roundToDouble())); // Yellow Rust count (slightly offset)
+      yellowRustSpots.add(FlSpot(i.toDouble(), yellowRustCount.toDouble()));
     }
 
     return yellowRustSpots;
