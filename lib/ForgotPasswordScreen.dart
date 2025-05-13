@@ -197,7 +197,7 @@ class ForgotPasswordScreen extends StatelessWidget {
         children: [
           // Top Image Covering Full Width
           Positioned(
-            top: 0,
+            top: -1,
             left: 0,
             right: 0,
             child: Image.asset(

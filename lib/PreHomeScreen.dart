@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/AboutUsScreen.dart';
 import 'package:flutter_application_1/ChangePassword.dart';
-import 'package:flutter_application_1/CompareImagesScreen.dart';
 import 'package:flutter_application_1/CropDiaryScreen.dart';
 import 'package:flutter_application_1/EditProfile.dart';
 import 'package:flutter_application_1/FeedbackScreen.dart';
@@ -73,509 +72,484 @@ class PreHomeScreen extends StatelessWidget {
       );
     }
 
-    return SafeArea(
-      child: Scaffold(
-        drawer: Drawer(
-          child: Container(
-            color: Color(0xFFE5D188), // Light yellow background
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    // Top Section with Background Image
-                    Container(
-                      height: screenHeight * 0.25,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/Sidebar_Top.png"),
-                          fit: BoxFit.cover,
-                        ),
+    return Scaffold(
+      drawer: Drawer(
+        child: Container(
+          color: Color(0xFFE5D188), // Light yellow background
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  // Top Section with Background Image
+                  Container(
+                    height: screenHeight * 0.25,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/Sidebar_Top.png"),
+                        fit: BoxFit.cover,
                       ),
                     ),
-
-                    SizedBox(height: 20), // Spacing
-
-                    // Sidebar Buttons
-                    buildSidebarButton(
-                      customIconPath: "assets/icons/Home_icon.png",
-                      text: "Home".tr(),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PreHomeScreen()),
-                        );
-                      },
-                    ),
-                    buildSidebarButton(
-                      customIconPath: "assets/icons/profile_icon.png",
-                      text: "Profile".tr(),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfileScreen()),
-                        );
-                      },
-                    ),
-                    buildSidebarButton(
-                      customIconPath: "assets/icons/history_icon.png",
-                      text: "History".tr(),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PreviousResultsScreen()),
-                        );
-                      },
-                    ),
-                    buildSidebarButton(
-                      customIconPath: "assets/icons/help_icon.png",
-                      text: "Help".tr(),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Onboarding1()),
-                        );
-                      },
-                    ),
-                    buildSidebarButton(
-                      customIconPath: "assets/icons/feedback_icon.png",
-                      text: "Feedback".tr(),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FeedbackScreen()),
-                        );
-                      },
-                    ),
-                    buildSidebarButton(
-                      customIconPath: "assets/icons/info_icon.png",
-                      text: "About Us".tr(),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AboutUsScreen()),
-                        );
-                      },
-                    ),
-                    Column(
-                      children: [
-                        if (user != null)
-                          buildSidebarButton(
-                            customIconPath: "assets/icons/logout_icon.png",
-                            text: "Logout".tr(),
-                            onTap: () {
-                              logout();
-                            },
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                // Logo Positioned Below Top Section
-                Positioned(
-                  top: screenHeight * 0.1, // Adjust for desired position
-                  left: 0,
-                  right: 140,
-                  child: Center(
-                    child: Image.asset(
-                      "assets/images/logo.png",
-                      height: 140, // Adjust size as needed
-                      width: 140, // Adjust size as needed
-                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              top: screenHeight * 0.02,
-              child: SingleChildScrollView(
-                child: Container(
-                  height: screenHeight +
-                      80, // Ensures it can scroll beyond screen height
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: screenHeight * 0.10,
-                        left: screenWidth * 0.02,
-                        child: SizedBox(
-                          width: screenWidth * 0.5, // Wide
-                          height: screenHeight * 0.2, // Short
-                          child: const WeatherWidget(),
-                        ),
-                      ),
 
-                      Positioned(
-                        top: screenHeight * 0.185,
-                        left: screenWidth * 0.55,
-                        child: SizedBox(
-                          width: screenWidth * 0.4, // Wide
-                          height: screenHeight * 0.12, // Short
-                          child: const TimeWidget(),
-                        ),
-                      ),
+                  SizedBox(height: 20), // Spacing
 
-                      /// Feature Selection
-                      Positioned(
-                        top: screenHeight * 0.33,
-                        left: screenWidth * 0.08,
-                        right: screenWidth * 0.08,
-                        child: Wrap(
-                          spacing: screenWidth * 0.04, // horizontal spacing
-                          runSpacing: screenHeight * 0.005, // vertical spacing
-                          alignment: WrapAlignment.center,
-                          children: [
-                            _buildFeatureButton(
-                              "Upload Image".tr(),
-                              "assets/icons/home_upload.png",
-                              screenHeight,
-                              screenWidth,
-                              () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()),
-                              ),
-                            ),
-                            _buildFeatureButton(
-                              "History".tr(),
-                              "assets/icons/home_history.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PreviousResultsScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Feedback".tr(),
-                              "assets/icons/home_feedback.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FeedbackScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Help".tr(),
-                              "assets/icons/home_help.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Onboarding1(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Edit Profile".tr(),
-                              "assets/icons/home_ep.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditProfile(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Change Password".tr(),
-                              "assets/icons/home_cp.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (!isLoggedIn) {
-                                  _showLoginDialog(context);
-                                  return;
-                                }
-
-                                final user = FirebaseAuth.instance.currentUser;
-                                bool isPasswordUser = false;
-
-                                if (user != null) {
-                                  for (final info in user.providerData) {
-                                    if (info.providerId == 'password') {
-                                      isPasswordUser = true;
-                                      break;
-                                    }
-                                  }
-                                }
-
-                                if (isPasswordUser) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ChangePassword(),
-                                    ),
-                                  );
-                                } else {
-                                  _showChangePasswordRestrictionDialog(
-                                      context); // Styled like your login dialog
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Compare".tr(),
-                              "assets/icons/home_compare.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          CompareImagesScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Treatments".tr(),
-                              "assets/icons/home_treatment.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          TreatmentSolutionsScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Wheat Diary".tr(),
-                              "assets/icons/home_diary.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          CropDiaryScreen(userId: userId!),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                            _buildFeatureButton(
-                              "Wheat Land".tr(),
-                              "assets/icons/home_land.png",
-                              screenHeight,
-                              screenWidth,
-                              () {
-                                if (isLoggedIn) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          WheatResourceEstimatorScreen(),
-                                    ),
-                                  );
-                                } else {
-                                  _showLoginDialog(context);
-                                }
-                              },
-                              disabled: !isLoggedIn, // controls visual only
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: -1,
-              left: 0,
-              right: 0,
-              child: Image.asset(
-                "assets/images/Top.png",
-                fit: BoxFit.cover,
-                height: screenHeight * 0.25,
-                width: screenWidth,
-              ),
-            ),
-            Positioned(
-              top: 25,
-              right: 5,
-              child: Builder(
-                builder: (context) => GestureDetector(
-                  onTap: () {
-                    if (isLoggedIn) {
-                      Scaffold.of(context).openDrawer();
-                    } else {
-                      _showLoginDialog(context);
-                    }
-                  },
-                  child: Image.asset(
-                    "assets/icons/menu.png",
-                    height: 62,
-                    width: 62,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        /// FAB and Bottom Navigation Bar
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: const Color(0xFF7B5228),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: RawMaterialButton(
-            shape: CircleBorder(),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            },
-            child: Icon(
-              Icons.document_scanner,
-              color: Colors.white,
-              size: 32,
-            ),
-          ),
-        ),
-
-        bottomNavigationBar: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 8.0,
-          color: const Color(0xFF7B5228),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 10.0, vertical: 4.0), // Reduced vertical padding
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _bottomIcon(
-                  Icons.home,
-                  "Home".tr(),
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PreHomeScreen()),
-                  ),
-                ),
-                _bottomIcon(
-                  Icons.history_sharp,
-                  "History".tr(),
-                  () {
-                    if (isLoggedIn) {
+                  // Sidebar Buttons
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/Home_icon.png",
+                    text: "Home".tr(),
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PreviousResultsScreen()),
+                            builder: (context) => PreHomeScreen()),
                       );
-                    } else {
-                      _showLoginDialog(context);
-                    }
-                  },
-                  disabled: !isLoggedIn,
-                ),
-                const SizedBox(width: 40),
-                _bottomIcon(
-                  Icons.help,
-                  "Help".tr(),
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Onboarding1()),
+                    },
                   ),
-                ),
-                _bottomIcon(
-                  Icons.person,
-                  "Profile".tr(),
-                  () {
-                    if (isLoggedIn) {
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/profile_icon.png",
+                    text: "Profile".tr(),
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfileScreen()),
                       );
-                    } else {
-                      _showLoginDialog(context);
-                    }
-                  },
-                  disabled: !isLoggedIn,
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/history_icon.png",
+                    text: "History".tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviousResultsScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/help_icon.png",
+                    text: "Help".tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Onboarding1()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/feedback_icon.png",
+                    text: "Feedback".tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackScreen()),
+                      );
+                    },
+                  ),
+                  buildSidebarButton(
+                    customIconPath: "assets/icons/info_icon.png",
+                    text: "About Us".tr(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AboutUsScreen()),
+                      );
+                    },
+                  ),
+                  Column(
+                    children: [
+                      if (user != null)
+                        buildSidebarButton(
+                          customIconPath: "assets/icons/logout_icon.png",
+                          text: "Logout".tr(),
+                          onTap: () {
+                            logout();
+                          },
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Logo Positioned Below Top Section
+              Positioned(
+                top: screenHeight * 0.1, // Adjust for desired position
+                left: 0,
+                right: 140,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    height: 140, // Adjust size as needed
+                    width: 140, // Adjust size as needed
+                  ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            top: screenHeight * 0.02,
+            child: SingleChildScrollView(
+              child: Container(
+                height: screenHeight +
+                    80, // Ensures it can scroll beyond screen height
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: screenHeight * 0.10,
+                      left: screenWidth * 0.02,
+                      child: SizedBox(
+                        width: screenWidth * 0.5, // Wide
+                        height: screenHeight * 0.2, // Short
+                        child: const WeatherWidget(),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: screenHeight * 0.185,
+                      left: screenWidth * 0.55,
+                      child: SizedBox(
+                        width: screenWidth * 0.4, // Wide
+                        height: screenHeight * 0.12, // Short
+                        child: const TimeWidget(),
+                      ),
+                    ),
+
+                    /// Feature Selection
+                    Positioned(
+                      top: screenHeight * 0.33,
+                      left: screenWidth * 0.08,
+                      right: screenWidth * 0.08,
+                      child: Wrap(
+                        spacing: screenWidth * 0.04, // horizontal spacing
+                        runSpacing: screenHeight * 0.005, // vertical spacing
+                        alignment: WrapAlignment.center,
+                        children: [
+                          _buildFeatureButton(
+                            "Upload Image".tr(),
+                            "assets/icons/home_upload.png",
+                            screenHeight,
+                            screenWidth,
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                            ),
+                          ),
+                          _buildFeatureButton(
+                            "History".tr(),
+                            "assets/icons/home_history.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PreviousResultsScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Feedback".tr(),
+                            "assets/icons/home_feedback.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FeedbackScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Wheatopedia".tr(),
+                            "assets/icons/home_treatment.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        TreatmentSolutionsScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Wheat Diary".tr(),
+                            "assets/icons/home_diary.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CropDiaryScreen(userId: userId!),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Wheat Land".tr(),
+                            "assets/icons/home_land.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        WheatResourceEstimatorScreen(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Help".tr(),
+                            "assets/icons/home_help.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Onboarding1(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Edit Profile".tr(),
+                            "assets/icons/home_ep.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (isLoggedIn) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditProfile(),
+                                  ),
+                                );
+                              } else {
+                                _showLoginDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                          _buildFeatureButton(
+                            "Change Password".tr(),
+                            "assets/icons/home_cp.png",
+                            screenHeight,
+                            screenWidth,
+                            () {
+                              if (!isLoggedIn) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+
+                              final user = FirebaseAuth.instance.currentUser;
+                              bool isPasswordUser = false;
+
+                              if (user != null) {
+                                for (final info in user.providerData) {
+                                  if (info.providerId == 'password') {
+                                    isPasswordUser = true;
+                                    break;
+                                  }
+                                }
+                              }
+
+                              if (isPasswordUser) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChangePassword(),
+                                  ),
+                                );
+                              } else {
+                                _showChangePasswordRestrictionDialog(context);
+                              }
+                            },
+                            disabled: !isLoggedIn, // controls visual only
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+          ),
+          Positioned(
+            top: -1,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/Top.png",
+              fit: BoxFit.cover,
+              height: screenHeight * 0.25,
+              width: screenWidth,
+            ),
+          ),
+          Positioned(
+            top: 25,
+            right: 5,
+            child: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  if (isLoggedIn) {
+                    Scaffold.of(context).openDrawer();
+                  } else {
+                    _showLoginDialog(context);
+                  }
+                },
+                child: Image.asset(
+                  "assets/icons/menu.png",
+                  height: 62,
+                  width: 62,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      /// FAB and Bottom Navigation Bar
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        height: 70,
+        width: 70,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFF7B5228),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: RawMaterialButton(
+          shape: CircleBorder(),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
+          child: Icon(
+            Icons.document_scanner,
+            color: Colors.white,
+            size: 32,
+          ),
+        ),
+      ),
+
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        color: const Color(0xFF7B5228),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 10.0, vertical: 4.0), // Reduced vertical padding
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _bottomIcon(
+                Icons.home,
+                "Home".tr(),
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PreHomeScreen()),
+                ),
+              ),
+              _bottomIcon(
+                Icons.history_sharp,
+                "History".tr(),
+                () {
+                  if (isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PreviousResultsScreen()),
+                    );
+                  } else {
+                    _showLoginDialog(context);
+                  }
+                },
+                disabled: !isLoggedIn,
+              ),
+              const SizedBox(width: 40),
+              _bottomIcon(
+                Icons.help,
+                "Help".tr(),
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Onboarding1()),
+                ),
+              ),
+              _bottomIcon(
+                Icons.person,
+                "Profile".tr(),
+                () {
+                  if (isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfileScreen()),
+                    );
+                  } else {
+                    _showLoginDialog(context);
+                  }
+                },
+                disabled: !isLoggedIn,
+              ),
+            ],
           ),
         ),
       ),

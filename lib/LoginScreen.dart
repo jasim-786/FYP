@@ -584,8 +584,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 20),
                           SizedBox(
-                            width: screenWidth * 0.7,
-                            height: screenHeight * 0.09,
+                            width: screenWidth * 0.6,
+                            height: screenHeight * 0.07,
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(

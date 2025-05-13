@@ -278,7 +278,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -450,12 +450,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
                                 previousFeedbacks.isEmpty
                                     ? Text('No feedback available yet.'.tr())
                                     : SizedBox(
                                         height:
-                                            300, // adjust height based on your UI needs
+                                            350, // adjust height based on your UI needs
                                         child: ListView.builder(
                                           itemCount: previousFeedbacks.length,
                                           itemBuilder: (context, index) {

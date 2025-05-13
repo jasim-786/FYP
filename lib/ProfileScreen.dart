@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         if (doc.exists) {
           setState(() {
-            fullName = doc.data()?['full_name'] ?? 'No Name'.tr();
+            fullName = doc.data()?['Full_name'] ?? 'No Name'.tr();
           });
         } else {
           setState(() {

@@ -432,7 +432,6 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
               const SizedBox(height: 10),
               ...treatments.entries.map((entry) {
                 final category = entry.key;
-                final items = entry.value as List<dynamic>;
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -454,22 +453,41 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                         ],
                       ),
                       const SizedBox(height: 4),
-                      ...items.map((item) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text("• "),
-                                Expanded(
-                                  child: Text(
-                                    item.toString(),
-                                    style: TextStyle(
-                                        fontSize: screenWidth * 0.043),
+                      // Check if entry.value is a List or String
+                      if (entry.value is List<dynamic>)
+                        ...(entry.value as List<dynamic>).map((item) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("• "),
+                                  Expanded(
+                                    child: Text(
+                                      item.toString(),
+                                      style: TextStyle(
+                                          fontSize: screenWidth * 0.043),
+                                    ),
                                   ),
+                                ],
+                              ),
+                            ))
+                      else if (entry.value is String)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("• "),
+                              Expanded(
+                                child: Text(
+                                  entry.value.toString(),
+                                  style:
+                                      TextStyle(fontSize: screenWidth * 0.043),
                                 ),
-                              ],
-                            ),
-                          )),
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                 );

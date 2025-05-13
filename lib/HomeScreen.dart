@@ -506,8 +506,8 @@ class HomeScreen extends StatelessWidget {
 
                         // Icon Positioned Outside the Button
                         Positioned(
-                          top: -40,
-                          right: -45,
+                          top: -42,
+                          right: -55,
                           child: Image.asset(
                             'assets/icons/upload_icon.png', // Path to image
                             width: 70, // Adjust width for your icon
