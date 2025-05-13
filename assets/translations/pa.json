@@ -447,5 +447,22 @@
   "septoria_leaf_blotch_cultural_3": "مزاحمتی گندم دی قسماں دا استعمال",
   "septoria_leaf_blotch_prevention_1": "مزاحمتی قسماں اگاؤ",
   "septoria_leaf_blotch_prevention_2": "مناسب کھیت دی نکاسی نوں یقینی بناؤ",
-  "septoria_leaf_blotch_prevention_3": "زیادہ نائٹروجن کھاد توں بچو"
+  "septoria_leaf_blotch_prevention_3": "زیادہ نائٹروجن کھاد توں بچو",
+  "app_name": "گندم دی بیماری دی حفاظت",
+  "app_tagline": "کساناں نوں اے آئی نال طاقت دینا",
+  "detection_details": "پچھان دی تفصیلات",
+  "detection_report": "پچھان دی رپورٹ",
+  "disease_detection_report": "بیماری پچھان دی رپورٹ",
+  "disease": "بیماری",
+  "detected_on": "پچھان دی تاریخ",
+  "at": "تے",
+  "recommended_treatments": "تجویز کردہ علاج",
+  "preventions": "روک تھام",
+  "cultural_treatments": "زراعتی طریقے",
+  "report_disclaimer": "ایہ رپورٹ صرف معلومات دے مقصد واسطے بنائی گئی اے۔",
+  "pdf_saved_opening": "✅ پی ڈی ایف ایپ دے دستاویزات فولڈر وچ محفوظ ہو گئی۔ ہن کھول رہی اے...",
+  "failed_to_open_pdf": "❌ پی ڈی ایف کھولن وچ ناکام",
+  "failed_to_save_pdf": "❌ پی ڈی ایف محفوظ یا کھولن وچ ناکام",
+  "storage_permission_settings": "❌ مہربانی کر کے ترتیبات وچ سٹوریج دی اجازت دو",
+  "storage_permission_denied": "❌ سٹوریج دی اجازت نئیں ملی"
 }

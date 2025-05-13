@@ -489,5 +489,23 @@
   
   "septoria_leaf_blotch_prevention_1": "Grow resistant varieties",
   "septoria_leaf_blotch_prevention_2": "Ensure proper field drainage",
-  "septoria_leaf_blotch_prevention_3": "Avoid excessive nitrogen fertilization"
+  "septoria_leaf_blotch_prevention_3": "Avoid excessive nitrogen fertilization",
+
+  "app_name": "Wheat Rust Guard",
+  "app_tagline": "Empowering Farmers with AI",
+  "detection_details": "Detection Details",
+  "detection_report": "Detection Report",
+  "disease_detection_report": "Disease Detection Report",
+  "disease": "Disease",
+  "detected_on": "Detected on",
+  "at": "at",
+  "recommended_treatments": "Recommended Treatments",
+  "preventions": "Preventions",
+  "cultural_treatments": "Cultural Practices",
+  "report_disclaimer": "This report is generated for informational purposes only.",
+  "pdf_saved_opening": "✅ PDF saved to app's Documents folder. Opening now...",
+  "failed_to_open_pdf": "❌ Failed to open PDF",
+  "failed_to_save_pdf": "❌ Failed to save or open PDF",
+  "storage_permission_settings": "❌ Please grant storage permission in settings",
+  "storage_permission_denied": "❌ Storage permission denied"
 }

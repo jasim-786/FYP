@@ -10,7 +10,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:open_file/open_file.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DetectionDetailScreen extends StatelessWidget {
   final String disease;
@@ -27,6 +26,7 @@ class DetectionDetailScreen extends StatelessWidget {
     required this.treatments,
     required this.prevention,
   }) : super(key: key);
+
   Future<void> _shareDetection(BuildContext context) async {
     final tempDir = await getTemporaryDirectory();
 
@@ -36,14 +36,13 @@ class DetectionDetailScreen extends StatelessWidget {
         .then((data) => data.buffer.asUint8List());
     final pdf = pw.Document();
     final image = base64Decode(base64Image);
-    final dateString =
-        "${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}";
-    final treatmentText = treatments.entries.map((e) {
-      final points =
-          (e.value as List<dynamic>).map((item) => "$item").join("\n");
-      return "${e.key.toUpperCase()}:\n$points";
-    }).join("\n\n");
-    final preventionText = prevention.map((p) => "$p").join("\n");
+
+    // Format date with localization
+    final dateString = _getFormattedDate(context);
+
+    // Get translated treatments and prevention text
+    final treatmentText = _getTranslatedTreatmentsForPdf(context);
+    final preventionText = _getTranslatedPreventionForPdf(context);
 
     pdf.addPage(
       pw.MultiPage(
@@ -59,7 +58,7 @@ class DetectionDetailScreen extends StatelessWidget {
                 pw.Image(pw.MemoryImage(logoImage), width: 80, height: 80),
                 pw.SizedBox(width: 8),
                 pw.Text(
-                  "Wheat Rust Guard",
+                  tr("app_name"),
                   style: pw.TextStyle(
                     fontSize: 18,
                     fontWeight: pw.FontWeight.bold,
@@ -69,7 +68,7 @@ class DetectionDetailScreen extends StatelessWidget {
               ],
             ),
             pw.Text(
-              "Detection Report",
+              tr("detection_report"),
               style: pw.TextStyle(
                 fontSize: 14,
                 color: PdfColors.grey700,
@@ -86,11 +85,11 @@ class DetectionDetailScreen extends StatelessWidget {
             children: [
               pw.Divider(),
               pw.Text(
-                "Wheat Rust Guard  Empowering Farmers with AI",
+                "${tr("app_name")} - ${tr("app_tagline")}",
                 style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
               ),
               pw.Text(
-                "This report is generated for informational purposes only.",
+                tr("report_disclaimer"),
                 style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
               ),
             ],
@@ -101,7 +100,7 @@ class DetectionDetailScreen extends StatelessWidget {
           pw.SizedBox(height: 20),
           pw.Center(
             child: pw.Text(
-              "Disease Detection Report",
+              tr("disease_detection_report"),
               style: pw.TextStyle(fontSize: 26, fontWeight: pw.FontWeight.bold),
             ),
           ),
@@ -125,23 +124,24 @@ class DetectionDetailScreen extends StatelessWidget {
           ),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Prediction".tr(),
+          pw.Text(tr("prediction"),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
-          pw.Text("Disease: $disease", style: pw.TextStyle(fontSize: 16)),
-          pw.Text("Detected on: $dateString",
+          pw.Text("${tr("disease")}: ${_getTranslatedDiseaseName()}",
+              style: pw.TextStyle(fontSize: 16)),
+          pw.Text("${tr("detected_on")}: $dateString",
               style: pw.TextStyle(fontSize: 16)),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Recommended Treatments".tr(),
+          pw.Text(tr("recommended_treatments"),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
           pw.Text(treatmentText, style: pw.TextStyle(fontSize: 14)),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Preventions",
+          pw.Text(tr("preventions"),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
@@ -152,12 +152,12 @@ class DetectionDetailScreen extends StatelessWidget {
 
     // Save the PDF to a temporary file
     final pdfFile = await File(
-            '${tempDir.path}/Detection_Report_${DateTime.now().millisecondsSinceEpoch}.pdf')
+            '${tempDir.path}/${tr("detection_report")}_${DateTime.now().millisecondsSinceEpoch}.pdf')
         .writeAsBytes(await pdf.save());
 
     final text = '''
-Prediction: $disease
-Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}
+${tr("prediction")}: ${_getTranslatedDiseaseName()}
+${tr("detected_on")}: $dateString
 ''';
 
     // Share only the PDF
@@ -181,34 +181,31 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
         if (status.isPermanentlyDenied) {
           openAppSettings();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text("❌ Please grant storage permission in settings")),
+            SnackBar(content: Text(tr("storage_permission_settings"))),
           );
           return;
         }
         if (!status.isGranted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("❌ Storage permission denied")),
+            SnackBar(content: Text(tr("storage_permission_denied"))),
           );
           return;
         }
       }
     }
+
     final Uint8List logoImage = await rootBundle
         .load('assets/images/logo.png')
         .then((data) => data.buffer.asUint8List());
     final pdf = pw.Document();
     final image = base64Decode(base64Image);
-    final dateString =
-        "${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}";
 
-    final treatmentText = treatments.entries.map((e) {
-      final points =
-          (e.value as List<dynamic>).map((item) => "$item").join("\n");
-      return "${e.key.toUpperCase()}:\n$points";
-    }).join("\n\n");
+    // Format date with localization
+    final dateString = _getFormattedDate(context);
 
-    final preventionText = prevention.map((p) => "$p").join("\n");
+    // Get translated treatments and prevention text
+    final treatmentText = _getTranslatedTreatmentsForPdf(context);
+    final preventionText = _getTranslatedPreventionForPdf(context);
 
     pdf.addPage(
       pw.MultiPage(
@@ -224,7 +221,7 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                 pw.Image(pw.MemoryImage(logoImage), width: 80, height: 80),
                 pw.SizedBox(width: 8),
                 pw.Text(
-                  "Wheat Rust Guard",
+                  tr("app_name"),
                   style: pw.TextStyle(
                     fontSize: 18,
                     fontWeight: pw.FontWeight.bold,
@@ -234,7 +231,7 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
               ],
             ),
             pw.Text(
-              "Detection Report",
+              tr("detection_report"),
               style: pw.TextStyle(
                 fontSize: 14,
                 color: PdfColors.grey700,
@@ -251,11 +248,11 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
             children: [
               pw.Divider(),
               pw.Text(
-                "Wheat Rust Guard  Empowering Farmers with AI",
+                "${tr("app_name")} - ${tr("app_tagline")}",
                 style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
               ),
               pw.Text(
-                "This report is generated for informational purposes only.",
+                tr("report_disclaimer"),
                 style: pw.TextStyle(fontSize: 10, color: PdfColors.grey500),
               ),
             ],
@@ -266,7 +263,7 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
           pw.SizedBox(height: 20),
           pw.Center(
             child: pw.Text(
-              "Disease Detection Report",
+              tr("disease_detection_report"),
               style: pw.TextStyle(fontSize: 26, fontWeight: pw.FontWeight.bold),
             ),
           ),
@@ -290,23 +287,24 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
           ),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Prediction".tr(),
+          pw.Text(tr("prediction"),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
-          pw.Text("Disease: $disease".tr(), style: pw.TextStyle(fontSize: 16)),
-          pw.Text("Detected on: $dateString".tr(),
+          pw.Text("${tr("disease")}: ${_getTranslatedDiseaseName()}",
+              style: pw.TextStyle(fontSize: 16)),
+          pw.Text("${tr("detected_on")}: $dateString",
               style: pw.TextStyle(fontSize: 16)),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Recommended Treatments".tr(),
+          pw.Text(tr("recommended_treatments"),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
           pw.Text(treatmentText, style: pw.TextStyle(fontSize: 14)),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Preventions",
+          pw.Text(tr("preventions"),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
@@ -319,13 +317,12 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
       // Save to app-specific Documents directory
       final targetDir = await getApplicationDocumentsDirectory();
       final fileName =
-          'Detection_Report_${DateTime.now().millisecondsSinceEpoch}.pdf';
+          '${tr("detection_report")}_${DateTime.now().millisecondsSinceEpoch}.pdf';
       final file = File('${targetDir.path}/$fileName');
       await file.writeAsBytes(await pdf.save());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-              Text("✅ PDF saved to app's Documents folder. Opening now..."),
+          content: Text(tr("pdf_saved_opening")),
         ),
       );
 
@@ -333,15 +330,60 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
       final result = await OpenFile.open(file.path);
       if (result.type != ResultType.done) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("❌ Failed to open PDF: ${result.message}")),
+          SnackBar(
+              content: Text("${tr("failed_to_open_pdf")}: ${result.message}")),
         );
       }
     } catch (e, stackTrace) {
       print("PDF save/open error: $e\n$stackTrace");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Failed to save or open PDF: $e")),
+        SnackBar(content: Text("${tr("failed_to_save_pdf")}: $e")),
       );
     }
+  }
+
+  // Helper method to get translated disease name
+  String _getTranslatedDiseaseName() {
+    // Convert disease name to translation key format
+    final diseaseKey = "disease_${disease.toLowerCase().replaceAll(' ', '_')}";
+    return tr(diseaseKey);
+  }
+
+  // Helper method to format date with localization
+  String _getFormattedDate(BuildContext context) {
+    // Format date according to locale
+    return "${timestamp.day}/${timestamp.month}/${timestamp.year} ${tr("at")} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}";
+  }
+
+  // Helper method to get translated treatments for PDF
+  String _getTranslatedTreatmentsForPdf(BuildContext context) {
+    final diseaseKey = disease.replaceAll(' ', '_').toLowerCase();
+
+    return treatments.entries.map((e) {
+      final category = e.key;
+      final categoryKey = "${category.toLowerCase()}_treatments";
+      final translatedCategory = tr(categoryKey).toUpperCase();
+
+      final points = (e.value as List<dynamic>).asMap().entries.map((item) {
+        final itemIndex = item.key + 1; // 1-based index
+        final translationKey =
+            "${diseaseKey}_${category.toLowerCase()}_$itemIndex";
+        return tr(translationKey);
+      }).join("\n");
+
+      return "$translatedCategory:\n$points";
+    }).join("\n\n");
+  }
+
+  // Helper method to get translated prevention for PDF
+  String _getTranslatedPreventionForPdf(BuildContext context) {
+    final diseaseKey = disease.replaceAll(' ', '_').toLowerCase();
+
+    return prevention.asMap().entries.map((entry) {
+      final index = entry.key + 1; // 1-based index
+      final translationKey = "${diseaseKey}_prevention_$index";
+      return tr(translationKey);
+    }).join("\n");
   }
 
   Widget _getIconForCategory(String category) {
@@ -362,12 +404,13 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final diseaseKey = disease.replaceAll(' ', '_').toLowerCase();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Detection Details",
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          tr("detection_details"),
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: const Color(0xFF7B5228),
         foregroundColor: Colors.white, // Ensures text and icons are white
@@ -410,7 +453,7 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
               ),
               const SizedBox(height: 20),
               Text(
-                "Prediction: $disease",
+                "${tr("prediction")}: ${_getTranslatedDiseaseName()}",
                 style: TextStyle(
                   fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.bold,
@@ -419,12 +462,12 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
               ),
               const SizedBox(height: 8),
               Text(
-                "Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}",
+                "${tr("detected_on")}: ${_getFormattedDate(context)}",
                 style: TextStyle(fontSize: screenWidth * 0.045),
               ),
               const SizedBox(height: 24),
               Text(
-                "Recommended Treatments:",
+                "${tr("recommended_treatments")}:",
                 style: TextStyle(
                   fontSize: screenWidth * 0.05,
                   fontWeight: FontWeight.w600,
@@ -434,6 +477,10 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
               const SizedBox(height: 10),
               ...treatments.entries.map((entry) {
                 final category = entry.key;
+                final items = entry.value is List
+                    ? entry.value as List<dynamic>
+                    : [entry.value];
+                final categoryKey = "${category.toLowerCase()}_treatments";
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -445,7 +492,7 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                           _getIconForCategory(category),
                           const SizedBox(width: 6),
                           Text(
-                            category[0].toUpperCase() + category.substring(1),
+                            tr(categoryKey),
                             style: TextStyle(
                               fontSize: screenWidth * 0.045,
                               fontWeight: FontWeight.bold,
@@ -455,26 +502,12 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                         ],
                       ),
                       const SizedBox(height: 4),
-                      // Check if entry.value is a List or String
-                      if (entry.value is List<dynamic>)
-                        ...(entry.value as List<dynamic>).map((item) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("• "),
-                                  Expanded(
-                                    child: Text(
-                                      item.toString(),
-                                      style: TextStyle(
-                                          fontSize: screenWidth * 0.043),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ))
-                      else if (entry.value is String)
-                        Padding(
+                      ...items.asMap().entries.map((item) {
+                        final itemIndex = item.key + 1; // 1-based index
+                        final translationKey =
+                            "${diseaseKey}_${category.toLowerCase()}_$itemIndex";
+
+                        return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -482,21 +515,29 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                               const Text("• "),
                               Expanded(
                                 child: Text(
-                                  entry.value.toString(),
+                                  tr(translationKey),
                                   style:
                                       TextStyle(fontSize: screenWidth * 0.043),
+                                  // For RTL languages, use textAlign
+                                  textAlign: context.locale.languageCode ==
+                                              'ur' ||
+                                          context.locale.languageCode == 'ar' ||
+                                          context.locale.languageCode == 'pa'
+                                      ? TextAlign.right
+                                      : TextAlign.left,
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                        );
+                      }),
                     ],
                   ),
                 );
               }),
               const SizedBox(height: 20),
               Text(
-                "Preventions:",
+                "${tr("preventions")}:",
                 style: TextStyle(
                   fontSize: screenWidth * 0.05,
                   fontWeight: FontWeight.w600,
@@ -504,140 +545,36 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
                 ),
               ),
               const SizedBox(height: 10),
-              ...prevention.map((item) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("• "),
-                        Expanded(
-                          child: Text(
-                            item.toString(),
-                            style: TextStyle(fontSize: screenWidth * 0.043),
-                          ),
+              ...prevention.asMap().entries.map((entry) {
+                final index = entry.key + 1; // 1-based index
+                final translationKey = "${diseaseKey}_prevention_$index";
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("• "),
+                      Expanded(
+                        child: Text(
+                          tr(translationKey),
+                          style: TextStyle(fontSize: screenWidth * 0.043),
+                          // For RTL languages, use textAlign
+                          textAlign: context.locale.languageCode == 'ur' ||
+                                  context.locale.languageCode == 'ar' ||
+                                  context.locale.languageCode == 'pa'
+                              ? TextAlign.right
+                              : TextAlign.left,
                         ),
-                      ],
-                    ),
-                  )),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Custom Sidebar Button
-Widget buildSidebarButton({
-  required BuildContext context,
-  IconData? icon,
-  String? customIconPath,
-  required String text,
-  required VoidCallback onTap,
-}) {
-  return Padding(
-    padding:
-        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
-    child: GestureDetector(
-      onTap: onTap,
-      child: Transform.translate(
-        offset: Offset(-10, 0), // Move button slightly left
-        child: Container(
-          width: 250,
-          decoration: BoxDecoration(
-            color: Color(0xFF7B5228), // Brown background for button
-            borderRadius: BorderRadius.circular(30), // Rounded button shape
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          child: Row(
-            children: [
-              // Circular icon background
-              Transform.translate(
-                offset: Offset(-8, 0), // Moves the icon slightly left
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFE5D188), // Light background for icon
-                    shape: BoxShape.circle,
+                      ),
+                    ],
                   ),
-                  padding:
-                      EdgeInsets.all(10), // Adjust for proper icon placement
-                  child: customIconPath != null
-                      ? Image.asset(
-                          customIconPath,
-                          height: 26,
-                          width: 26,
-                        )
-                      : Icon(icon, color: Colors.black, size: 24),
-                ),
-              ),
-              SizedBox(width: 10), // Space between icon and text
-
-              // Profile text
-              Text(
-                text,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+                );
+              }),
             ],
           ),
         ),
       ),
-    ),
-  );
-}
-
-/// Language Selector Widget
-class LanguageSelector extends StatelessWidget {
-  const LanguageSelector({Key? key}) : super(key: key);
-
-  Future<void> _saveLanguagePreference(String languageCode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('language_code', languageCode);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<Locale>(
-      icon: Icon(Icons.language, color: Colors.white, size: 30),
-      onSelected: (Locale locale) {
-        context.setLocale(locale);
-        _saveLanguagePreference(locale.languageCode);
-      },
-      itemBuilder: (BuildContext context) => [
-        PopupMenuItem<Locale>(
-          value: Locale('en'),
-          child: Row(
-            children: [
-              Text('🇬🇧 '),
-              SizedBox(width: 8),
-              Text(tr('english')),
-            ],
-          ),
-        ),
-        PopupMenuItem<Locale>(
-          value: Locale('ur'),
-          child: Row(
-            children: [
-              Text('🇵🇰 '),
-              SizedBox(width: 8),
-              Text(tr('urdu')),
-            ],
-          ),
-        ),
-        PopupMenuItem<Locale>(
-          value: Locale('pa'),
-          child: Row(
-            children: [
-              Text('🇵🇰 '),
-              SizedBox(width: 8),
-              Text(tr('punjabi')),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

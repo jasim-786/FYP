@@ -450,13 +450,21 @@ class _DetectionScreenState extends State<DetectionScreen> {
         final jsonString = await rootBundle.loadString('assets/solutions.json');
         final Map<String, dynamic> allData = json.decode(jsonString);
         final diseaseData = allData[diseaseName.replaceAll(' ', '_')];
-        treatments = diseaseData?['treatments'] ?? {};
-        prevention = diseaseData?['prevention'] ?? [];
+
+        // Translate treatments map values
+        treatments = (diseaseData?['treatments'] as Map<String, dynamic>?)
+                ?.map((key, value) => MapEntry(key, tr(value.toString()))) ??
+            {};
+
+        // Translate prevention list items
+        prevention = (diseaseData?['prevention'] as List<dynamic>?)
+                ?.map((item) => tr(item.toString()))
+                .toList() ??
+            [];
       } else {
         treatments = {"note": tr('unknown_wheat_leaf')};
         prevention = [tr('unknown_wheat_leaf')];
       }
-
       // Build detection data
       final detectionData = {
         'userId': user.uid,

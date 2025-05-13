@@ -489,5 +489,23 @@
   
   "septoria_leaf_blotch_prevention_1": "مزاحم اقسام اگائیں",
   "septoria_leaf_blotch_prevention_2": "مناسب کھیت کی نکاسی کو یقینی بنائیں",
-  "septoria_leaf_blotch_prevention_3": "زیادہ نائٹروجن کھاد سے گریز کریں"
+  "septoria_leaf_blotch_prevention_3": "زیادہ نائٹروجن کھاد سے گریز کریں",
+
+  "app_name": "گندم زنگ گارڈ",
+  "app_tagline": "کسانوں کو مصنوعی ذہانت کے ساتھ بااختیار بنانا",
+  "detection_details": "تشخیص کی تفصیلات",
+  "detection_report": "تشخیص کی رپورٹ",
+  "disease_detection_report": "بیماری کی تشخیص کی رپورٹ",
+  "disease": "بیماری",
+  "detected_on": "تشخیص کی تاریخ",
+  "at": "بجے",
+  "recommended_treatments": "تجویز کردہ علاج",
+  "preventions": "بچاؤ کے اقدامات",
+  "cultural_treatments": "زراعتی طریقے",
+  "report_disclaimer": "یہ رپورٹ صرف معلوماتی مقاصد کے لیے تیار کی گئی ہے۔",
+  "pdf_saved_opening": "✅ پی ڈی ایف ایپ کے دستاویزات فولڈر میں محفوظ کر دی گئی ہے۔ اب کھول رہا ہے...",
+  "failed_to_open_pdf": "❌ پی ڈی ایف کھولنے میں ناکامی",
+  "failed_to_save_pdf": "❌ پی ڈی ایف محفوظ کرنے یا کھولنے میں ناکامی",
+  "storage_permission_settings": "❌ براہ کرم ترتیبات میں اسٹوریج کی اجازت دیں",
+  "storage_permission_denied": "❌ اسٹوریج کی اجازت سے انکار کر دیا گیا"
 }
