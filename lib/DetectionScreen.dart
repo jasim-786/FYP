@@ -130,7 +130,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       children: [
                         Text(
                           diseaseKey == "Unknown"
-                              ? "Unknown Detection"
+                              ? "Unknown Detection".tr()
                               : "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
                           style: TextStyle(
                             color: Color(0xFF7B5228),
@@ -292,13 +292,13 @@ class _DetectionScreenState extends State<DetectionScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Select Image Source"),
+          title: Text("Select Image Source".tr()),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: Icon(Icons.camera_alt),
-                title: Text("Camera"),
+                title: Text("Camera".tr()),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.camera);
@@ -306,7 +306,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
               ),
               ListTile(
                 leading: Icon(Icons.photo_library),
-                title: Text("Gallery"),
+                title: Text("Gallery".tr()),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.gallery);
@@ -372,7 +372,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
       if (!await isOnline()) {
         Hive.box('offline_detections').add(detectionData);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Offline: Detection saved locally.")),
+          SnackBar(content: Text("Offline: Detection saved locally.".tr())),
         );
         return;
       }
@@ -447,8 +447,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to log out?"),
+          title: Text("Logout".tr()),
+          content: Text("Are you sure you want to log out?".tr()),
           actions: [
             TextButton(
               onPressed: () {
@@ -465,7 +465,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                 // Show logout success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Logged out successfully"),
+                    content: Text("Logged out successfully".tr()),
                     duration: Duration(seconds: 2),
                   ),
                 );

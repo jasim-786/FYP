@@ -9,7 +9,6 @@ import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/PreHomeScreen.dart';
 import 'package:flutter_application_1/PreviousResultsScreen.dart';
 import 'package:flutter_application_1/ProfileScreen.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;

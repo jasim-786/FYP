@@ -10,6 +10,7 @@ import 'package:flutter_application_1/SignUpScreen.dart';
 import 'package:flutter_application_1/ForgotPasswordScreen.dart';
 import 'package:flutter_application_1/Onboarding1.dart';
 import 'package:flutter_application_1/UserDetailScreen.dart';
+import 'package:flutter_application_1/AdminScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   User? user = FirebaseAuth.instance.currentUser;
+  int _logoTapCount = 0; // Counter for logo taps
 
   void Login(String Email, String Password) async {
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -145,20 +147,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Logo Image
+                      // Logo Image with Secret Functionality
                       Transform.translate(
-                        offset:
-                            Offset(-80, -10), // Negative Y value moves it up
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          height: screenHeight * 0.17,
-                          width: screenWidth * 0.4,
+                        offset: Offset(-80, -10),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _logoTapCount++;
+                              if (_logoTapCount >= 5) {
+                                _logoTapCount = 0; // Reset counter
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AdminScreen(),
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                            height: screenHeight * 0.17,
+                            width: screenWidth * 0.4,
+                          ),
                         ),
                       ),
                       // Welcome Text
                       Transform.translate(
-                        offset: Offset(0,
-                            0), // Adjust the Y value to move it up (negative moves up)
+                        offset: Offset(0, 0),
                         child: Text(
                           isLoginSelected
                               ? 'welcome_back'.tr()
@@ -247,10 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   ),
                                                 );
                                               },
-                                              child: Text(
-                                                'signup'
-                                                    .tr(), // Applying .tr() for localization
-                                              ),
+                                              child: Text('signup'.tr()),
                                               style: TextButton.styleFrom(
                                                 foregroundColor: isLoginSelected
                                                     ? Colors.black
@@ -431,7 +444,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
 
                       // Forgot Password & Continue Without Login
-                      SizedBox(height: 20), // Add spacing
+                      SizedBox(height: 20),
 
                       if (isLoginSelected)
                         TextButton(
@@ -459,8 +472,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                width:
-                                    screenWidth * 0.4, // Adjust width as needed
+                                width: screenWidth * 0.4,
                                 height: screenHeight * 0.06,
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -489,7 +501,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 16), // Space between the buttons
+                              SizedBox(width: 16),
                               SizedBox(
                                 width: screenWidth * 0.4,
                                 height: screenHeight * 0.06,
@@ -519,8 +531,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       if (user != null) {
                                         DocumentSnapshot doc =
                                             await FirebaseFirestore.instance
-                                                .collection(
-                                                    'users_details') // Use correct collection name
+                                                .collection('users_details')
                                                 .doc(user.uid)
                                                 .get();
 
@@ -548,7 +559,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                'Google Sign-In failed: $e')), // Remove .tr()
+                                                'Google Sign-In failed: $e')),
                                       );
                                     }
                                   },
@@ -571,12 +582,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               )
                             ],
                           ),
+                          SizedBox(height: 20),
                           SizedBox(
-                              height:
-                                  20), // Space between the row and the next button
-                          SizedBox(
-                            width: screenWidth * 0.5,
-                            height: screenHeight * 0.06,
+                            width: screenWidth * 0.7,
+                            height: screenHeight * 0.09,
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -591,7 +600,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 backgroundColor: Color(0xFF7B5228),
                                 padding: EdgeInsets.zero,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
+                                  borderRadius: BorderRadius.circular(40),
                                 ),
                               ),
                               child: Text(

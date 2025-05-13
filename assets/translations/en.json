@@ -283,7 +283,11 @@
   "Total Urea Cost": "Total Urea Cost",
   "Total Water Cost": "Total Water Cost",
   "Total Medicine Cost": "Total Medicine Cost",
-  "❗ This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results.": "This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results."
+  "❗ This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results.": "This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results.",
+  "Please log in to access this feature.": "Please log in to access this feature.",
+  "Gmail Login": "Gmail Login",
+  "Phone Login": "Phone Login",
+  "Login as Guest": "Login as Guest"
   
 
 }

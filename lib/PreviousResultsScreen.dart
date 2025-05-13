@@ -31,13 +31,13 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
   String _getDayOfWeek(DateTime date) {
     // Get the name of the day (e.g., 'Monday', 'Tuesday', etc.)
     List<String> days = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
+      'Monday'.tr(),
+      'Tuesday'.tr(),
+      'Wednesday'.tr(),
+      'Thursday'.tr(),
+      'Friday'.tr(),
+      'Saturday'.tr(),
+      'Sunday'.tr()
     ];
     return days[date.weekday %
         7]; // Date.weekday returns 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
@@ -96,13 +96,13 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
 
     // Days of the week (Monday to Sunday)
     List<String> daysOfWeek = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
+      'Monday'.tr(),
+      'Tuesday'.tr(),
+      'Wednesday'.tr(),
+      'Thursday'.tr(),
+      'Friday'.tr(),
+      'Saturday'.tr(),
+      'Sunday'.tr()
     ];
 
     // Generate spots for the graph (for Brown Rust)
@@ -146,13 +146,13 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
 
     // Days of the week (Monday to Sunday)
     List<String> daysOfWeek = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
+      'Monday'.tr(),
+      'Tuesday'.tr(),
+      'Wednesday'.tr(),
+      'Thursday'.tr(),
+      'Friday'.tr(),
+      'Saturday'.tr(),
+      'Sunday'.tr()
     ];
 
     // Generate spots for the graph (for Yellow Rust)
@@ -176,14 +176,14 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Logout"),
-            content: Text("Are you sure you want to log out?"),
+            title: Text("Logout".tr()),
+            content: Text("Are you sure you want to log out?".tr()),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context); // Close dialog
                 },
-                child: Text("Cancel"),
+                child: Text("Cancel".tr()),
               ),
               TextButton(
                 onPressed: () async {
@@ -194,7 +194,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                   // Show logout success message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text("Logged out successfully"),
+                      content: Text("Logged out successfully".tr()),
                       duration: Duration(seconds: 2),
                     ),
                   );
@@ -205,7 +205,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                 },
-                child: Text("Logout", style: TextStyle(color: Colors.red)),
+                child: Text("Logout".tr(), style: TextStyle(color: Colors.red)),
               ),
             ],
           );
@@ -406,7 +406,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                             if (!snapshot.hasData ||
                                 snapshot.data!.docs.isEmpty) {
                               return Center(
-                                child: Text('No results found.'),
+                                child: Text('No results found.'.tr()),
                               );
                             }
                             // Prepare chart data
@@ -441,7 +441,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                                       ),
                                     ),
                                     child: Text(
-                                      'Weekly Stats',
+                                      'Weekly Stats'.tr(),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -785,7 +785,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
           child: Column(
             children: [
               Text(
-                'Weekly Stats',
+                'Weekly Stats'.tr(),
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -807,13 +807,13 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                                 showTitles: true,
                                 getTitlesWidget: (value, meta) {
                                   List<String> days = [
-                                    'Mon',
-                                    'Tue',
-                                    'Wed',
-                                    'Thu',
-                                    'Fri',
-                                    'Sat',
-                                    'Sun'
+                                    'Mon'.tr(),
+                                    'Tue'.tr(),
+                                    'Wed'.tr(),
+                                    'Thu'.tr(),
+                                    'Fri'.tr(),
+                                    'Sat'.tr(),
+                                    'Sun'.tr()
                                   ];
                                   if (value >= 0 &&
                                       value <= 6 &&
@@ -883,7 +883,8 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                           ],
                         ),
                       )
-                    : Center(child: Text('No data available for the chart.')),
+                    : Center(
+                        child: Text('No data available for the chart.'.tr())),
               ),
             ],
           ),
