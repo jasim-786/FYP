@@ -681,9 +681,44 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
           AndroidInitializationSettings('@mipmap/ic_launcher');
       const settings = InitializationSettings(android: androidSettings);
       await _flutterLocalNotificationsPlugin.initialize(settings);
+
+      // Reschedule persisted reminders
+      await _reschedulePersistedReminders();
     } catch (e) {
-      _showErrorDialog('Notification Error',
-          'Failed to initialize notifications. Please check permissions.');
+      await _showErrorDialog(
+        'Notification Error',
+        'Failed to initialize notifications: $e',
+      );
+    }
+  }
+
+  /// Reschedules persisted reminders from SharedPreferences.
+  Future<void> _reschedulePersistedReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    final reminders = prefs.getStringList('scheduled_reminders') ?? [];
+    for (var reminderJson in reminders) {
+      final reminder = json.decode(reminderJson);
+      final id = reminder['id'] as int;
+      final activity = reminder['activity'] as String;
+      final dateTime = DateTime.parse(reminder['dateTime'] as String);
+      if (dateTime.isAfter(DateTime.now())) {
+        await _flutterLocalNotificationsPlugin.zonedSchedule(
+          id,
+          'Crop Task Reminder',
+          'You have a $activity task scheduled.',
+          tz.TZDateTime.from(dateTime, tz.local),
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'crop_diary_reminder',
+              'Crop Task Reminders',
+              channelDescription: 'Reminders for crop tasks',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+          ),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        );
+      }
     }
   }
 
@@ -713,23 +748,70 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
       _reminderTime!.minute,
     );
 
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-      Uuid().v4().hashCode,
-      'Crop Task Reminder',
-      'You have a $activity task scheduled.',
-      tz.TZDateTime.from(reminderDateTime, tz.local),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'crop_diary_reminder',
-          'Crop Task Reminders',
-          channelDescription: 'Reminders for crop tasks',
-          importance: Importance.max,
-          priority: Priority.high,
+    // Validate that reminder is in the future
+    if (reminderDateTime.isBefore(DateTime.now())) {
+      await _showErrorDialog(
+        'Invalid Time',
+        'Cannot schedule a reminder for a past date or time.',
+      );
+      return;
+    }
+
+    // Request exact alarm permission
+    bool useExactAlarm = true;
+    final androidPlugin =
+        _flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    final granted = await androidPlugin?.requestExactAlarmsPermission();
+    if (granted != true) {
+      useExactAlarm = false;
+      await _showErrorDialog(
+        'Permission Denied',
+        'Exact alarm permission was not granted. Using inexact scheduling, which may be less precise.',
+      );
+    }
+
+    try {
+      final notificationId = Uuid().v4().hashCode;
+      await _flutterLocalNotificationsPlugin.zonedSchedule(
+        notificationId,
+        'Crop Task Reminder',
+        'You have a $activity task scheduled.',
+        tz.TZDateTime.from(reminderDateTime, tz.local),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'crop_diary_reminder',
+            'Crop Task Reminders',
+            channelDescription: 'Reminders for crop tasks',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
         ),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
+        androidScheduleMode: useExactAlarm
+            ? AndroidScheduleMode.exactAllowWhileIdle
+            : AndroidScheduleMode.inexact,
+      );
+
+      // Persist reminder details
+      final prefs = await SharedPreferences.getInstance();
+      final reminders = prefs.getStringList('scheduled_reminders') ?? [];
+      reminders.add(json.encode({
+        'id': notificationId,
+        'activity': activity,
+        'dateTime': reminderDateTime.toIso8601String(),
+      }));
+      await prefs.setStringList('scheduled_reminders', reminders);
+
+      await _showNotification(
+        'Reminder Scheduled',
+        'Reminder set for $activity on ${DateFormat('MMM dd, yyyy HH:mm').format(reminderDateTime)}.',
+      );
+    } catch (e) {
+      await _showErrorDialog(
+        'Scheduling Error',
+        'Failed to schedule reminder: $e',
+      );
+    }
   }
 
   /// Loads the initial set of diary entries from Firestore.
@@ -1296,6 +1378,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
   }
 
   /// Builds the kebab menu with actions.
+  /// Builds the kebab menu with actions.
   Widget _buildKebabMenu() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1305,11 +1388,11 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
           icon: const Icon(Icons.more_vert, color: AppConstants.primaryColor),
           onSelected: (value) {
             setState(() {
-              if (value == 'settings'.tr()) {
+              if (value == 'settings') {
                 _showSettings = !_showSettings;
-              } else if (value == 'guidance'.tr()) {
+              } else if (value == 'guidance') {
                 _showGuidance = !_showGuidance;
-              } else if (value == 'refresh'.tr()) {
+              } else if (value == 'refresh') {
                 _loadInitialEntries();
               }
             });
@@ -1356,7 +1439,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                   Icon(Icons.refresh, color: AppConstants.primaryColor),
                   SizedBox(width: 8),
                   Text(
-                    "Refresh",
+                    'Refresh',
                     style: TextStyle(color: AppConstants.primaryColor),
                   ),
                 ],
