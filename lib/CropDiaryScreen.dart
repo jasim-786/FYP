@@ -1352,8 +1352,7 @@ class _CropDiaryScreenState extends State<CropDiaryScreen>
                                 surface: AppConstants.accentColor,
                                 onSurface: AppConstants.primaryColor,
                               ),
-                              dialogTheme: DialogThemeData(
-                                  backgroundColor: Colors.white),
+                              dialogBackgroundColor: Colors.white,
                             ),
                             child: child!,
                           );
