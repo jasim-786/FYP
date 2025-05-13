@@ -287,7 +287,207 @@
   "Please log in to access this feature.": "Please log in to access this feature.",
   "Gmail Login": "Gmail Login",
   "Phone Login": "Phone Login",
-  "Login as Guest": "Login as Guest"
-  
+  "Login as Guest": "Login as Guest",
 
+  "detection_result_not_analyzed": "Detection Result: Not Analyzed",
+  "unknown_disease_message": "❗ This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results.",
+  "unknown_wheat_leaf": "This image does not appear to be a wheat leaf.",
+  "scientific_name": "Scientific Name",
+  "symptoms": "Symptoms",
+  "environmental_conditions": "Environmental Conditions",
+  "vulnerable_stages": "Vulnerable Stages",
+  "chemical_treatments": "🧪 Chemical Treatments",
+  "biological_treatments": "🌱 Biological Treatments",
+  "cultural_practices": "🚜 Cultural Practices",
+  "prevention_tips": "🛡️ Prevention Tips",
+  "economic_threshold": "Economic Threshold",
+  "traditional_practices": "Traditional Practices",
+  "unknown_detection": "Unknown Detection",
+  "treatment_for": "Treatment for {0}",
+  "ka_ilaj": "Treatment",
+  "close": "Close",
+  "error_loading_treatment": "Error loading treatment information",
+  "image_file_not_found": "⚠️ Image file not found!",
+  "prediction": "Prediction",
+  "login_to_view_treatments": "Please log in to view treatments.",
+  "detection_failed": "❌ Detection failed!",
+  "select_image_source": "Select Image Source",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "offline_detection_saved": "Offline: Detection saved locally.",
+  "uploading": "Uploading...",
+  "image_too_large": "Image or data too large. Please try a smaller image.",
+  "error_uploading_data": "Error uploading data",
+  "logout": "Logout",
+  "confirm_logout": "Are you sure you want to log out?",
+  "cancel": "Cancel",
+  "logout_success": "Logged out successfully",
+  "home": "Home",
+  "profile": "Profile",
+  "history": "History",
+  "help": "Help",
+  "feedback": "Feedback",
+  "about_us": "About Us",
+  "image_not_found": "⚠️ Image not found!",
+  "change_image": "Change Image",
+  "detect_disease": "Detect Disease",
+  
+  "disease_brown_rust": "Brown Rust",
+  "disease_yellow_rust": "Yellow Rust",
+  "disease_stem_rust": "Stem Rust",
+  "disease_loose_smut": "Loose Smut",
+  "disease_fusarium_head_blight": "Fusarium Head Blight",
+  "disease_powdery_mildew": "Powdery Mildew",
+  "disease_septoria_leaf_spot": "Septoria Leaf Spot",
+  "disease_septoria_leaf_blotch": "Septoria Leaf Blotch",
+  
+  "brown_rust_scientific": "Puccinia triticina",
+  "brown_rust_symptoms": "Small, round to oval, orange-brown pustules scattered mostly on upper leaf surfaces; yellowing and early death of leaves in severe cases.",
+  "brown_rust_conditions": "Favored by moderate temperatures (15–22°C) and high humidity; dew formation promotes spore germination.",
+  "brown_rust_stages": "Tillering to grain filling stages.",
+  
+  "yellow_rust_scientific": "Puccinia striiformis f. sp. tritici",
+  "yellow_rust_symptoms": "Long yellow stripes of powdery spores on leaves and sheaths; yellowing along veins and early leaf drying.",
+  "yellow_rust_conditions": "Cool (10–15°C), moist weather with high humidity and prolonged dew periods.",
+  "yellow_rust_stages": "Tillering to booting stages, especially in early sown crops.",
+  
+  "stem_rust_scientific": "Puccinia graminis f. sp. tritici",
+  "stem_rust_symptoms": "Reddish-brown, elongated pustules on stems, leaves, and leaf sheaths; later black pustules form; weakening and lodging of plants.",
+  "stem_rust_conditions": "Favored by warm temperatures (25-30°C) with high moisture or dew.",
+  "stem_rust_stages": "From tillering to grain filling stages.",
+  
+  "loose_smut_scientific": "Ustilago tritici",
+  "loose_smut_symptoms": "Dark olive-black spore masses replace the grains; infected heads emerge earlier than healthy ones.",
+  "loose_smut_conditions": "Favored by cool, moist weather during flowering.",
+  "loose_smut_stages": "Flowering stage.",
+  
+  "fusarium_head_blight_scientific": "Fusarium graminearum",
+  "fusarium_head_blight_symptoms": "Bleached spikelets; pink or orange fungal growth at the base of glumes; shriveled grains.",
+  "fusarium_head_blight_conditions": "Warm, humid conditions during flowering (25-30°C).",
+  "fusarium_head_blight_stages": "Flowering to early grain filling.",
+  
+  "powdery_mildew_scientific": "Blumeria graminis f. sp. tritici",
+  "powdery_mildew_symptoms": "White, powdery fungal growth on leaves and stems; later turning gray-brown.",
+  "powdery_mildew_conditions": "Cool, dry weather (15-20°C).",
+  "powdery_mildew_stages": "From seedling to heading stages.",
+  
+  "septoria_leaf_spot_scientific": "Septoria tritici",
+  "septoria_leaf_spot_symptoms": "Small, dark brown to black lesions with yellow halos on the leaves; premature leaf death.",
+  "septoria_leaf_spot_conditions": "Cool, wet conditions (15-20°C) promote disease development.",
+  "septoria_leaf_spot_stages": "From tillering to early grain filling.",
+  
+  "septoria_leaf_blotch_scientific": "Septoria tritici",
+  "septoria_leaf_blotch_symptoms": "Small, dark, water-soaked lesions on the leaves, which eventually turn into elongated, dark brown or black streaks; premature leaf death.",
+  "septoria_leaf_blotch_conditions": "Favored by cool, wet conditions (12–18°C) during early wheat growth.",
+  "septoria_leaf_blotch_stages": "From tillering to flag leaf stages.",
+
+  "brown_rust_chemical_1": "Propiconazole (25% EC) at 1 ml/L water",
+  "brown_rust_chemical_2": "Tebuconazole (25.9% EC) at 1 ml/L water",
+  "brown_rust_chemical_3": "Mancozeb (75% WP) at 2.5 g/L water",
+  
+  "brown_rust_biological_1": "Apply Trichoderma harzianum as foliar spray",
+  "brown_rust_biological_2": "Use Pseudomonas fluorescens as seed and foliar treatment",
+  
+  "brown_rust_cultural_1": "Remove crop residues after harvest",
+  "brown_rust_cultural_2": "Avoid continuous monocropping of wheat",
+  "brown_rust_cultural_3": "Timely sowing to escape peak infection period",
+  "brown_rust_cultural_4": "Grow resistant varieties suited to local conditions",
+  
+  "brown_rust_prevention_1": "Use rust-resistant wheat varieties (e.g., PBW 343, HD 2967)",
+  "brown_rust_prevention_2": "Avoid late sowing to reduce exposure",
+  "brown_rust_prevention_3": "Ensure balanced fertilization (avoid excess nitrogen)",
+  
+  "yellow_rust_chemical_1": "Tebuconazole (25.9% EC) at 1 ml/L water",
+  "yellow_rust_chemical_2": "Propiconazole (25% EC) at 1 ml/L water",
+  "yellow_rust_chemical_3": "Mancozeb (75% WP) at 2.5 g/L water",
+  
+  "yellow_rust_biological_1": "Apply Bacillus subtilis as foliar spray",
+  "yellow_rust_biological_2": "Use Pseudomonas fluorescens for seed treatment and field application",
+  
+  "yellow_rust_cultural_1": "Early sowing to avoid high-risk period",
+  "yellow_rust_cultural_2": "Crop rotation with non-host species",
+  "yellow_rust_cultural_3": "Remove infected crop residues",
+  "yellow_rust_cultural_4": "Regular field monitoring and removal of infected plants",
+  
+  "yellow_rust_prevention_1": "Use resistant wheat varieties (e.g., HD 3086, WH 1105)",
+  "yellow_rust_prevention_2": "Avoid over-application of nitrogen fertilizers",
+  "yellow_rust_prevention_3": "Monitor fields regularly during vulnerable growth stages",
+  
+  "stem_rust_chemical_1": "Spray Propiconazole (25% EC) at 1ml/L water",
+  "stem_rust_chemical_2": "Tebuconazole (25% EC) at 1ml/L water",
+  "stem_rust_chemical_3": "Triadimefon (25% WP) at 1g/L water",
+  
+  "stem_rust_biological_1": "Apply Bacillus subtilis-based biocontrol agents",
+  "stem_rust_biological_2": "Use Trichoderma harzianum soil treatments",
+  
+  "stem_rust_cultural_1": "Grow resistant varieties (e.g., Sr31, Sr24 containing lines)",
+  "stem_rust_cultural_2": "Remove volunteer wheat and grassy weeds",
+  "stem_rust_cultural_3": "Crop rotation with non-host crops",
+  
+  "stem_rust_prevention_1": "Use certified rust-resistant seeds",
+  "stem_rust_prevention_2": "Monitor fields regularly and spray at first sign",
+  "stem_rust_prevention_3": "Early sowing to avoid peak rust season",
+  
+  "loose_smut_chemical_1": "Seed treatment with Carboxin (37.5% + Thiram 37.5%) at 2g/kg seed",
+  "loose_smut_chemical_2": "Use Tebuconazole (2% DS) at 1.5g/kg seed",
+  
+  "loose_smut_biological_1": "Seed biopriming with Trichoderma viride",
+  "loose_smut_biological_2": "Application of Bacillus subtilis on seeds",
+  
+  "loose_smut_cultural_1": "Use disease-free seeds",
+  "loose_smut_cultural_2": "Hot water seed treatment (52°C for 10 minutes)",
+  
+  "loose_smut_prevention_1": "Grow resistant varieties",
+  "loose_smut_prevention_2": "Proper seed treatment",
+  
+  "fusarium_head_blight_chemical_1": "Spray Tebuconazole (25% EC) at early flowering",
+  "fusarium_head_blight_chemical_2": "Prothioconazole-based products",
+  
+  "fusarium_head_blight_biological_1": "Application of Trichoderma spp. on heads",
+  "fusarium_head_blight_biological_2": "Use Bacillus subtilis sprays",
+  
+  "fusarium_head_blight_cultural_1": "Crop rotation with non-hosts (e.g., legumes)",
+  "fusarium_head_blight_cultural_2": "Residue management to reduce inoculum",
+  
+  "fusarium_head_blight_prevention_1": "Use resistant cultivars",
+  "fusarium_head_blight_prevention_2": "Avoid continuous wheat cropping",
+  
+  "powdery_mildew_chemical_1": "Spray Hexaconazole (5% EC) at 2ml/L",
+  "powdery_mildew_chemical_2": "Sulphur dusting at 20-25 kg/ha",
+  
+  "powdery_mildew_biological_1": "Application of Pseudomonas fluorescens",
+  "powdery_mildew_biological_2": "Use Trichoderma spp. foliar sprays",
+  
+  "powdery_mildew_cultural_1": "Grow resistant varieties",
+  "powdery_mildew_cultural_2": "Avoid excessive nitrogen fertilization",
+  
+  "powdery_mildew_prevention_1": "Maintain field hygiene",
+  "powdery_mildew_prevention_2": "Early sowing",
+  
+  "septoria_leaf_spot_chemical_1": "Chlorothalonil (75% WP) at 2.5 g/L",
+  "septoria_leaf_spot_chemical_2": "Tebuconazole (25.9% EC) at 1 ml/L",
+  
+  "septoria_leaf_spot_biological_1": "Use Bacillus subtilis foliar sprays",
+  "septoria_leaf_spot_biological_2": "Trichoderma spp. as biocontrol agents",
+  
+  "septoria_leaf_spot_cultural_1": "Use resistant wheat varieties",
+  "septoria_leaf_spot_cultural_2": "Proper field sanitation and residue management",
+  
+  "septoria_leaf_spot_prevention_1": "Monitor fields regularly and remove infected leaves",
+  "septoria_leaf_spot_prevention_2": "Avoid excessive nitrogen fertilization",
+  
+  "septoria_leaf_blotch_chemical_1": "Tebuconazole (25.9% EC) at 1 ml/L water",
+  "septoria_leaf_blotch_chemical_2": "Trifloxystrobin (25% SC) at 1 ml/L water",
+  "septoria_leaf_blotch_chemical_3": "Chlorothalonil (75% WP) at 2.5 g/L water",
+  
+  "septoria_leaf_blotch_biological_1": "Use Trichoderma harzianum as foliar spray",
+  "septoria_leaf_blotch_biological_2": "Apply Bacillus subtilis as a seed treatment",
+  
+  "septoria_leaf_blotch_cultural_1": "Crop rotation with non-host crops",
+  "septoria_leaf_blotch_cultural_2": "Remove infected crop residues after harvest",
+  "septoria_leaf_blotch_cultural_3": "Use of resistant wheat varieties",
+  
+  "septoria_leaf_blotch_prevention_1": "Grow resistant varieties",
+  "septoria_leaf_blotch_prevention_2": "Ensure proper field drainage",
+  "septoria_leaf_blotch_prevention_3": "Avoid excessive nitrogen fertilization"
 }

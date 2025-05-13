@@ -348,7 +348,7 @@ class _WheatResourceEstimatorScreenState
             ),
           ),
           Positioned.fill(
-            top: screenHeight * 0.12,
+            top: screenHeight * 0.18,
             bottom: screenHeight * 0.18,
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

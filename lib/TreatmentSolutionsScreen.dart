@@ -185,7 +185,7 @@ class _TreatmentSolutionsScreenState extends State<TreatmentSolutionsScreen> {
         child: Stack(
           children: [
             Positioned.fill(
-              top: screenHeight * 0.15,
+              top: screenHeight * 0.18,
               bottom: screenHeight * 0.16,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),

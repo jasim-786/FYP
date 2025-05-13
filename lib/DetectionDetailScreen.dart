@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -9,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:open_file/open_file.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetectionDetailScreen extends StatelessWidget {
   final String disease;
@@ -123,7 +125,7 @@ class DetectionDetailScreen extends StatelessWidget {
           ),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Prediction",
+          pw.Text("Prediction".tr(),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
@@ -132,7 +134,7 @@ class DetectionDetailScreen extends StatelessWidget {
               style: pw.TextStyle(fontSize: 16)),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Recommended Treatments",
+          pw.Text("Recommended Treatments".tr(),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
@@ -288,16 +290,16 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
           ),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Prediction",
+          pw.Text("Prediction".tr(),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
-          pw.Text("Disease: $disease", style: pw.TextStyle(fontSize: 16)),
-          pw.Text("Detected on: $dateString",
+          pw.Text("Disease: $disease".tr(), style: pw.TextStyle(fontSize: 16)),
+          pw.Text("Detected on: $dateString".tr(),
               style: pw.TextStyle(fontSize: 16)),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Text("Recommended Treatments",
+          pw.Text("Recommended Treatments".tr(),
               style:
                   pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 6),
@@ -521,6 +523,121 @@ Detected on: ${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestam
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Custom Sidebar Button
+Widget buildSidebarButton({
+  required BuildContext context,
+  IconData? icon,
+  String? customIconPath,
+  required String text,
+  required VoidCallback onTap,
+}) {
+  return Padding(
+    padding:
+        EdgeInsets.symmetric(vertical: 8, horizontal: 20), // Button Spacing
+    child: GestureDetector(
+      onTap: onTap,
+      child: Transform.translate(
+        offset: Offset(-10, 0), // Move button slightly left
+        child: Container(
+          width: 250,
+          decoration: BoxDecoration(
+            color: Color(0xFF7B5228), // Brown background for button
+            borderRadius: BorderRadius.circular(30), // Rounded button shape
+          ),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          child: Row(
+            children: [
+              // Circular icon background
+              Transform.translate(
+                offset: Offset(-8, 0), // Moves the icon slightly left
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFE5D188), // Light background for icon
+                    shape: BoxShape.circle,
+                  ),
+                  padding:
+                      EdgeInsets.all(10), // Adjust for proper icon placement
+                  child: customIconPath != null
+                      ? Image.asset(
+                          customIconPath,
+                          height: 26,
+                          width: 26,
+                        )
+                      : Icon(icon, color: Colors.black, size: 24),
+                ),
+              ),
+              SizedBox(width: 10), // Space between icon and text
+
+              // Profile text
+              Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+/// Language Selector Widget
+class LanguageSelector extends StatelessWidget {
+  const LanguageSelector({Key? key}) : super(key: key);
+
+  Future<void> _saveLanguagePreference(String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language_code', languageCode);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<Locale>(
+      icon: Icon(Icons.language, color: Colors.white, size: 30),
+      onSelected: (Locale locale) {
+        context.setLocale(locale);
+        _saveLanguagePreference(locale.languageCode);
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem<Locale>(
+          value: Locale('en'),
+          child: Row(
+            children: [
+              Text('🇬🇧 '),
+              SizedBox(width: 8),
+              Text(tr('english')),
+            ],
+          ),
+        ),
+        PopupMenuItem<Locale>(
+          value: Locale('ur'),
+          child: Row(
+            children: [
+              Text('🇵🇰 '),
+              SizedBox(width: 8),
+              Text(tr('urdu')),
+            ],
+          ),
+        ),
+        PopupMenuItem<Locale>(
+          value: Locale('pa'),
+          child: Row(
+            children: [
+              Text('🇵🇰 '),
+              SizedBox(width: 8),
+              Text(tr('punjabi')),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -110,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             // Main content
             Positioned.fill(
-              top: screenHeight * 0.145,
+              top: screenHeight * 0.180,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                 child: Column(

@@ -375,7 +375,7 @@ class _PreviousResultsScreenState extends State<PreviousResultsScreen> {
                       Container(
                         margin: EdgeInsets.only(top: 65, left: 0),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                         child: Text(
                           'Previous Results'.tr(),
                           style: TextStyle(

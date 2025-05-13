@@ -18,6 +18,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetectionScreen extends StatefulWidget {
   final String imagePath;
@@ -31,7 +32,7 @@ class DetectionScreen extends StatefulWidget {
 class _DetectionScreenState extends State<DetectionScreen> {
   late String imagePath;
   Interpreter? _interpreter;
-  String result = "Detection Result: Not Analyzed".tr();
+  String result = "";
   List<String> _labels = [];
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -48,18 +49,55 @@ class _DetectionScreenState extends State<DetectionScreen> {
     print("📍 Navigated to DetectionScreen with: $imagePath");
     _loadModel();
     _loadLabels(); // Load labels.txt
+
+    // Set initial result text with translation
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        result = tr("detection_result_not_analyzed");
+      });
+    });
+  }
+
+  // Helper method to get translated treatment items
+  List<String> _getTranslatedTreatmentItems(
+      String diseaseKey, String treatmentType) {
+    // Create translation keys based on disease and treatment type
+    final baseKey =
+        "${diseaseKey.toLowerCase()}_${treatmentType.toLowerCase()}";
+
+    // For chemical treatments, we need to translate each item individually
+    List<String> translatedItems = [];
+
+    // Try to get translations for items 1-5 (adjust based on your data)
+    for (int i = 1; i <= 5; i++) {
+      final itemKey = "${baseKey}_$i";
+      // Check if translation exists
+      String translatedItem = "";
+      try {
+        translatedItem = tr(itemKey);
+        // Only add non-empty translations
+        if (translatedItem != itemKey && translatedItem.isNotEmpty) {
+          translatedItems.add(translatedItem);
+        }
+      } catch (e) {
+        // Translation key doesn't exist, skip
+      }
+    }
+
+    return translatedItems;
   }
 
   Future<void> _showTreatmentBottomSheet(String diseaseKey) async {
     try {
       String treatmentText = "";
+      String displayDiseaseName = diseaseKey.replaceAll('_', ' ');
+      String diseaseKeyLower = diseaseKey.toLowerCase();
 
       if (diseaseKey == "Unknown") {
         // Show custom message for unknown cases
-        treatmentText =
-            "❗ This image does not appear to be a wheat leaf. Please upload a clear image of a wheat leaf for accurate results.";
+        treatmentText = tr("unknown_disease_message");
       } else {
-        // Load JSON and treatment data
+        // Load JSON to get the structure, but we'll use translations for content
         final jsonString = await rootBundle.loadString('assets/solutions.json');
         final Map<String, dynamic> allData = json.decode(jsonString);
 
@@ -68,30 +106,59 @@ class _DetectionScreenState extends State<DetectionScreen> {
         }
 
         final diseaseData = allData[diseaseKey];
-        final treatments = diseaseData['treatments'] ?? {};
-        final prevention = diseaseData['prevention'] ?? [];
 
-        String formatList(String title, List<dynamic> items) {
-          return items.isNotEmpty ? "$title\n• ${items.join('\n• ')}\n\n" : '';
+        // Add scientific name (scientific names don't need translation)
+        if (diseaseData.containsKey('scientificName')) {
+          treatmentText +=
+              "${tr('scientific_name')}: ${diseaseData['scientificName']}\n\n";
         }
 
-        if (treatments.isNotEmpty) {
-          if (treatments['chemical'] != null) {
-            treatmentText +=
-                formatList("🧪 Chemical Treatments", treatments['chemical']);
-          }
-          if (treatments['biological'] != null) {
-            treatmentText += formatList(
-                "🌱 Biological Treatments", treatments['biological']);
-          }
-          if (treatments['cultural'] != null) {
-            treatmentText +=
-                formatList("🚜 Cultural Practices", treatments['cultural']);
-          }
+        // Add symptoms using translation key
+        treatmentText +=
+            "${tr('symptoms')}: ${tr('${diseaseKeyLower}_symptoms')}\n\n";
+
+        // Add environmental conditions using translation key
+        treatmentText +=
+            "${tr('environmental_conditions')}: ${tr('${diseaseKeyLower}_conditions')}\n\n";
+
+        // Add vulnerable stages using translation key
+        treatmentText +=
+            "${tr('vulnerable_stages')}: ${tr('${diseaseKeyLower}_stages')}\n\n";
+
+        // Get translated treatment items
+        List<String> chemicalTreatments =
+            _getTranslatedTreatmentItems(diseaseKey, "chemical");
+        List<String> biologicalTreatments =
+            _getTranslatedTreatmentItems(diseaseKey, "biological");
+        List<String> culturalPractices =
+            _getTranslatedTreatmentItems(diseaseKey, "cultural");
+        List<String> preventionTips =
+            _getTranslatedTreatmentItems(diseaseKey, "prevention");
+
+        // Helper function to format lists with translations
+        String formatList(String title, List<String> items) {
+          if (items.isEmpty) return '';
+          return "$title\n• ${items.join('\n• ')}\n\n";
         }
 
-        if (prevention.isNotEmpty) {
-          treatmentText += formatList("🛡️ Prevention Tips", prevention);
+        // Add treatments with translated items
+        if (chemicalTreatments.isNotEmpty) {
+          treatmentText +=
+              formatList(tr('chemical_treatments'), chemicalTreatments);
+        }
+
+        if (biologicalTreatments.isNotEmpty) {
+          treatmentText +=
+              formatList(tr('biological_treatments'), biologicalTreatments);
+        }
+
+        if (culturalPractices.isNotEmpty) {
+          treatmentText +=
+              formatList(tr('cultural_practices'), culturalPractices);
+        }
+
+        if (preventionTips.isNotEmpty) {
+          treatmentText += formatList(tr('prevention_tips'), preventionTips);
         }
       }
 
@@ -103,6 +170,29 @@ class _DetectionScreenState extends State<DetectionScreen> {
         enableDrag: false,
         backgroundColor: Colors.transparent,
         builder: (context) {
+          // Create a properly localized title using translation keys
+          String titleText;
+          if (diseaseKey == "Unknown") {
+            titleText = tr("unknown_detection");
+          } else {
+            // Use a translation key with parameter for disease name
+            final diseaseTrKey = "disease_${diseaseKey.toLowerCase()}";
+            final localizedDiseaseName = tr(diseaseTrKey);
+
+            // For RTL languages, use the appropriate format
+            if (context.locale.languageCode == 'ur' ||
+                context.locale.languageCode == 'pa') {
+              titleText = "$localizedDiseaseName ${tr('ka_ilaj')}";
+            } else {
+              // For English and other LTR languages
+              titleText = "$localizedDiseaseName ${tr('treatment_for')}";
+            }
+          }
+
+          // Determine if we should use RTL layout
+          bool isRtl = context.locale.languageCode == 'ur' ||
+              context.locale.languageCode == 'pa';
+
           return Container(
             constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.85),
@@ -129,9 +219,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          diseaseKey == "Unknown"
-                              ? "Unknown Detection".tr()
-                              : "Treatment for ${diseaseKey.replaceAll('_', ' ')}",
+                          titleText,
                           style: TextStyle(
                             color: Color(0xFF7B5228),
                             fontSize: 20,
@@ -139,12 +227,18 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                         ),
                         SizedBox(height: 12),
-                        Text(
-                          treatmentText.trim(),
-                          style: TextStyle(
-                            color: Colors.black87,
-                            height: 1.5,
-                            fontSize: 16,
+                        // Use a custom approach for RTL text
+                        Container(
+                          width: double.infinity,
+                          child: Text(
+                            treatmentText.trim(),
+                            style: TextStyle(
+                              color: Colors.black87,
+                              height: 1.5,
+                              fontSize: 16,
+                            ),
+                            // Use textAlign instead of textDirection
+                            textAlign: isRtl ? TextAlign.right : TextAlign.left,
                           ),
                         ),
                         SizedBox(height: 24),
@@ -153,7 +247,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           child: ElevatedButton.icon(
                             onPressed: () => Navigator.pop(context),
                             icon: Icon(Icons.close, color: Colors.white),
-                            label: Text("Close",
+                            label: Text(tr('close'),
                                 style: TextStyle(color: Colors.white)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF7B5228),
@@ -175,7 +269,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
     } catch (e) {
       print("Error loading treatment info: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error loading treatment information")),
+        SnackBar(content: Text(tr('error_loading_treatment'))),
       );
     }
   }
@@ -201,7 +295,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   Future<void> _detectDisease() async {
     if (!File(imagePath).existsSync()) {
       setState(() {
-        result = "⚠️ Image file not found!";
+        result = tr('image_file_not_found');
       });
       return;
     }
@@ -243,7 +337,10 @@ class _DetectionScreenState extends State<DetectionScreen> {
       String disease = _getDiseaseLabel(predictedClass);
 
       setState(() {
-        result = "Prediction: $disease";
+        // Use a translation key for the disease name
+        final diseaseKey =
+            "disease_${disease.toLowerCase().replaceAll(' ', '_')}";
+        result = "${tr('prediction')}: ${tr(diseaseKey)}";
       });
       await _storeDetectionResult(disease);
       if (user != null) {
@@ -251,13 +348,13 @@ class _DetectionScreenState extends State<DetectionScreen> {
       } else {
         // Optionally show a login prompt
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please log in to view treatments.')),
+          SnackBar(content: Text(tr('login_to_view_treatments'))),
         );
       }
     } catch (e) {
       print("❌ Error during detection: $e");
       setState(() {
-        result = "❌ Detection failed!";
+        result = tr('detection_failed');
       });
     }
   }
@@ -283,6 +380,8 @@ class _DetectionScreenState extends State<DetectionScreen> {
     if (pickedFile != null) {
       setState(() {
         imagePath = pickedFile.path;
+        // Reset result when new image is picked
+        result = tr("detection_result_not_analyzed");
       });
     }
   }
@@ -292,13 +391,13 @@ class _DetectionScreenState extends State<DetectionScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Select Image Source".tr()),
+          title: Text(tr('select_image_source')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: Icon(Icons.camera_alt),
-                title: Text("Camera".tr()),
+                title: Text(tr('camera')),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.camera);
@@ -306,7 +405,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
               ),
               ListTile(
                 leading: Icon(Icons.photo_library),
-                title: Text("Gallery".tr()),
+                title: Text(tr('gallery')),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.gallery);
@@ -327,14 +426,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
   Future<void> _storeDetectionResult(String diseaseName) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print("⚠️ User not logged in. Skipping Firestore upload.");
+      print(tr("⚠️ User not logged in. Skipping Firestore upload."));
       return;
     }
 
     try {
       File imageFile = File(imagePath);
       if (!imageFile.existsSync()) {
-        print("⚠️ Image file not found. Skipping upload.");
+        print(tr("⚠️ Image file not found. Skipping upload."));
         return;
       }
 
@@ -350,12 +449,12 @@ class _DetectionScreenState extends State<DetectionScreen> {
       if (diseaseName != "Unknown") {
         final jsonString = await rootBundle.loadString('assets/solutions.json');
         final Map<String, dynamic> allData = json.decode(jsonString);
-        final diseaseData = allData[diseaseName];
+        final diseaseData = allData[diseaseName.replaceAll(' ', '_')];
         treatments = diseaseData?['treatments'] ?? {};
         prevention = diseaseData?['prevention'] ?? [];
       } else {
-        treatments = {"note": "This image does not appear to be a wheat leaf."};
-        prevention = ["This image does not appear to be a wheat leaf."];
+        treatments = {"note": tr('unknown_wheat_leaf')};
+        prevention = [tr('unknown_wheat_leaf')];
       }
 
       // Build detection data
@@ -372,7 +471,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
       if (!await isOnline()) {
         Hive.box('offline_detections').add(detectionData);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Offline: Detection saved locally.".tr())),
+          SnackBar(content: Text(tr('offline_detection_saved'))),
         );
         return;
       }
@@ -387,7 +486,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 10),
-              Text("Uploading..."),
+              Text(tr('uploading')),
             ],
           ),
         ),
@@ -403,19 +502,17 @@ class _DetectionScreenState extends State<DetectionScreen> {
       await batch.commit();
 
       Navigator.pop(context); // Close dialog
-      print("✅ Detection result uploaded to Firestore.");
+      print("✅ Detection result uploaded to Firestore.".tr());
     } catch (e) {
       Navigator.pop(context);
       print("❌ Error uploading to Firestore: $e");
       if (e.toString().contains('Document too large')) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text("Image or data too large. Please try a smaller image.")),
+          SnackBar(content: Text(tr('image_too_large'))),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error uploading data")),
+          SnackBar(content: Text(tr('error_uploading_data'))),
         );
       }
     }
@@ -447,14 +544,14 @@ class _DetectionScreenState extends State<DetectionScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Logout".tr()),
-          content: Text("Are you sure you want to log out?".tr()),
+          title: Text(tr('logout')),
+          content: Text(tr('confirm_logout')),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
               },
-              child: Text("Cancel"),
+              child: Text(tr('cancel')),
             ),
             TextButton(
               onPressed: () async {
@@ -465,7 +562,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                 // Show logout success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Logged out successfully".tr()),
+                    content: Text(tr('logout_success')),
                     duration: Duration(seconds: 2),
                   ),
                 );
@@ -476,7 +573,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
+              child: Text(tr('logout'), style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -515,8 +612,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
                   // Sidebar Buttons
                   buildSidebarButton(
+                    context: context,
                     customIconPath: "assets/icons/Home_icon.png",
-                    text: "Home".tr(),
+                    text: tr('home'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -525,15 +623,17 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     },
                   ),
                   buildSidebarButton(
+                    context: context,
                     customIconPath: "assets/icons/profile_icon.png",
-                    text: "Profile".tr(),
+                    text: tr('profile'),
                     onTap: () {
                       // Handle Profile Navigation
                     },
                   ),
                   buildSidebarButton(
+                    context: context,
                     customIconPath: "assets/icons/history_icon.png",
-                    text: "History".tr(),
+                    text: tr('history'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -543,8 +643,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     },
                   ),
                   buildSidebarButton(
+                    context: context,
                     customIconPath: "assets/icons/help_icon.png",
-                    text: "Help".tr(),
+                    text: tr('help'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -553,8 +654,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     },
                   ),
                   buildSidebarButton(
+                    context: context,
                     customIconPath: "assets/icons/feedback_icon.png",
-                    text: "Feedback".tr(),
+                    text: tr('feedback'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -564,8 +666,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     },
                   ),
                   buildSidebarButton(
+                    context: context,
                     customIconPath: "assets/icons/info_icon.png",
-                    text: "About Us".tr(),
+                    text: tr('about_us'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -578,8 +681,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     children: [
                       if (user != null)
                         buildSidebarButton(
+                          context: context,
                           customIconPath: "assets/icons/logout_icon.png",
-                          text: "Logout".tr(),
+                          text: tr('logout'),
                           onTap: () {
                             logout(context);
                           },
@@ -667,6 +771,13 @@ class _DetectionScreenState extends State<DetectionScreen> {
             ),
           ),
 
+          // Language Selector
+          Positioned(
+            top: 30,
+            right: 80,
+            child: LanguageSelector(),
+          ),
+
           // Main Content Positioned
           Positioned.fill(
             top: screenHeight * 0.22,
@@ -701,7 +812,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           )
                         : Center(
                             child: Text(
-                              "⚠️ Image not found!",
+                              tr('image_not_found'),
                               style: TextStyle(fontSize: 16, color: Colors.red),
                             ),
                           ),
@@ -727,7 +838,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Change Image'.tr(),
+                              tr('change_image'),
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -782,7 +893,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Detect Disease'.tr(),
+                              tr('detect_disease'),
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -818,6 +929,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
 
 /// Custom Sidebar Button
 Widget buildSidebarButton({
+  required BuildContext context,
   IconData? icon,
   String? customIconPath,
   required String text,
@@ -875,4 +987,57 @@ Widget buildSidebarButton({
       ),
     ),
   );
+}
+
+/// Language Selector Widget
+class LanguageSelector extends StatelessWidget {
+  const LanguageSelector({Key? key}) : super(key: key);
+
+  Future<void> _saveLanguagePreference(String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language_code', languageCode);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<Locale>(
+      icon: Icon(Icons.language, color: Colors.white, size: 30),
+      onSelected: (Locale locale) {
+        context.setLocale(locale);
+        _saveLanguagePreference(locale.languageCode);
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem<Locale>(
+          value: Locale('en'),
+          child: Row(
+            children: [
+              Text('🇬🇧 '),
+              SizedBox(width: 8),
+              Text(tr('english')),
+            ],
+          ),
+        ),
+        PopupMenuItem<Locale>(
+          value: Locale('ur'),
+          child: Row(
+            children: [
+              Text('🇵🇰 '),
+              SizedBox(width: 8),
+              Text(tr('urdu')),
+            ],
+          ),
+        ),
+        PopupMenuItem<Locale>(
+          value: Locale('pa'),
+          child: Row(
+            children: [
+              Text('🇵🇰 '),
+              SizedBox(width: 8),
+              Text(tr('punjabi')),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
